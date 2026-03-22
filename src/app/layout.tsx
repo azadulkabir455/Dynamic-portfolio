@@ -1,15 +1,22 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Antonio } from "next/font/google";
+import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import ClickSpark from "@/blocks/elements/3d/ClickSpark/ClickSpark";
+import TargetCursor from "@/blocks/elements/3d/TargetCursor/TargetCursor";
+import BubbleMenu from "@/blocks/elements/3d/BubbleMenu/BubbleMenu";
+import { ParallaxRoot } from "@/hooks/parallax";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const antonio = Antonio({
+  weight: "400",
   subsets: ["latin"],
+  variable: "--font-antonio",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const openSans = Open_Sans({
+  weight: ["400", "600", "700"],
   subsets: ["latin"],
+  variable: "--font-open-sans",
 });
 
 export const metadata: Metadata = {
@@ -22,12 +29,78 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const bubbleMenuItems = [
+    {
+      label: "home",
+      href: "#",
+      ariaLabel: "Home",
+      rotation: -8,
+      hoverStyles: { bgColor: "#3b82f6", textColor: "#ffffff" },
+    },
+    {
+      label: "about",
+      href: "#",
+      ariaLabel: "About",
+      rotation: 8,
+      hoverStyles: { bgColor: "#10b981", textColor: "#ffffff" },
+    },
+    {
+      label: "projects",
+      href: "#",
+      ariaLabel: "Projects",
+      rotation: 8,
+      hoverStyles: { bgColor: "#f59e0b", textColor: "#ffffff" },
+    },
+    {
+      label: "blog",
+      href: "#",
+      ariaLabel: "Blog",
+      rotation: 8,
+      hoverStyles: { bgColor: "#ef4444", textColor: "#ffffff" },
+    },
+    {
+      label: "contact",
+      href: "#",
+      ariaLabel: "Contact",
+      rotation: -8,
+      hoverStyles: { bgColor: "#8b5cf6", textColor: "#ffffff" },
+    },
+  ];
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${antonio.variable} ${openSans.variable} ${openSans.className} antialiased`}
       >
-        {children}
+        <ParallaxRoot>
+        {/* Cursor Style */}
+        <TargetCursor
+          spinDuration={2}
+          hideDefaultCursor
+          parallaxOn
+          hoverDuration={0.2}
+        />
+        <ClickSpark
+          sparkColor='#fff'
+          sparkSize={10}
+          sparkRadius={25}
+          sparkCount={8}
+          duration={400}
+        >
+        {/* Bubble Menu */}
+        <BubbleMenu
+          items={bubbleMenuItems}
+          menuAriaLabel="Toggle navigation"
+          menuBg="var(--ternary)"
+          menuContentColor="var(--secondary)"
+          useFixedPosition={true}
+          animationEase="back.out(1.5)"
+          animationDuration={0.5}
+          staggerDelay={0.12}
+        />
+
+          {children}
+        </ClickSpark>
+        </ParallaxRoot>
       </body>
     </html>
   );
