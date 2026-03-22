@@ -7,7 +7,10 @@ import Experience from "@/blocks/sections/frontend/Experience/Edperience";
 export default function Page() {
   
   return (
-    <Container as="div" className="overflow-hidden">
+    <Container
+      as="div"
+      className="overflow-x-hidden overflow-y-visible"
+    >
       <HeraBanner />
       <Objective />
       <Project /> 

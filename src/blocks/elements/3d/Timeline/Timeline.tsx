@@ -1,19 +1,97 @@
 "use client";
 
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
 import Text from "@/blocks/elements/text/Text";
 import { cn } from "@/utilities/helpers/classMerge";
 import { getTimelineKey } from "./functions";
 import type { TimelineItem, TimelineProps } from "./type";
 
-const lineGradient =
-  "bg-gradient-to-b from-[var(--primary)] via-[var(--quaternary)] to-[color-mix(in_srgb,var(--primary)_45%,transparent)]";
-
 const Timeline = ({
   items,
   className,
   showSpine = true,
+  onActiveIndexChange,
 }: TimelineProps) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const cardRefs = useRef<(HTMLElement | null)[]>([]);
+  const firstOrbRef = useRef<HTMLDivElement | null>(null);
+  const lastOrbRef = useRef<HTMLDivElement | null>(null);
+  const [spineLine, setSpineLine] = useState<{
+    top: number;
+    height: number;
+  } | null>(null);
+
+  useLayoutEffect(() => {
+    if (!showSpine || items.length < 2) {
+      setSpineLine(null);
+      return;
+    }
+
+    const update = () => {
+      const track = trackRef.current;
+      const first = firstOrbRef.current;
+      const last = lastOrbRef.current;
+      if (!track || !first || !last) {
+        setSpineLine(null);
+        return;
+      }
+      const tr = track.getBoundingClientRect();
+      const fr = first.getBoundingClientRect();
+      const lr = last.getBoundingClientRect();
+      const top = fr.top + fr.height / 2 - tr.top;
+      const endY = lr.top + lr.height / 2 - tr.top;
+      const height = endY - top;
+      setSpineLine({ top, height: Math.max(0, height) });
+    };
+
+    update();
+    window.addEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    if (trackRef.current) ro.observe(trackRef.current);
+    return () => {
+      window.removeEventListener("resize", update);
+      ro.disconnect();
+    };
+  }, [items.length, showSpine]);
+
+  /** Which card is closest to viewport center → drives left panel */
+  useEffect(() => {
+    if (!onActiveIndexChange || !items.length) return;
+
+    const updateActive = () => {
+      const viewportMid = window.innerHeight * 0.42;
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      cardRefs.current.forEach((el, i) => {
+        if (!el) return;
+        const r = el.getBoundingClientRect();
+        const cardMid = r.top + r.height / 2;
+        const dist = Math.abs(cardMid - viewportMid);
+        if (dist < bestDist) {
+          bestDist = dist;
+          bestIdx = i;
+        }
+      });
+      onActiveIndexChange(bestIdx);
+    };
+
+    updateActive();
+    window.addEventListener("scroll", updateActive, { passive: true });
+    window.addEventListener("resize", updateActive);
+    const ro = new ResizeObserver(() => updateActive());
+    if (trackRef.current) ro.observe(trackRef.current);
+    cardRefs.current.forEach((el) => {
+      if (el) ro.observe(el);
+    });
+
+    return () => {
+      window.removeEventListener("scroll", updateActive);
+      window.removeEventListener("resize", updateActive);
+      ro.disconnect();
+    };
+  }, [items.length, onActiveIndexChange]);
+
   if (!items.length) return null;
 
   return (
@@ -24,102 +102,67 @@ const Timeline = ({
         className,
       )}
     >
-      <ul className="m-0 flex list-none flex-col gap-0 p-0">
-        {items.map((item, index) => {
-          const isFirst = index === 0;
-          const isLast = index === items.length - 1;
-          const key = getTimelineKey(item, index);
+      <div ref={trackRef} className="relative">
+        {/* Line only from first orb center → last orb center (nothing below last item) */}
+        {showSpine &&
+          spineLine &&
+          spineLine.height > 0 && (
+            <div
+              aria-hidden
+              className={cn(
+                "pointer-events-none absolute z-0 hidden w-px -translate-x-1/2 bg-secondary lg:block qu",
+                "left-[44px]",
+              )}
+              style={{
+                top: spineLine.top,
+                height: spineLine.height,
+              }}
+            />
+          )}
 
-          return (
-            <li key={key} className="relative">
-              <div
-                className={cn(
-                  "grid grid-cols-1 gap-6 lg:gap-10 lg:items-stretch",
-                  showSpine &&
-                    "lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)]",
-                )}
-              >
-                {/* Left: 3D spine segment */}
+        <ul className="relative z-[1] m-0 flex list-none flex-col gap-8 p-0 lg:gap-10">
+          {items.map((item, index) => {
+            const key = getTimelineKey(item, index);
+            const isFirst = index === 0;
+            const isLast = index === items.length - 1;
+
+            return (
+              <li key={key}>
                 <div
                   className={cn(
-                    "relative flex justify-center lg:justify-end",
-                    !showSpine && "hidden",
+                    "grid grid-cols-1 gap-6",
+                    /* Narrow spine column + smaller gap to cards */
+                    "lg:grid-cols-[88px_minmax(0,1fr)] lg:items-start lg:gap-x-4",
                   )}
                 >
                   <div
+                    ref={(el) => {
+                      if (isFirst) firstOrbRef.current = el;
+                      if (isLast) lastOrbRef.current = el;
+                    }}
                     className={cn(
-                      "flex w-full max-w-[200px] flex-row items-stretch justify-end gap-0 lg:max-w-none",
-                      "lg:flex-col lg:items-end lg:pr-6",
+                      "flex justify-center lg:justify-center",
+                      !showSpine && "hidden lg:hidden",
                     )}
                   >
-                    {/* Mobile: compact left rail */}
-                    <div className="flex flex-col items-center lg:hidden">
-                      {!isFirst && (
-                        <div
-                          className={cn("min-h-8 w-px flex-1", lineGradient)}
-                          aria-hidden
-                        />
-                      )}
-                      <SpineOrb index={index} />
-                      {!isLast && (
-                        <div
-                          className={cn("min-h-8 w-px flex-1", lineGradient)}
-                          aria-hidden
-                        />
-                      )}
-                    </div>
+                    <SpineOrb index={index} />
+                  </div>
 
-                    {/* Desktop: 3D column */}
-                    <div
-                      className={cn(
-                        "relative hidden min-h-[120px] flex-1 flex-col items-center lg:flex",
-                        "[transform-style:preserve-3d]",
-                      )}
-                    >
-                      <div
-                        className={cn(
-                          "flex h-full w-full flex-col items-end",
-                          "[transform:rotateY(-10deg)]",
-                          "transition-transform duration-500 ease-out",
-                        )}
-                      >
-                        {!isFirst && (
-                          <div
-                            className={cn(
-                              "mr-[27px] min-h-10 w-px flex-1 origin-top",
-                              lineGradient,
-                              "shadow-[0_0_12px_rgba(195,63,64,0.35)]",
-                            )}
-                            aria-hidden
-                          />
-                        )}
-                        <div className="flex w-full justify-end py-2">
-                          <SpineOrb index={index} />
-                        </div>
-                        {!isLast && (
-                          <div
-                            className={cn(
-                              "mr-[27px] min-h-10 w-px flex-1 origin-top",
-                              lineGradient,
-                              "shadow-[0_0_12px_rgba(247,127,0,0.25)]",
-                            )}
-                            aria-hidden
-                          />
-                        )}
-                      </div>
-                    </div>
+                  <div className="min-w-0">
+                    <TimelineEntryCard
+                      item={item}
+                      index={index}
+                      cardRef={(el: HTMLElement | null) => {
+                        cardRefs.current[index] = el;
+                      }}
+                    />
                   </div>
                 </div>
-
-                {/* Right: timeline copy */}
-                <div className="min-w-0 pb-12 lg:pb-16">
-                  <TimelineEntryCard item={item} index={index} />
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </div>
   );
 };
@@ -129,30 +172,23 @@ function SpineOrb({ index }: { index: number }) {
     <motion.div
       className={cn(
         "relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full",
-        "border-2 border-primary bg-secondary/25",
-        "shadow-[0_0_0_1px_rgba(229,206,177,0.15),0_12px_40px_rgba(0,48,73,0.35),0_0_28px_rgba(195,63,64,0.35)]",
+        "border-2 border-secondary bg-transparent",
+        "shadow-[0_0_12px_rgba(0,0,0,0.15)]",
         "[transform-style:preserve-3d]",
       )}
       initial={false}
       whileHover={{
-        rotateY: 18,
-        rotateX: -10,
-        scale: 1.06,
+        rotateY: 12,
+        rotateX: -6,
+        scale: 1.04,
         transition: { type: "spring", stiffness: 320, damping: 22 },
       }}
       style={{ transformStyle: "preserve-3d" }}
     >
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0 rounded-full",
-          "bg-gradient-to-br from-primary/30 via-transparent to-quaternary/25",
-        )}
-        aria-hidden
-      />
       <span
         className={cn(
           "font-antonio relative text-lg font-semibold tabular-nums",
-          "text-secondary",
+          "text-[var(--secondary)]",
         )}
       >
         {String(index + 1).padStart(2, "0")}
@@ -164,12 +200,15 @@ function SpineOrb({ index }: { index: number }) {
 function TimelineEntryCard({
   item,
   index,
+  cardRef,
 }: {
   item: TimelineItem;
   index: number;
+  cardRef?: (el: HTMLElement | null) => void;
 }) {
   return (
     <motion.article
+      ref={cardRef}
       initial={{ opacity: 0, x: 28, rotateX: 0 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-80px" }}
@@ -179,10 +218,11 @@ function TimelineEntryCard({
         ease: [0.22, 1, 0.36, 1],
       }}
       className={cn(
-        "relative overflow-hidden rounded-2xl border border-secondary/25",
-        "bg-[color-mix(in_srgb,var(--ternary)_88%,transparent)]",
-        "p-6 shadow-[0_20px_50px_rgba(0,48,73,0.25)] backdrop-blur-md",
-        "md:p-8",
+        "relative flex min-h-[260px] h-full min-w-0 flex-col overflow-hidden rounded-2xl",
+        "border border-secondary",
+        "bg-transparent",
+        "p-6 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
+        "md:min-h-[280px] md:p-8",
         "[transform-style:preserve-3d]",
       )}
       whileHover={{
@@ -191,26 +231,11 @@ function TimelineEntryCard({
         transition: { type: "spring", stiffness: 400, damping: 28 },
       }}
     >
-      <div
-        className={cn(
-          "pointer-events-none absolute -right-12 -top-12 h-40 w-40 rounded-full",
-          "bg-primary/15 blur-2xl",
-        )}
-        aria-hidden
-      />
-      <div
-        className={cn(
-          "pointer-events-none absolute -bottom-8 -left-8 h-32 w-32 rounded-full",
-          "bg-quaternary/10 blur-2xl",
-        )}
-        aria-hidden
-      />
-
       <Text
         variant="p"
         className={cn(
           "font-open-sans mb-2 text-sm font-medium uppercase tracking-widest",
-          "text-[var(--quaternary)]",
+          "text-secondary",
         )}
       >
         {item.period}
@@ -224,14 +249,19 @@ function TimelineEntryCard({
       {item.tag ? (
         <span
           className={cn(
-            "mb-4 inline-block rounded-full border border-secondary/30",
-            "bg-primary/20 px-3 py-1 text-xs font-medium text-secondary",
+            "mb-4 inline-block self-start rounded-full border border-secondary",
+            "bg-transparent px-3 py-1 text-xs font-medium text-secondary",
           )}
         >
           {item.tag}
         </span>
       ) : null}
-      <Text variant="p" className="font-open-sans max-w-2xl leading-relaxed text-secondary/90">
+      <Text
+        variant="p"
+        className={cn(
+          "font-open-sans mt-auto max-w-2xl flex-1 leading-relaxed text-secondary",
+        )}
+      >
         {item.description}
       </Text>
     </motion.article>
