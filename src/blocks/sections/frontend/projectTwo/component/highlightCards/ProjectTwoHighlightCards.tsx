@@ -26,24 +26,21 @@ const ProjectTwoHighlightCards = ({
           key={`${item.label}-${i}`}
           as="div"
           className={cn(
-            "relative isolate flex min-h-[140px] min-w-0 flex-col items-center justify-center gap-3 rounded-xl px-2 py-6 sm:min-h-[176px] sm:gap-4 sm:px-4 sm:py-9",
-            "border border-white/35",
-            "bg-gradient-to-br from-white/30 via-white/12 to-white/[0.06]",
-            "backdrop-blur-[14px] backdrop-saturate-150",
-            "shadow-none",
-            "text-center",
+            "relative flex min-h-[140px] min-w-0 flex-col items-center justify-center gap-3 rounded-2xl px-2 py-6 sm:min-h-[176px] sm:gap-4 sm:px-4 sm:py-9",
+            "border-2 border-secondary bg-transparent",
+            "text-center transition-opacity duration-200 hover:opacity-90",
           )}
         >
           <Icon
             name={item.icon}
             size={32}
-            className="shrink-0 text-primary"
+            className="shrink-0 text-secondary"
             strokeWidth={1.65}
           />
           <Text
             variant="span"
             className={cn(
-              "font-open-sans text-sm font-semibold uppercase tracking-[0.12em] text-primary",
+              "font-open-sans text-sm font-semibold uppercase tracking-[0.12em] text-secondary",
               "sm:text-base sm:tracking-[0.16em] md:text-lg",
             )}
           >

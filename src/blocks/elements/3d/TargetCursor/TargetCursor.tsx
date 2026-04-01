@@ -159,14 +159,15 @@ const TargetCursor = ({
       gsap.set(cursor, { rotation: 0 });
 
       const rect = found.getBoundingClientRect();
-      const { cornerSize: cs } = { borderWidth: 3, cornerSize: 12 };
+      const borderWidth = 3;
+      const cornerSize = 12;
 
       // Viewport-based positions of the 4 corners that the cursor should approach.
       const positions: CornerPos[] = [
-        { x: rect.left - 3, y: rect.top - 3 },
-        { x: rect.right + 3 - cs, y: rect.top - 3 },
-        { x: rect.right + 3 - cs, y: rect.bottom + 3 - cs },
-        { x: rect.left - 3, y: rect.bottom + 3 - cs },
+        { x: rect.left - borderWidth, y: rect.top - borderWidth },
+        { x: rect.right + borderWidth - cornerSize, y: rect.top - borderWidth },
+        { x: rect.right + borderWidth - cornerSize, y: rect.bottom + borderWidth - cornerSize },
+        { x: rect.left - borderWidth, y: rect.bottom + borderWidth - cornerSize },
       ];
 
       targetCornerPositionsRef.current = positions;

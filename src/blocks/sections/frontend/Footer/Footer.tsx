@@ -17,26 +17,28 @@ const Footer = ({
   const tel = phoneHref ?? defaultTelHref(phone);
 
   return (
-    <Container as="footer" className={cn("w-full bg-secondary")}>
+    <Container
+      as="footer"
+      className={cn("w-full bg-primary px-4 py-5 md:px-5 md:py-6")}
+    >
       <Container
         as="div"
         className={cn(
-          "maxContainer flex w-full flex-col gap-4 border-t border-primary px-4 py-8 md:px-6",
-          "md:flex-row md:items-center md:justify-between md:gap-8",
+          "maxContainer flex w-full flex-col gap-4 rounded-xl bg-secondary px-4 py-6 sm:px-5 sm:py-7 md:flex-row md:items-center md:justify-between md:gap-6 md:px-6 md:py-8",
         )}
       >
-        <p className="font-open-sans text-sm text-text">
+        <p className="font-open-sans text-base font-bold text-primary sm:text-lg">
           © {year} {ownerLabel}. All rights reserved.
         </p>
         <div
           className={cn(
-            "flex flex-col gap-3 font-open-sans text-sm sm:flex-row sm:items-center sm:gap-8 sm:text-right",
+            "flex flex-col gap-3 font-open-sans text-base font-bold sm:flex-row sm:items-center sm:gap-6 sm:text-right sm:text-lg",
           )}
         >
           <a
             href={`mailto:${email}`}
             className={cn(
-              "text-primary underline-offset-4 transition-opacity hover:opacity-85 hover:underline",
+              "font-bold text-primary underline-offset-4 transition-opacity hover:opacity-85 hover:underline",
               "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
             )}
           >
@@ -45,7 +47,7 @@ const Footer = ({
           <a
             href={tel}
             className={cn(
-              "text-primary underline-offset-4 transition-opacity hover:opacity-85 hover:underline",
+              "font-bold text-primary underline-offset-4 transition-opacity hover:opacity-85 hover:underline",
               "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary",
             )}
           >

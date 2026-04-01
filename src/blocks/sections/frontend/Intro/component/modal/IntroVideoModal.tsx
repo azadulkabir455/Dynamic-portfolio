@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { X } from "lucide-react";
 import { cn } from "@/utilities/helpers/classMerge";
+import type { IntroVideoModalProps } from "./type";
 
-type IntroVideoModalProps = {
-  open: boolean;
-  onClose: () => void;
-  videoSrc: string;
-  posterSrc?: string;
-};
-
+/**
+ * Portal + dialog above global UI (e.g. BubbleMenu z-[1000]).
+ * Video is muted initially so autoplay works in browsers; user can unmute via controls.
+ */
 const IntroVideoModal = ({
   open,
   onClose,
@@ -20,8 +18,11 @@ const IntroVideoModal = ({
   posterSrc,
 }: IntroVideoModalProps) => {
   const [mounted, setMounted] = useState(false);
+  const titleId = useId();
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return;
@@ -43,14 +44,14 @@ const IntroVideoModal = ({
   if (!mounted) return null;
 
   return createPortal(
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="sync">
       {open ? (
         <motion.div
           key="intro-video-modal"
           role="dialog"
           aria-modal="true"
-          aria-label="Video"
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8"
+          aria-labelledby={titleId}
+          className="fixed inset-0 z-[1100] flex items-center justify-center p-4 md:p-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -73,6 +74,9 @@ const IntroVideoModal = ({
             transition={{ type: "spring", stiffness: 320, damping: 28 }}
             onClick={(e) => e.stopPropagation()}
           >
+            <span id={titleId} className="sr-only">
+              Intro video
+            </span>
             <button
               type="button"
               onClick={onClose}
@@ -82,12 +86,14 @@ const IntroVideoModal = ({
               <X className="h-5 w-5" />
             </button>
             <video
+              key={videoSrc}
               className="aspect-video w-full bg-black object-contain"
               src={videoSrc}
               poster={posterSrc}
               controls
               playsInline
               autoPlay
+              muted
             />
           </motion.div>
         </motion.div>

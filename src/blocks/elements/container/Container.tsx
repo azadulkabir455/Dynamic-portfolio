@@ -1,4 +1,4 @@
-import type { ElementType } from "react";
+import { createElement, forwardRef } from "react";
 import { cn } from "@/utilities/helpers/classMerge";
 import { ContainerProps } from "./type";
 
@@ -10,17 +10,19 @@ const sizeClasses = {
   full: "",
 };
 
-export const Container = ({
-  children,
-  className,
-  size = "full",
-  as = "div",
-  bg,
-  bgClassName,
-  style,
-  ...props
-}: ContainerProps) => {
-  const Component = (as ?? "div") as ElementType;
+export const Container = forwardRef<HTMLElement, ContainerProps>(function Container(
+  {
+    children,
+    className,
+    size = "full",
+    as: Component = "div",
+    bg,
+    bgClassName,
+    style,
+    ...props
+  },
+  ref,
+) {
   const bgStyle = bg
     ? {
         backgroundImage: `url(${bg.image})`,
@@ -32,16 +34,17 @@ export const Container = ({
     : undefined;
   const mergedStyle = bgStyle || style ? { ...bgStyle, ...style } : undefined;
 
-  return (
-    <Component
-      className={cn(sizeClasses[size], bgClassName, className)}
-      style={mergedStyle}
-      {...props}
-    >
-      {children}
-    </Component>
+  return createElement(
+    Component,
+    {
+      ref,
+      className: cn(sizeClasses[size], bgClassName, className),
+      style: mergedStyle,
+      ...props,
+    },
+    children,
   );
-};
+});
 
 export default Container;
 

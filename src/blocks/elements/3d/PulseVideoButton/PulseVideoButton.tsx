@@ -54,8 +54,7 @@ const PulseVideoButton = ({
         )}
         aria-hidden
       />
-      <Container
-        as={motion.span}
+      <motion.span
         className={cn(
           "relative z-10 flex h-36 w-36 items-center justify-center rounded-full",
           "border-2 border-white bg-primary/50",
@@ -77,7 +76,7 @@ const PulseVideoButton = ({
           strokeWidth={1}
           aria-hidden
         />
-      </Container>
+      </motion.span>
     </motion.button>
   );
 };

@@ -1,4 +1,4 @@
-import type { ElementType } from "react";
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 
 export type ContainerSize = "sm" | "md" | "lg" | "xl" | "full";
 export type ContainerElement = "div" | "section" | "span";
@@ -11,12 +11,11 @@ export interface ContainerBg {
   attachment?: "scroll" | "fixed" | "local";
 }
 
-export interface ContainerProps {
-  children?: any;
-  className?: string;
+export type ContainerProps = {
   size?: ContainerSize;
   as?: ContainerElement | ElementType;
   bg?: ContainerBg;
   bgClassName?: string;
-  [key: string]: any;
-}
+} & Omit<ComponentPropsWithoutRef<"div">, "children"> & {
+  children?: ReactNode;
+};

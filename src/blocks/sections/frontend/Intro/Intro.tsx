@@ -6,7 +6,7 @@ import Text from "@/blocks/elements/text/Text";
 import AnimatedButton from "@/blocks/elements/3d/AnimatedButton/AnimatedButton";
 import PulseVideoButton from "@/blocks/elements/3d/PulseVideoButton/PulseVideoButton";
 import { cn } from "@/utilities/helpers/classMerge";
-import IntroVideoModal from "./IntroVideoModal";
+import IntroVideoModal from "./component/modal/IntroVideoModal";
 import type { IntroProps } from "./type";
 import LogoLoop from "@/blocks/elements/3d/LogoLoop/LogoLoop";
 import type { LogoLoopItem } from "@/blocks/elements/3d/LogoLoop/type";
@@ -52,7 +52,7 @@ const Intro = ({
       <Container
         as="section"
         className={cn(
-          "relative isolate",
+          "relative isolate z-10",
           "min-h-[min(100vh,920px)] w-full",
           "overflow-hidden rounded-b-2xl",
         )}
@@ -137,22 +137,26 @@ const Intro = ({
           as="div"
           className={cn(
             "relative z-20 w-full pointer-events-auto",
-            "border-t border-secondary/25 bg-[var(--ternary)]/40 py-6 md:py-8 backdrop-blur-sm",
           )}
         >
-          <LogoLoop
-            logos={imageLogos}
-            speed={36}
-            direction="left"
-            width="100%"
-            logoHeight={64}
-            gap={56}
-            pauseOnHover
-            fadeOut
-            fadeOutColor="var(--ternary)"
-            ariaLabel="Companies and partners"
-            className="max-w-[1540px] mx-auto px-4 md:px-8"
-          />
+          <Container
+            as="div"
+            className={cn(
+              "flex h-[360px] w-full min-w-0 items-center justify-center",
+            )}
+          >
+            <LogoLoop
+              logos={imageLogos}
+              speed={36}
+              direction="left"
+              width="100%"
+              logoHeight={112}
+              gap={48}
+              pauseOnHover
+              ariaLabel="Companies and partners"
+              className="w-full min-w-0"
+            />
+          </Container>
         </Container>
       </Container>
 

@@ -12,7 +12,8 @@ import type { TimelineItem, TimelineProps } from "./type";
  * from “top at viewport top” to “bottom at viewport bottom” — sticky panel stays
  * ~100vh until the bar finishes, then the section can leave.
  */
-const SCROLL_OFFSET = ["start start", "end end"] as const;
+/** Tuple (not `as const`) so Motion’s `useScroll` offset accepts a mutable pair — same values as before. */
+const SCROLL_OFFSET: ["start start", "end end"] = ["start start", "end end"];
 
 const Timeline = ({
   items,

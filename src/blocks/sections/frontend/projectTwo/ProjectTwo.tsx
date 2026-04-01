@@ -18,64 +18,73 @@ const ProjectTwo = ({
   return (
     <Container
       as="section"
-      className={cn(
-        "w-full bg-secondary py-[120px]",
-        "maxContainer relative",
-      )}
+      className={cn("relative z-0 w-full")}
       id="project-two"
     >
       <Container
         as="div"
-        className={cn(
-          "flex w-full flex-col gap-12 px-4 md:gap-16 md:px-6",
-          "lg:flex-row lg:items-stretch lg:gap-16",
-        )}
+        className={cn("-mt-[40px] w-full")}
       >
         <Container
           as="div"
           className={cn(
-            "w-full",
-            "lg:max-w-[42%] lg:shrink-0 lg:basis-[42%]",
+            "w-full rounded-t-2xl bg-primary py-[120px]",
           )}
         >
           <Container
             as="div"
             className={cn(
-              "lg:sticky lg:top-8",
-              "lg:flex lg:min-h-[calc(100svh-2rem)] lg:flex-col lg:justify-center",
+              "maxContainer flex w-full flex-col gap-12 px-4 md:gap-16 md:px-6",
+              "lg:flex-row lg:items-stretch lg:gap-16",
             )}
           >
-            <Text
-              variant="h2"
-              className={cn(
-                "font-antonio text-[100px] font-bold capitalize leading-tight text-primary",
-                titleClassName,
-              )}
-            >
-              {sectionTitle}
-            </Text>
-            <ProjectTwoHighlightCards items={PROJECT_TWO_HIGHLIGHTS} />
-          </Container>
-        </Container>
-
-        <Container
-          as="div"
-          className={cn("flex min-h-0 w-full flex-col lg:flex-1")}
-        >
-          {PROJECT_TWO_CARDS.map((card, i) => (
             <Container
-              key={card.viewLink}
               as="div"
               className={cn(
-                "relative isolate w-full",
-                "flex min-h-[100vh] items-center py-6 md:py-10",
-                "sticky top-0",
+                "w-full",
+                "lg:max-w-[42%] lg:shrink-0 lg:basis-[42%]",
               )}
-              style={{ zIndex: i + 1 }}
             >
-              <ProjectTwoCard {...card} className="w-full" />
+              <Container
+                as="div"
+                className={cn(
+                  "lg:sticky lg:top-8",
+                  "lg:flex lg:min-h-[calc(100svh-2rem)] lg:flex-col lg:justify-center",
+                )}
+              >
+                <Text
+                  variant="h2"
+                  className={cn(
+                    "font-antonio text-[100px] font-bold capitalize leading-tight text-secondary",
+                    titleClassName,
+                  )}
+                >
+                  {sectionTitle}
+                </Text>
+                <ProjectTwoHighlightCards items={PROJECT_TWO_HIGHLIGHTS} />
+              </Container>
             </Container>
-          ))}
+
+            <Container
+              as="div"
+              className={cn("flex min-h-0 w-full flex-col lg:flex-1")}
+            >
+              {PROJECT_TWO_CARDS.map((card, i) => (
+                <Container
+                  key={card.viewLink}
+                  as="div"
+                  className={cn(
+                    "relative isolate w-full",
+                    "flex min-h-[100vh] items-center py-6 md:py-10",
+                    "sticky top-0",
+                  )}
+                  style={{ zIndex: i + 1 }}
+                >
+                  <ProjectTwoCard {...card} className="w-full" />
+                </Container>
+              ))}
+            </Container>
+          </Container>
         </Container>
       </Container>
     </Container>
