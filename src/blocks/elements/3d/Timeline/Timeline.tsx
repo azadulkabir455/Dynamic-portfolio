@@ -1,17 +1,25 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
+import { useCallback, useLayoutEffect, useRef, useState } from "react";
+import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import Text from "@/blocks/elements/text/Text";
 import { cn } from "@/utilities/helpers/classMerge";
 import { getTimelineKey } from "./functions";
 import type { TimelineItem, TimelineProps } from "./type";
+
+/**
+ * Tall scroll wrapper (see Experience): progress 0→1 while that wrapper scrolls
+ * from “top at viewport top” to “bottom at viewport bottom” — sticky panel stays
+ * ~100vh until the bar finishes, then the section can leave.
+ */
+const SCROLL_OFFSET = ["start start", "end end"] as const;
 
 const Timeline = ({
   items,
   className,
   showSpine = true,
   onActiveIndexChange,
+  scrollTargetRef,
 }: TimelineProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
@@ -21,6 +29,12 @@ const Timeline = ({
     top: number;
     height: number;
   } | null>(null);
+  const [spineFillHeight, setSpineFillHeight] = useState(0);
+
+  const { scrollYProgress } = useScroll({
+    target: scrollTargetRef,
+    offset: SCROLL_OFFSET,
+  });
 
   useLayoutEffect(() => {
     if (!showSpine || items.length < 2) {
@@ -55,42 +69,30 @@ const Timeline = ({
     };
   }, [items.length, showSpine]);
 
-  /** Which card is closest to viewport center → drives left panel */
-  useEffect(() => {
-    if (!onActiveIndexChange || !items.length) return;
+  const applyScrollProgress = useCallback(
+    (p: number) => {
+      const clamped = Math.min(1, Math.max(0, p));
+      if (spineLine && spineLine.height > 0) {
+        setSpineFillHeight(clamped * spineLine.height);
+      } else {
+        setSpineFillHeight(0);
+      }
+      if (onActiveIndexChange && items.length) {
+        const idx = Math.min(
+          items.length - 1,
+          Math.floor(clamped * items.length - 1e-9),
+        );
+        onActiveIndexChange(idx);
+      }
+    },
+    [spineLine, items.length, onActiveIndexChange],
+  );
 
-    const updateActive = () => {
-      const viewportMid = window.innerHeight * 0.42;
-      let bestIdx = 0;
-      let bestDist = Infinity;
-      cardRefs.current.forEach((el, i) => {
-        if (!el) return;
-        const r = el.getBoundingClientRect();
-        const cardMid = r.top + r.height / 2;
-        const dist = Math.abs(cardMid - viewportMid);
-        if (dist < bestDist) {
-          bestDist = dist;
-          bestIdx = i;
-        }
-      });
-      onActiveIndexChange(bestIdx);
-    };
+  useMotionValueEvent(scrollYProgress, "change", applyScrollProgress);
 
-    updateActive();
-    window.addEventListener("scroll", updateActive, { passive: true });
-    window.addEventListener("resize", updateActive);
-    const ro = new ResizeObserver(() => updateActive());
-    if (trackRef.current) ro.observe(trackRef.current);
-    cardRefs.current.forEach((el) => {
-      if (el) ro.observe(el);
-    });
-
-    return () => {
-      window.removeEventListener("scroll", updateActive);
-      window.removeEventListener("resize", updateActive);
-      ro.disconnect();
-    };
-  }, [items.length, onActiveIndexChange]);
+  useLayoutEffect(() => {
+    applyScrollProgress(scrollYProgress.get());
+  }, [scrollYProgress, applyScrollProgress]);
 
   if (!items.length) return null;
 
@@ -103,21 +105,26 @@ const Timeline = ({
       )}
     >
       <div ref={trackRef} className="relative">
-        {/* Line only from first orb center → last orb center (nothing below last item) */}
         {showSpine &&
           spineLine &&
           spineLine.height > 0 && (
             <div
               aria-hidden
               className={cn(
-                "pointer-events-none absolute z-0 hidden w-px -translate-x-1/2 bg-secondary lg:block qu",
-                "left-[44px]",
+                "pointer-events-none absolute z-0 hidden -translate-x-1/2 lg:block",
+                "left-[44px] w-[5px] overflow-hidden rounded-full",
               )}
               style={{
                 top: spineLine.top,
                 height: spineLine.height,
               }}
-            />
+            >
+              <div className="h-full w-full bg-white" />
+              <div
+                className="absolute left-0 top-0 w-full rounded-t-full bg-primary"
+                style={{ height: spineFillHeight }}
+              />
+            </div>
           )}
 
         <ul className="relative z-[1] m-0 flex list-none flex-col gap-8 p-0 lg:gap-10">
@@ -131,7 +138,6 @@ const Timeline = ({
                 <div
                   className={cn(
                     "grid grid-cols-1 gap-6",
-                    /* Narrow spine column + smaller gap to cards */
                     "lg:grid-cols-[88px_minmax(0,1fr)] lg:items-start lg:gap-x-4",
                   )}
                 >
@@ -172,7 +178,7 @@ function SpineOrb({ index }: { index: number }) {
     <motion.div
       className={cn(
         "relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full",
-        "border-2 border-secondary bg-transparent",
+        "border-2 border-white bg-primary",
         "shadow-[0_0_12px_rgba(0,0,0,0.15)]",
         "[transform-style:preserve-3d]",
       )}
@@ -187,8 +193,7 @@ function SpineOrb({ index }: { index: number }) {
     >
       <span
         className={cn(
-          "font-antonio relative text-lg font-semibold tabular-nums",
-          "text-[var(--secondary)]",
+          "font-antonio relative text-lg font-semibold tabular-nums text-white",
         )}
       >
         {String(index + 1).padStart(2, "0")}

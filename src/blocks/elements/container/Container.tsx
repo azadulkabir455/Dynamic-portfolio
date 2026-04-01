@@ -1,3 +1,4 @@
+import type { ElementType } from "react";
 import { cn } from "@/utilities/helpers/classMerge";
 import { ContainerProps } from "./type";
 
@@ -19,7 +20,7 @@ export const Container = ({
   style,
   ...props
 }: ContainerProps) => {
-  const Component = as;
+  const Component = (as ?? "div") as ElementType;
   const bgStyle = bg
     ? {
         backgroundImage: `url(${bg.image})`,

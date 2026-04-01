@@ -78,41 +78,41 @@ export const ProjectCard = ({
                     )}
                 >
                     <Container as="div" className="flex flex-col">
-                    <Text
-                        variant="span"
-                        className={cn(
-                            "inline-flex w-fit items-center rounded-full",
-                            "bg-secondary/45",
-                            "px-3 py-1.5",
-                            "font-open-sans text-[10px] font-semibold uppercase tracking-[0.2em]",
-                            "text-secondary",
-                            "shadow-sm shadow-black/5",
-                        )}
-                    >
-                        {category}
-                    </Text>
+                        <Text
+                            variant="span"
+                            className={cn(
+                                "inline-flex w-fit items-center rounded-full",
+                                "bg-secondary/45",
+                                "px-3 py-1.5",
+                                "font-open-sans text-[10px] font-semibold uppercase tracking-[0.2em]",
+                                "text-secondary",
+                                "shadow-sm shadow-black/5",
+                            )}
+                        >
+                            {category}
+                        </Text>
 
-                    <Text
-                        variant="h3"
-                        className={cn(
-                            "font-antonio text-[40px] font-bold capitalize leading-relaxed",
-                            "text-secondary mt-1",
-                            "line-clamp-1",
-                        )}
-                    >
-                        {title}
-                    </Text>
+                        <Text
+                            variant="h3"
+                            className={cn(
+                                "font-antonio text-[40px] font-bold capitalize leading-relaxed",
+                                "text-secondary mt-1",
+                                "line-clamp-1",
+                            )}
+                        >
+                            {title}
+                        </Text>
 
-                    <Text
-                        variant="p"
-                        className={cn(
-                            "mt-2 font-open-sans text-sm leading-snug sm:text-base",
-                            "text-secondary/90",
-                            "line-clamp-2",
-                        )}
-                    >
-                        {features}
-                    </Text>
+                        <Text
+                            variant="p"
+                            className={cn(
+                                "mt-2 font-open-sans text-sm leading-snug sm:text-base",
+                                "text-secondary/90",
+                                "line-clamp-2",
+                            )}
+                        >
+                            {features}
+                        </Text>
                     </Container>
 
                     <Container

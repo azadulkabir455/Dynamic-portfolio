@@ -9,6 +9,9 @@ export type AnimatedButtonProps = {
   iconClassName?: string;
   textClassName?: string;
   className?: string;
+  /** Default `false`. When `true` with `bordered`, uses primary accents. */
   dark?: boolean;
+  /** `true` = outline / border (glass). `false` = solid fill (secondary + primary text; with `dark`, primary + secondary text). Default `true`. */
+  bordered?: boolean;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "children" | "download">;
 

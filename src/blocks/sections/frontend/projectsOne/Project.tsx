@@ -1,10 +1,11 @@
 import Container from "@/blocks/elements/container/Container";
-import ProjectHeader from "@/blocks/sections/frontend/projectsOne/component/header/ProjectHeader";
+import Text from "@/blocks/elements/text/Text";
+import AnimatedButton from "@/blocks/elements/3d/AnimatedButton/AnimatedButton";
+import { getSafeLink } from "@/blocks/elements/3d/AnimatedButton/function";
 import type { ProjectsOneProps } from "./type";
 import { cn } from "@/utilities/helpers/classMerge";
 import { ProjectCard } from "./component/card/ProjectCard";
 import { PROJECT_DEMO_LIST } from "./projectList";
-
 
 const defaultTitle = "Experiments & Execution";
 const defaultDescription =
@@ -19,41 +20,82 @@ const Project = ({
   link = "#projects",
   buttonIcon = "Eye",
 }: ProjectsOneProps) => {
+  const href = getSafeLink(link);
+
+  const leftProjects = PROJECT_DEMO_LIST.filter((_, i) => i % 2 === 0);
+  const rightProjects = PROJECT_DEMO_LIST.filter((_, i) => i % 2 === 1);
+
+  if (leftProjects.length === 0 || rightProjects.length === 0) {
+    return null;
+  }
+
   return (
-
+    <Container
+      as="section"
+      className={cn("relative maxContainer w-full bg-secondary py-[120px]")}
+      id="projects"
+    >
       <Container
-        as="section"
-        className={cn("bg-secondary w-full py-[120px] maxContainer relative")}
-        id="projects"
+        as="div"
+        className={cn("flex px-10")}
       >
-
-        <ProjectHeader
-          title={title}
-          description={description}
-          titleClassName={titleClassName}
-          descriptionClassName={descriptionClassName}
-          buttonText={buttonText}
-          link={link}
-          buttonIcon={buttonIcon}
-        />
+        <Container
+          as="div"
+          className={cn("flex w-full flex-col gap-10")}
+        >
+          {leftProjects.map((project, i) => (
+            <ProjectCard
+              key={project.viewDetailsLink}
+              index={2 * i + 1}
+              imageSrc={project.imageSrc}
+              imageAlt={project.imageAlt}
+              category={project.category}
+              title={project.title}
+              features={project.features}
+              liveLink={project.liveLink}
+              viewDetailsLink={project.viewDetailsLink}
+            />
+          ))}
+          <AnimatedButton
+            text={buttonText}
+            link={href}
+            icon={buttonIcon}
+            iconSize={22}
+            dark={true}
+            bordered={false}
+            className={cn(
+              "w-full max-w-[280px] self-start",
+              "mt-10 px-3",
+            )}
+          />
+        </Container>
 
         <Container
           as="div"
-          className={cn(
-            "grid grid-cols-1 gap-10 pt-20",
-            "md:grid-cols-2",
-          )}
+          className={cn("flex w-full flex-col gap-10")}
         >
-          {PROJECT_DEMO_LIST.map((project, i) => (
-            <div
-              key={project.viewDetailsLink}
+          <Container
+            as="div"
+            className={cn("flex min-w-0 flex-col gap-4 sm:gap-5")}
+          >
+            <Text
+              variant="h2"
               className={cn(
-                "w-full",
-                i % 2 === 1 && "md:mt-20",
+                "text-[100px] font-bold capitalize leading-tight tracking-wide text-primary",
+                titleClassName,
               )}
             >
+              {title}
+            </Text>
+          </Container>
+          {rightProjects.map((project, i) => (
+            <Container
+              as="div"
+              key={project.viewDetailsLink}
+              className={cn("w-full")}
+            >
               <ProjectCard
-                index={i + 1}
+                index={2 * i + 2}
                 imageSrc={project.imageSrc}
                 imageAlt={project.imageAlt}
                 category={project.category}
@@ -62,10 +104,11 @@ const Project = ({
                 liveLink={project.liveLink}
                 viewDetailsLink={project.viewDetailsLink}
               />
-            </div>
+            </Container>
           ))}
         </Container>
       </Container>
+    </Container>
   );
 };
 

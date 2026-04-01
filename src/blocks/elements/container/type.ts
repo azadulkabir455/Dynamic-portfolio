@@ -1,3 +1,5 @@
+import type { ElementType } from "react";
+
 export type ContainerSize = "sm" | "md" | "lg" | "xl" | "full";
 export type ContainerElement = "div" | "section" | "span";
 
@@ -13,7 +15,7 @@ export interface ContainerProps {
   children?: any;
   className?: string;
   size?: ContainerSize;
-  as?: ContainerElement;
+  as?: ContainerElement | ElementType;
   bg?: ContainerBg;
   bgClassName?: string;
   [key: string]: any;

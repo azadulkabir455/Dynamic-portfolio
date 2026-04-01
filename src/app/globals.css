@@ -83,3 +83,9 @@ h6 {
 .secondaryBorderColor {
   border-color: var(--secondary);
 }
+.ternaryBorderColor {
+  border-color: var(--ternary);
+}
+.quaternaryBorderColor {
+  border-color: var(--quaternary);
+}

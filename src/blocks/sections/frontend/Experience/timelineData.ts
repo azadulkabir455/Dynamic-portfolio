@@ -1,6 +1,6 @@
 import type { TimelineItem } from "@/blocks/elements/3d/Timeline/type";
 
-export const DEFAULT_TIMELINE_ITEMS: TimelineItem[] = [
+export const defaultTimeLineData: TimelineItem[] = [
   {
     id: "1",
     period: "2024 — Present",
@@ -11,7 +11,7 @@ export const DEFAULT_TIMELINE_ITEMS: TimelineItem[] = [
     panelHeading: "Product & scale",
     panelParagraph:
       "Today I own end-to-end UI quality: systems that stay fast, accessible, and consistent as the product grows.",
-    panelImageSrc: "/images/demo.jpg",
+    panelImageSrc: "/images/portfolio/pf1.jpg",
     panelImageAlt: "Current chapter — product engineering",
   },
   {
@@ -24,7 +24,7 @@ export const DEFAULT_TIMELINE_ITEMS: TimelineItem[] = [
     panelHeading: "SaaS & data UI",
     panelParagraph:
       "Shipped dashboards and integrations with a sharp eye on real-world performance and developer experience.",
-    panelImageSrc: "/images/fatema.webp",
+    panelImageSrc: "/images/portfolio/pf2.jpg",
     panelImageAlt: "SaaS era — dashboards and APIs",
   },
   {
@@ -37,7 +37,7 @@ export const DEFAULT_TIMELINE_ITEMS: TimelineItem[] = [
     panelHeading: "Craft & delivery",
     panelParagraph:
       "Agency pace taught me precision: specs to components, every browser, every breakpoint.",
-    panelImageSrc: "/images/logo/beatnik.png",
+    panelImageSrc: "/images/portfolio/pf3.jpg",
     panelImageAlt: "Agency — UI craft",
   },
   {
@@ -50,20 +50,7 @@ export const DEFAULT_TIMELINE_ITEMS: TimelineItem[] = [
     panelHeading: "Foundations",
     panelParagraph:
       "Where it started: shipping sites, fixing legacy code, and learning how design meets the browser.",
-    panelImageSrc: "/images/logo/iovison.png",
+    panelImageSrc: "/images/portfolio/pf4.jpg",
     panelImageAlt: "Early years — web foundations",
-  },
-  {
-    id: "5",
-    period: "2015 — 2017",
-    title: "Associate Web Developer",
-    description:
-      "Cut templates from design files, fixed cross-browser bugs, and learned Git workflows in a small product team.",
-    tag: "Product",
-    panelHeading: "First commits",
-    panelParagraph:
-      "Templates, bug tickets, and code review — where I learned how teams ship together.",
-    panelImageSrc: "/images/logo/beshto.png",
-    panelImageAlt: "First role — templates and fixes",
-  },
+  }
 ];

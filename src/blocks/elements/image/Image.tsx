@@ -9,14 +9,16 @@ export const Image = ({
   height = 600,
   className,
   priority = false,
+  fill,
   ...props
 }: ImageProps) => {
   return (
     <NextImage
       src={src}
       alt={alt}
-      width={width}
-      height={height}
+      {...(fill
+        ? { fill: true }
+        : { width, height })}
       priority={priority}
       className={cn(className)}
       {...props}

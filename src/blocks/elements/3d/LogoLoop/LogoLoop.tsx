@@ -1,6 +1,14 @@
 "use client";
 
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { ANIMATION_CONFIG, cx, toCssLength } from "./functions";
 import type { LogoLoopItem, LogoLoopProps } from "./type";
 
@@ -196,7 +204,7 @@ const LogoLoop = memo(
           "--logoloop-gap": `${gap}px`,
           "--logoloop-logoHeight": `${logoHeight}px`,
           ...(fadeOutColor ? { "--logoloop-fadeColor": fadeOutColor } : {}),
-        }) as React.CSSProperties,
+        }) as CSSProperties,
       [gap, logoHeight, fadeOutColor],
     );
 
@@ -214,6 +222,14 @@ const LogoLoop = memo(
         ),
       [isVertical, scaleOnHover, className],
     );
+
+    const handleMouseEnter = useCallback(() => {
+      if (effectiveHoverSpeed !== undefined) setIsHovered(true);
+    }, [effectiveHoverSpeed]);
+
+    const handleMouseLeave = useCallback(() => {
+      if (effectiveHoverSpeed !== undefined) setIsHovered(false);
+    }, [effectiveHoverSpeed]);
 
     const renderLogoItem = useCallback(
       (item: LogoLoopItem, key: string) => {
@@ -237,9 +253,11 @@ const LogoLoop = memo(
           <span
             className={cx(
               "inline-flex items-center",
+              "motion-reduce:transition-none",
               scaleOnHover &&
                 "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120",
             )}
+            aria-hidden={Boolean(item.href && !item.ariaLabel)}
           >
             {item.node}
           </span>
@@ -248,6 +266,8 @@ const LogoLoop = memo(
             className={cx(
               "h-[var(--logoloop-logoHeight)] w-auto block object-contain",
               "[-webkit-user-drag:none] pointer-events-none",
+              "[image-rendering:-webkit-optimize-contrast]",
+              "motion-reduce:transition-none",
               scaleOnHover &&
                 "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120",
             )}
@@ -267,7 +287,11 @@ const LogoLoop = memo(
         const itemAriaLabel = isNodeItem(item) ? (item.ariaLabel ?? item.title) : (item.alt ?? item.title);
         const inner = item.href ? (
           <a
-            className="inline-flex items-center no-underline rounded transition-opacity duration-200 ease-linear hover:opacity-80"
+            className={cx(
+              "inline-flex items-center no-underline rounded",
+              "transition-opacity duration-200 ease-linear hover:opacity-80",
+              "focus-visible:outline focus-visible:outline-current focus-visible:outline-offset-2",
+            )}
             href={item.href}
             aria-label={itemAriaLabel || "logo link"}
             target="_blank"
@@ -296,6 +320,20 @@ const LogoLoop = memo(
       [isVertical, scaleOnHover, renderItem],
     );
 
+    const containerStyle = useMemo(
+      () =>
+        ({
+          width: isVertical
+            ? toCssLength(width) === "100%"
+              ? undefined
+              : toCssLength(width)
+            : (toCssLength(width) ?? "100%"),
+          ...cssVariables,
+          ...style,
+        }) as CSSProperties,
+      [width, cssVariables, style, isVertical],
+    );
+
     const logoLists = useMemo(
       () =>
         Array.from({ length: copyCount }, (_, copyIndex) => (
@@ -316,36 +354,52 @@ const LogoLoop = memo(
       <div
         ref={containerRef}
         className={rootClasses}
-        style={{
-          width: isVertical
-            ? toCssLength(width) === "100%"
-              ? undefined
-              : toCssLength(width)
-            : (toCssLength(width) ?? "100%"),
-          ...cssVariables,
-          ...style,
-        }}
+        style={containerStyle}
         role="region"
         aria-label={ariaLabel}
-        onMouseEnter={() => {
-          if (effectiveHoverSpeed !== undefined) setIsHovered(true);
-        }}
-        onMouseLeave={() => {
-          if (effectiveHoverSpeed !== undefined) setIsHovered(false);
-        }}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        {fadeOut && (
-          <>
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 left-0 z-10 w-[clamp(24px,8%,120px)] bg-[linear-gradient(to_right,var(--logoloop-fadeColor,var(--logoloop-fadeColorAuto))_0%,rgba(0,0,0,0)_100%)]"
-            />
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 right-0 z-10 w-[clamp(24px,8%,120px)] bg-[linear-gradient(to_left,var(--logoloop-fadeColor,var(--logoloop-fadeColorAuto))_0%,rgba(0,0,0,0)_100%)]"
-            />
-          </>
-        )}
+        {fadeOut &&
+          (isVertical ? (
+            <>
+              <div
+                aria-hidden
+                className={cx(
+                  "pointer-events-none absolute inset-x-0 top-0 z-10",
+                  "h-[clamp(24px,8%,120px)]",
+                  "bg-[linear-gradient(to_bottom,var(--logoloop-fadeColor,var(--logoloop-fadeColorAuto))_0%,rgba(0,0,0,0)_100%)]",
+                )}
+              />
+              <div
+                aria-hidden
+                className={cx(
+                  "pointer-events-none absolute inset-x-0 bottom-0 z-10",
+                  "h-[clamp(24px,8%,120px)]",
+                  "bg-[linear-gradient(to_top,var(--logoloop-fadeColor,var(--logoloop-fadeColorAuto))_0%,rgba(0,0,0,0)_100%)]",
+                )}
+              />
+            </>
+          ) : (
+            <>
+              <div
+                aria-hidden
+                className={cx(
+                  "pointer-events-none absolute inset-y-0 left-0 z-10",
+                  "w-[clamp(24px,8%,120px)]",
+                  "bg-[linear-gradient(to_right,var(--logoloop-fadeColor,var(--logoloop-fadeColorAuto))_0%,rgba(0,0,0,0)_100%)]",
+                )}
+              />
+              <div
+                aria-hidden
+                className={cx(
+                  "pointer-events-none absolute inset-y-0 right-0 z-10",
+                  "w-[clamp(24px,8%,120px)]",
+                  "bg-[linear-gradient(to_left,var(--logoloop-fadeColor,var(--logoloop-fadeColorAuto))_0%,rgba(0,0,0,0)_100%)]",
+                )}
+              />
+            </>
+          ))}
 
         <div
           ref={trackRef}
@@ -354,6 +408,8 @@ const LogoLoop = memo(
             "motion-reduce:transform-none",
             isVertical ? "flex-col h-max w-full" : "flex-row w-max",
           )}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
           {logoLists}
         </div>
