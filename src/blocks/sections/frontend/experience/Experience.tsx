@@ -3,8 +3,8 @@
 import { useCallback, useRef, useState } from "react";
 import Container from "@/blocks/elements/container/Container";
 import Timeline from "@/blocks/elements/3d/Timeline/Timeline";
-import LeftContent from "@/blocks/sections/frontend/Experience/component/leftContent/LeftContent";
-import { defaultTimeLineData } from "@/blocks/sections/frontend/Experience/timelineData";
+import LeftContent from "@/blocks/sections/frontend/experience/component/leftContent/LeftContent";
+import { defaultTimeLineData } from "@/blocks/sections/frontend/experience/timelineData";
 import { cn } from "@/utilities/helpers/classMerge";
 
 const fallbackHeading = "Experience";
