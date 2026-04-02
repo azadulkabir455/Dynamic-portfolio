@@ -60,7 +60,6 @@ const TargetCursor = ({
         const finalX = currentX + (targetX - currentX) * strength;
         const finalY = currentY + (targetY - currentY) * strength;
 
-        // Keep gsap internal values in sync (so getProperty works consistently).
         gsap.set(cornerEl, { x: finalX, y: finalY });
       });
     };
@@ -88,7 +87,6 @@ const TargetCursor = ({
     const cursor = cursorRef.current;
     cornersRef.current = Array.from(cursor.querySelectorAll<HTMLElement>(".target-cursor-corner"));
 
-    // Center
     gsap.set(cursor, {
       xPercent: -50,
       yPercent: -50,
@@ -96,7 +94,6 @@ const TargetCursor = ({
       y: window.innerHeight / 2,
     });
 
-    // Initial corner offsets (relative to viewport)
     const { borderWidth, cornerSize } = { borderWidth: 3, cornerSize: 12 };
     const initial: CornerPos[] = [
       { x: -cornerSize * 1.5, y: -cornerSize * 1.5 },
@@ -111,7 +108,6 @@ const TargetCursor = ({
       gsap.set(el, { x: p.x, y: p.y });
     });
 
-    // Spin
     if (spinTlRef.current) spinTlRef.current.kill();
     spinTlRef.current = gsap
       .timeline({ repeat: -1 })
@@ -129,7 +125,6 @@ const TargetCursor = ({
       spinTlRef.current?.resume?.();
       gsap.to(cursor, { rotation: 0, duration: 0.001 });
 
-      // Snap corners back
       cornersRef.current.forEach((el, i) => {
         const p = initial[i];
         gsap.to(el, { x: p.x, y: p.y, duration: 0.25, ease: "power3.out" });
@@ -140,7 +135,6 @@ const TargetCursor = ({
       const directTarget = e.target as HTMLElement | null;
       if (!directTarget) return;
 
-      // Find closest target selector from event target up the tree.
       let current: HTMLElement | null = directTarget;
       let found: Element | null = null;
       while (current && current !== document.body) {
@@ -162,7 +156,6 @@ const TargetCursor = ({
       const borderWidth = 3;
       const cornerSize = 12;
 
-      // Viewport-based positions of the 4 corners that the cursor should approach.
       const positions: CornerPos[] = [
         { x: rect.left - borderWidth, y: rect.top - borderWidth },
         { x: rect.right + borderWidth - cornerSize, y: rect.top - borderWidth },
@@ -174,7 +167,6 @@ const TargetCursor = ({
 
       const duration = hoverDuration;
       activeStrengthRef.current = 0;
-      // Start tick immediately; strength animation can be eased independently.
       ensureTick();
       gsap.to(activeStrengthRef, {
         current: 1,

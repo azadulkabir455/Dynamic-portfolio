@@ -78,10 +78,3 @@ export function RadioGroup<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default RadioGroup;
-
-/*
-Use inside FormContainer. Same prop category as Input.
-- control, name, label, options
-- labelClassName, optionsClassName, itemClassName, helperText, helperTextClassName
-- ...props: native div attributes
-*/

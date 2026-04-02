@@ -54,19 +54,3 @@ export const ToTop = ({
 };
 
 export default ToTop;
-
-/*
-Import:
-import ToTop from "@/blocks/componets/toTop/ToTop";
-
-Props:
-- threshold?: scroll distance in px after which the button appears (default 200)
-- positionClassName?: tailwind classes for fixed position (default "bottom-6 right-6")
-- containerClassName?: extra classes for outer fixed container
-- buttonClassName?: extra classes for inner Button
-- iconName?: optional lucide icon name (default "ChevronUp")
-- iconSize?: icon size in px (default 18)
-- iconClassName?: extra classes for the icon
-- ...props: extra native div attributes for the outer fixed container
-*/
-

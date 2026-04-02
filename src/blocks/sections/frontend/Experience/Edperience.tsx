@@ -3,8 +3,8 @@
 import { useCallback, useRef, useState } from "react";
 import Container from "@/blocks/elements/container/Container";
 import Timeline from "@/blocks/elements/3d/Timeline/Timeline";
-import LeftContent from "@/blocks/sections/frontend/experience/component/leftContent/LeftContent";
-import { defaultTimeLineData } from "@/blocks/sections/frontend/experience/timelineData";
+import LeftContent from "@/blocks/sections/frontend/Experience/component/leftContent/LeftContent";
+import { defaultTimeLineData } from "@/blocks/sections/frontend/Experience/timelineData";
 import { cn } from "@/utilities/helpers/classMerge";
 
 const fallbackHeading = "Experience";
@@ -30,13 +30,7 @@ const Experience = () => {
 
   return (
     <section id="experience" className="w-full">
-      {/* Scroll target for Timeline: full track height */}
       <div ref={experienceSectionRef} className="relative w-full" style={scrollTrackStyle}>
-        {/*
-          Sticky must NOT sit inside a short ancestor (e.g. ternary ~100vh), or it unsticks
-          halfway while scroll progress still runs. This wrapper is as tall as the track so
-          the panel stays pinned until the track finishes scrolling.
-        */}
         <div className="relative w-full" style={scrollTrackStyle}>
           <div className="rounded-t-xl bg-primary pt-5">
             <Container

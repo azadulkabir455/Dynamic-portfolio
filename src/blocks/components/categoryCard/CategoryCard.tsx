@@ -10,7 +10,6 @@ import type { CategoryCardProps } from "./type";
 const cardClasses =
   "flex flex-col items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white p-6 transition-shadow hover:shadow-md w-full min-w-0 text-center";
 
-/** Link has default inline-flex; use flex + min-h-full so card fills grid cell and content centers */
 const linkCardClasses =
   "!flex min-h-full flex-col items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white p-6 transition-shadow hover:shadow-md w-full min-w-0 text-center no-underline";
 
@@ -66,16 +65,3 @@ export const CategoryCard = ({
 };
 
 export default CategoryCard;
-
-/*
-Import:
-import CategoryCard from "@/blocks/componets/categoryCard/CategoryCard";
-
-Props:
-- icon: Lucide icon name
-- title: category title
-- href: when provided, the entire card is a link (whole div clickable)
-- iconSize: icon size in px (default 24)
-- iconClassName, titleClassName, containerClassName, linkClassName
-- ...props: extra attributes for the outer container
-*/

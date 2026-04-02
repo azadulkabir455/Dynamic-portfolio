@@ -26,18 +26,3 @@ export const Video = ({
 };
 
 export default Video;
-
-/*
-Import:
-import Video from "@/blocks/elements/video/Video";
-
-Props:
-- src: video source path or url
-- poster: preview image for the video
-- className: custom classes for styling
-- controls: shows video controls
-- autoPlay: starts video automatically
-- loop: repeats the video
-- muted: mutes the video sound
-- ...props: extra native video attributes
-*/

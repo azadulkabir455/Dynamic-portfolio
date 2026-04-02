@@ -155,7 +155,6 @@ export default function BubbleMenu({
 
   return (
     <>
-      {/* Workaround for silly Tailwind capabilities */}
       <style>{`
         .bubble-menu .menu-line {
           transition: transform 0.3s ease, opacity 0.3s ease;

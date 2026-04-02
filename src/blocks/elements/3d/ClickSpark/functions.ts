@@ -10,10 +10,8 @@ export const getEasedValue = (t: number, easing: ClickSparkEasing): number => {
     case "ease-in-out":
       return clamped < 0.5 ? 2 * clamped * clamped : -1 + (4 - 2 * clamped) * clamped;
     case "ease-out":
-      // ease-out quadratic: t * (2 - t)
       return clamped * (2 - clamped);
     default:
-      // fallback
       return clamped * (2 - clamped);
   }
 };

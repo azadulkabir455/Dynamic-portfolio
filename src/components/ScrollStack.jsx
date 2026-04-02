@@ -303,17 +303,14 @@ const ScrollStack = ({
     updateCardTransforms
   ]);
 
-  // Container styles based on scroll mode
   const containerStyles = useWindowScroll
     ? {
-        // Global scroll mode - no overflow constraints
         overscrollBehavior: 'contain',
         WebkitOverflowScrolling: 'touch',
         WebkitTransform: 'translateZ(0)',
         transform: 'translateZ(0)'
       }
     : {
-        // Container scroll mode - original behavior
         overscrollBehavior: 'contain',
         WebkitOverflowScrolling: 'touch',
         scrollBehavior: 'smooth',
@@ -330,7 +327,6 @@ const ScrollStack = ({
     <div className={containerClassName} ref={scrollerRef} style={containerStyles}>
       <div className="scroll-stack-inner pt-[20vh] px-20 pb-[50rem] min-h-screen">
         {children}
-        {/* Spacer so the last pin can release cleanly */}
         <div className="scroll-stack-end w-full h-px" />
       </div>
     </div>

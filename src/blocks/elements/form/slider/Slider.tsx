@@ -76,14 +76,3 @@ export function Slider<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default Slider;
-
-/*
-Import:
-import Slider from "@/blocks/elements/form/slider/Slider";
-
-Use inside FormContainer. Range input. Same prop category as Input.
-- control, name, label
-- min, max, step (defaults: 0, 100, 1). Schema: z.number().min(0).max(100)
-- labelClassName, inputClassName, helperText, helperTextClassName
-- ...props: native range input attributes
-*/

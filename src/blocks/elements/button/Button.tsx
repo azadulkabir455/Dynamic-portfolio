@@ -63,24 +63,3 @@ export const Button = ({
 };
 
 export default Button;
-
-/*
-Import:
-import Button from "@/blocks/elements/button/Button";
-
-Props:
-- children: content inside the button
-- size: controls button height and padding
-- href: renders the button as a link
-- leftIcon: lucide icon name for the left side
-- rightIcon: lucide icon name for the right side
-- iconSize: size of button icons
-- iconClassName: shared classes for both icons
-- leftIconClassName: classes only for the left icon
-- rightIconClassName: classes only for the right icon
-- loading: shows loader on the right side and replaces right icon
-- className: custom classes for styling
-- disabled: disables click interaction
-- type: button behavior, default is "button"
-- ...props: extra native button or link attributes
-*/

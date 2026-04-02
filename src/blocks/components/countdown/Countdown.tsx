@@ -80,17 +80,3 @@ export const Countdown = (props: CountdownProps) => {
 };
 
 export default Countdown;
-
-/*
-Import:
-import Countdown from "@/blocks/componets/countdown/Countdown";
-
-Props:
-- days, hours, minutes: initial duration to count down from (numbers)
-- containerClassName: extra classes for the outer container
-- unitBoxClassName: extra classes for the box wrapping each timer value (default: bordered, rounded, bg)
-- timerClassName: extra classes for all timer values (day, hour, minute, second numbers)
-- timerTextClassName: extra classes for all timer labels
-- dayLabel, hourLabel, minuteLabel, secondLabel: label text (default "Days", "Hours", "Minutes", "Seconds")
-- ...props: extra native div attributes for the outer container
-*/

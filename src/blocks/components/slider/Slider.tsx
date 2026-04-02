@@ -158,18 +158,3 @@ export const Slider = ({
 };
 
 export default Slider;
-
-/*
-Import:
-import Slider from "@/blocks/componets/slider/Slider";
-
-Props:
-- items: slide list with image, alt, and overlay content
-- autoPlay: enables automatic slide change
-- interval: autoplay delay in milliseconds
-- className: custom classes for the root wrapper
-- contentClass: custom classes for the centered content area
-- overlayClass: custom classes for the image overlay
-- imageClass: custom classes for the image wrapper
-- ...props: extra native section attributes
-*/

@@ -17,14 +17,3 @@ export const Text = ({
 };
 
 export default Text;
-
-/*
-Import:
-import Text from "@/blocks/elements/text/Text";
-
-Props:
-- children: content to render inside the element
-- variant: HTML tag to render, default is "p"
-- className: custom classes for styling
-- ...props: extra native HTML attributes
-*/

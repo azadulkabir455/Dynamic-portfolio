@@ -97,20 +97,3 @@ export const Carousel = ({
 };
 
 export default Carousel;
-
-/*
-Import:
-import Carousel from "@/blocks/componets/carousel/Carousel";
-
-Props:
-- items: carousel item list with id and content
-- autoPlay: enables automatic slide change
-- interval: autoplay delay in milliseconds
-- visibleItems: number of visible items in the row
-- showDots: shows bottom navigation dots
-- className: custom classes for the root wrapper
-- contentClass: custom classes for the outer content wrapper
-- controlsClass: custom classes for the item grid
-- itemClass: custom classes for each visible item wrapper
-- ...props: extra native section attributes
-*/

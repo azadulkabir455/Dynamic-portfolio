@@ -25,17 +25,3 @@ export const Icon = ({
 };
 
 export default Icon;
-
-/*
-Import:
-import Icon from "@/blocks/elements/icon/Icon";
-
-Props:
-- name: lucide icon name, example "ShoppingCart" or "Heart"
-- size: icon size in px
-- color: text color class for the icon
-- hoverColor: hover color class for the icon
-- className: custom classes for styling
-- strokeWidth: line thickness of the icon
-- ...props: extra native svg attributes
-*/

@@ -56,15 +56,3 @@ export const GroupOfSocial = ({
 };
 
 export default GroupOfSocial;
-
-/*
-Import:
-import GroupOfSocial from "@/blocks/componets/groupOfSocial/GroupOfSocial";
-
-Props:
-- items: { href, icon (Lucide name), label? }[]
-- containerClassName: wrapper classes
-- iconSize: icon size in px
-- iconClassName: classes for each icon
-- linkClassName: classes for each link
-*/

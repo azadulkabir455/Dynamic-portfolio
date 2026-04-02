@@ -40,7 +40,6 @@ const HeroBanner = ({ content = defaultContent }: HeaderProps) => {
         as="div"
         className="relative min-h-screen flex flex-col justify-end"
       >
-        {/* Hero Banner Particles */}
         <Container as="div" className="absolute inset-0 z-5">
           <Particles
             particleColors={["#C33F40"]}
@@ -55,7 +54,6 @@ const HeroBanner = ({ content = defaultContent }: HeaderProps) => {
           />
         </Container>
 
-        {/* Hero Banner ContentArea */}
         <ContentArea 
           imageSrc={imageSrc} 
           imageAlt={imageAlt} 

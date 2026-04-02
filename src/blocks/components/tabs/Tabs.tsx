@@ -66,15 +66,3 @@ export const Tabs = ({
 };
 
 export default Tabs;
-
-/*
-Import:
-import Tabs from "@/blocks/componets/tabs/Tabs";
-
-Props:
-- items: tab list — each item: label, value, content, disabled?, icon?, iconClassName?
-- listAlign: "left" | "right" | "center" | "full" — full = equal width (e.g. 3 tabs → 33.33% each)
-- defaultValue, activeValue, onChange: uncontrolled / controlled
-- containerClassName, listClassName, panelClassName
-- ...props: extra native section attributes
-*/

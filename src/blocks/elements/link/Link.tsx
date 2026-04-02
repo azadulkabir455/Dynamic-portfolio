@@ -47,21 +47,3 @@ export const Link = ({
 };
 
 export default Link;
-
-/*
-Import:
-import Link from "@/blocks/elements/link/Link";
-
-Props:
-- children: content inside the link
-- href: destination path or url
-- variant: visual style of the link
-- leftIcon: lucide icon name for the left side
-- rightIcon: lucide icon name for the right side
-- iconSize: size of link icons
-- iconClassName: shared classes for both icons (optional)
-- leftIconClassName: classes only for the left icon
-- rightIconClassName: classes only for the right icon
-- className: custom classes for styling
-- ...props: extra next link attributes
-*/

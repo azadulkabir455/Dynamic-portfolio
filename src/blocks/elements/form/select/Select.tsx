@@ -90,11 +90,3 @@ export function Select<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default Select;
-
-/*
-Use inside FormContainer. Same prop category as Input.
-- control, name, label, options, placeholder
-- leftIcon, iconSize, iconClassName
-- labelClassName, inputClassName, helperText, helperTextClassName
-- ...props: native select attributes
-*/

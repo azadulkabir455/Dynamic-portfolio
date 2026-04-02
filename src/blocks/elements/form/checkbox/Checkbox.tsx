@@ -71,10 +71,3 @@ export function Checkbox<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default Checkbox;
-
-/*
-Use inside FormContainer. Same prop category as Input.
-- control, name, label
-- labelClassName, inputClassName, helperText, helperTextClassName
-- ...props: native checkbox attributes
-*/

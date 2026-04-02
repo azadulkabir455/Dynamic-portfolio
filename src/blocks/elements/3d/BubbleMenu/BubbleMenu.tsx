@@ -31,18 +31,15 @@ const BubbleMenu = ({
     const target = e.target as Node | null;
     if (!target) return;
 
-    // Click on toggle button => do nothing (toggle handler will run)
     const clickedToggle =
       target instanceof Element &&
       target.closest('[data-bubble-menu-toggle="true"]');
     if (clickedToggle) return;
 
-    // Click on menu item links => let navigation/handlers run
     const clickedPillLink =
       target instanceof Element && target.closest(".pill-link");
     if (clickedPillLink) return;
 
-    // Outside click => close menu (animate-out branch depends on showOverlay)
     setIsMenuOpen(false);
     onMenuClick?.(false);
   };

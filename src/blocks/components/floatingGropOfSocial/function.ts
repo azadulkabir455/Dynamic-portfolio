@@ -24,23 +24,17 @@ export function useFloatingSocial({
   const { startAngle, endAngle } = useMemo(() => {
     switch (placement) {
       case "bottom-right":
-        // expand to left + up (north‑west): from left (-π) to top (-π/2)
         return { startAngle: -Math.PI, endAngle: -Math.PI / 2 };
       case "bottom-left":
-        // expand to right + up (north‑east): from top (-π/2) to right (0)
         return { startAngle: -Math.PI / 2, endAngle: 0 };
       case "top-right":
-        // expand to left + down (south‑west): from right (0) to down (π/2)
         return { startAngle: 0, endAngle: Math.PI / 2 };
       case "top-left":
-        // expand to right + down (south‑east): from down (π/2) to left (π)
         return { startAngle: Math.PI / 2, endAngle: Math.PI };
       case "top-center":
-        // expand downward in shallow arc: from down-left (5π/4) to down-right (7π/4)
         return { startAngle: (5 * Math.PI) / 4, endAngle: (7 * Math.PI) / 4 };
       case "center":
       default:
-        // balanced arc around top: from left-top (-3π/4) to right-top (-π/4)
         return { startAngle: (-3 * Math.PI) / 4, endAngle: -Math.PI / 4 };
     }
   }, [placement]);

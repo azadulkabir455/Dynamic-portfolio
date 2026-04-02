@@ -47,17 +47,3 @@ export const Container = forwardRef<HTMLElement, ContainerProps>(function Contai
 });
 
 export default Container;
-
-/*
-Import:
-import Container from "@/blocks/elements/container/Container";
-
-Props:
-- children: content inside the container
-- size: controls max width of the layout
-- as: chooses the HTML tag, "div" | "section" | "span"
-- bg: background image and properties — { image, size?, position?, repeat?, attachment? }
-- bgClassName: Tailwind classes for bg (e.g. "bg-cover bg-center bg-no-repeat")
-- className: custom classes for styling
-- ...props: extra native HTML attributes
-*/

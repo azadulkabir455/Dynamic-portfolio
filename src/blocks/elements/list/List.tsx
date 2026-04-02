@@ -39,16 +39,3 @@ export const List = ({
 };
 
 export default List;
-
-/*
-Import:
-import List from "@/blocks/elements/list/List";
-
-Props:
-- type: "order" | "under" — ordered (ol) or unordered (ul)
-- items: array of list items (children content)
-- listClassName: classes for the list (ul/ol)
-- itemClassName: classes for each li
-- listIcon: custom icon/node shown before each item. Example: listIcon={<Icon name="Check" size={18} className="text-green-600" />} or listIcon={<span>◆</span>}
-- ...props: extra native list attributes
-*/

@@ -75,11 +75,3 @@ export function SearchInput<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default SearchInput;
-
-/*
-Use inside FormContainer. Same prop category as Input.
-- control, name, label, placeholder
-- iconSize, iconClassName (search icon on left)
-- labelClassName, inputClassName, helperText, helperTextClassName
-- ...props: native input attributes
-*/

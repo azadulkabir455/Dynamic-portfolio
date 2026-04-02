@@ -10,10 +10,8 @@ import type { LeftContentProps } from "./type";
 const stickyTopClass = "lg:top-[30px]";
 const panelInitialOffsetPx = -10;
 
-/** Crossfade when timeline step changes — long ease-out + light stagger reads smoother on the eye. */
 const easeOutSoft = [0.22, 1, 0.36, 1] as const;
 
-/** Parent only orchestrates stagger — opacity/y live on blocks so motion stays clean, not muddy. */
 const panelVariants = {
   initial: {},
   animate: {

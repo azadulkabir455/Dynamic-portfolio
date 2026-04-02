@@ -23,14 +23,3 @@ export const Card = ({ children, className, padding = "md", ...props }: CardProp
 };
 
 export default Card;
-
-/*
-Import:
-import Card from "@/blocks/elements/card/Card";
-
-Props:
-- children: content inside the card
-- padding: controls inner spacing
-- className: custom classes for styling
-- ...props: extra native div attributes
-*/

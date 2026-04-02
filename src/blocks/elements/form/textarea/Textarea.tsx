@@ -68,10 +68,3 @@ export function Textarea<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default Textarea;
-
-/*
-Use inside FormContainer. Same prop category as Input.
-- control, name, label, placeholder, rows
-- labelClassName, inputClassName, helperText, helperTextClassName
-- ...props: native textarea attributes
-*/

@@ -26,7 +26,6 @@ export const FloatingGroupOfSocial = ({
   const effectiveRadius = Math.max(baseRadius, centerIconSize / 2 + 60);
   const containerRef = useRef<HTMLElement | null>(null);
 
-  // Infer logical placement from Tailwind position classes so icons always expand inward
   const placement = (() => {
     const pos = positionClassName ?? "";
     const hasTop = pos.includes("top-");
@@ -113,20 +112,3 @@ export const FloatingGroupOfSocial = ({
 };
 
 export default FloatingGroupOfSocial;
-
-/*
-Import:
-import FloatingGroupOfSocial from "@/blocks/componets/floatingGropOfSocial/FloatingGroupOfSocial";
-
-Props:
-- items: social link list — each item: { href, icon (Lucide name), label? }
-- centerIconName: Lucide icon name for the main floating button (e.g. "Share2")
-- centerIconSize: size of the center icon in px (default 32)
-- centerIconClassName: extra classes for the center icon
-- positionClassName: Tailwind classes to position the fixed container (e.g. "bottom-6 right-6")
-- containerClassName: extra classes for the outer fixed container (merged with positionClassName)
-- socialIconSize: size of the social icons in px (currently 18 inside the component)
-- socialIconClassName: extra classes for each social icon
-- socialLinkClassName: extra classes for each social icon wrapper link
-- ...props: extra native div attributes for the outer fixed container
-*/

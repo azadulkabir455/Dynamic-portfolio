@@ -7,12 +7,6 @@ import { cn } from "@/utilities/helpers/classMerge";
 import { getTimelineKey } from "./functions";
 import type { TimelineItem, TimelineProps } from "./type";
 
-/**
- * Tall scroll wrapper (see Experience): progress 0→1 while that wrapper scrolls
- * from “top at viewport top” to “bottom at viewport bottom” — sticky panel stays
- * ~100vh until the bar finishes, then the section can leave.
- */
-/** Tuple (not `as const`) so Motion’s `useScroll` offset accepts a mutable pair — same values as before. */
 const SCROLL_OFFSET: ["start start", "end end"] = ["start start", "end end"];
 
 const Timeline = ({

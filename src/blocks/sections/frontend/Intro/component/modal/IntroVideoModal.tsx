@@ -7,10 +7,6 @@ import { X } from "lucide-react";
 import { cn } from "@/utilities/helpers/classMerge";
 import type { IntroVideoModalProps } from "./type";
 
-/**
- * Portal + dialog above global UI (e.g. BubbleMenu z-[1000]).
- * Video is muted initially so autoplay works in browsers; user can unmute via controls.
- */
 const IntroVideoModal = ({
   open,
   onClose,

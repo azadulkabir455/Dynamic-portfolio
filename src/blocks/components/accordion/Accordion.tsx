@@ -70,20 +70,3 @@ export const Accordion = ({
 };
 
 export default Accordion;
-
-/*
-Import:
-import Accordion from "@/blocks/componets/accordion/Accordion";
-
-Props:
-- items: accordion list — each item: label, value, content, disabled?, leftIcon?, iconClassName?
-- leftIcon: Lucide icon name on the left of the label; iconClassName: classes for that icon
-- defaultValue: initially open accordion values
-- activeValue: controlled open accordion values
-- onChange: callback when open values change
-- multiple: allows multiple items to stay open
-- containerClassName: custom classes for the root wrapper
-- itemClassName: custom classes for each accordion item
-- contentClassName: custom classes for the content area
-- ...props: extra native section attributes
-*/

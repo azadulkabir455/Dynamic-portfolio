@@ -132,16 +132,3 @@ export const Dropdown = ({
 };
 
 export default Dropdown;
-
-/*
-Import:
-import Dropdown from "@/blocks/componets/dropdown/Dropdown";
-
-Props:
-- button: JSX trigger (e.g. <Button>Menu</Button>)
-- items: { text, icon?, iconClassName?, value?, disabled? }[]
-- trigger: "hover" | "click"
-- onSelect?: (item, index) => void
-- listContainerClassName, itemClassName, textClassName, className
-- Opens above if no space below viewport, otherwise below.
-*/

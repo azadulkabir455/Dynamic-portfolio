@@ -94,13 +94,3 @@ export function PasswordInput<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default PasswordInput;
-
-/*
-Use inside FormContainer.
-- control, name, label, placeholder
-- leftIcon: Lucide icon name on the left (e.g. "Lock")
-- iconSize, iconClassName (shared), leftIconClassName, rightIconClassName (toggle button)
-- Right side: show/hide password toggle (Eye / EyeOff)
-- labelClassName, inputClassName, helperText, helperTextClassName
-- ...props: native input attributes
-*/

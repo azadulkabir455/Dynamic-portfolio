@@ -27,17 +27,3 @@ export const Image = ({
 };
 
 export default Image;
-
-/*
-Import:
-import Image from "@/blocks/elements/image/Image";
-
-Props:
-- src: image source path or url
-- alt: alternative text for the image
-- width: image width, default is 600
-- height: image height, default is 600
-- className: custom classes for styling
-- priority: loads image with high priority
-- ...props: extra next image attributes
-*/

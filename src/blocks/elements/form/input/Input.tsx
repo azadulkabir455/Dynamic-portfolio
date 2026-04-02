@@ -82,25 +82,3 @@ export function Input<TFieldValues extends FieldValues = FieldValues>({
 }
 
 export default Input;
-
-/*
-Import:
-import Input from "@/blocks/elements/form/input/Input";
-
-Use inside FormContainer (react-hook-form + Zod). All props:
-
-- control: Optional. react-hook-form Control. If omitted, taken from useFormContext().
-- name: Field name, must match Zod schema key (e.g. "email", "password").
-- label: Label text above the input.
-- placeholder: Placeholder text.
-- type: input type (text, email, password, number, etc.). Default "text".
-- leftIcon: Lucide icon name shown on the left (e.g. "Mail", "Lock").
-- iconSize: Size of left icon in px. Default 16.
-- iconClassName: Tailwind classes for the icon wrapper (e.g. "text-slate-400").
-- labelClassName: Tailwind classes for the label.
-- inputClassName: Tailwind classes for the input element.
-- helperText: Small hint text below the input (hidden when there is an error).
-- helperTextClassName: Tailwind classes for the helper text.
-- className: Tailwind classes for the input (merged with inputClassName).
-- ...props: Any other native input attributes (disabled, autoComplete, etc.).
-*/

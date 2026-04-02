@@ -12,7 +12,7 @@ export type ClickSparkProps = {
   sparkSize?: number;
   sparkRadius?: number;
   sparkCount?: number;
-  duration?: number; // ms
+  duration?: number;
   easing?: ClickSparkEasing;
   extraScale?: number;
   zIndex?: number;

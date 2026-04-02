@@ -1,5 +1,3 @@
-// Particle helpers + GLSL shaders
-
 export const defaultColors = ["#ffffff", "#ffffff", "#ffffff"];
 
 export const hexToRgb = (hex: string): [number, number, number] => {
@@ -18,7 +16,7 @@ export const hexToRgb = (hex: string): [number, number, number] => {
   return [r, g, b];
 };
 
-export const vertex = /* glsl */ `
+export const vertex = `
   attribute vec3 position;
   attribute vec4 random;
   attribute vec3 color;
@@ -59,7 +57,7 @@ export const vertex = /* glsl */ `
   }
 `;
 
-export const fragment = /* glsl */ `
+export const fragment = `
   precision highp float;
   
   uniform float uTime;

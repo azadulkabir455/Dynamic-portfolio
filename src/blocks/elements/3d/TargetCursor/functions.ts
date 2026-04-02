@@ -8,7 +8,6 @@ export const getIsMobile = () => {
     /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i;
   const isMobileUserAgent = mobileRegex.test(userAgent.toLowerCase());
 
-  // Prefer pointer capability.
   const coarsePointer =
     typeof window !== "undefined" && window.matchMedia
       ? window.matchMedia("(pointer: coarse)").matches

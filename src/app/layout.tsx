@@ -3,6 +3,7 @@ import { Antonio } from "next/font/google";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import ClickSpark from "@/blocks/elements/3d/ClickSpark/ClickSpark";
+import LiquidScrollTop from "@/blocks/elements/3d/LiquidScrollTop/LiquidScrollTop";
 import TargetCursor from "@/blocks/elements/3d/TargetCursor/TargetCursor";
 import BubbleMenu from "@/blocks/elements/3d/BubbleMenu/BubbleMenu";
 import { ParallaxRoot } from "@/hooks/parallax";
@@ -72,7 +73,6 @@ export default function RootLayout({
         className={`${antonio.variable} ${openSans.variable} ${openSans.className} antialiased`}
       >
         <ParallaxRoot>
-        {/* Cursor Style */}
         <TargetCursor
           spinDuration={2}
           hideDefaultCursor
@@ -86,7 +86,6 @@ export default function RootLayout({
           sparkCount={8}
           duration={400}
         >
-        {/* Bubble Menu */}
         <BubbleMenu
           items={bubbleMenuItems}
           menuAriaLabel="Toggle navigation"
@@ -97,6 +96,7 @@ export default function RootLayout({
           animationDuration={0.5}
           staggerDelay={0.12}
         />
+        <LiquidScrollTop />
 
           {children}
         </ClickSpark>

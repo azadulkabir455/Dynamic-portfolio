@@ -50,22 +50,3 @@ export const Badge = ({
 };
 
 export default Badge;
-
-/*
-Import:
-import Badge from "@/blocks/elements/badge/Badge";
-
-Props:
-- children: content inside the badge
-- variant: visual style of the badge
-- leftIcon: lucide icon name for the left side
-- rightIcon: lucide icon name for the right side
-- iconSize: size of the badge icon
-- iconClassName: shared classes for both icons
-- leftIconClassName: classes only for the left icon (badge hover = group-hover: classes work)
-- rightIconClassName: classes only for the right icon (badge hover = group-hover: classes work)
-- className: custom classes for styling
-- ...props: extra native span attributes
-
-On badge hover: left icon moves slightly left, right icon moves slightly right (override with your leftIconClassName/rightIconClassName).
-*/

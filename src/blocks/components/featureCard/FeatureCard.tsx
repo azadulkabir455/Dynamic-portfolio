@@ -55,20 +55,3 @@ export const FeatureCard = ({
 };
 
 export default FeatureCard;
-
-/*
-Import:
-import FeatureCard from "@/blocks/componets/featureCard/FeatureCard";
-
-Props:
-- icon: Lucide icon name (e.g. "LifeBuoy")
-- title: card heading
-- text: description below title
-- variation: "top" | "left" — icon above content or icon on the left (default "left")
-- iconSize: icon size in px (default 24)
-- iconClassName: extra classes for the icon
-- titleClassName: extra classes for the title
-- textClassName: extra classes for the description text
-- containerClassName: extra classes for the outer container
-- ...props: extra native div attributes for the outer container
-*/

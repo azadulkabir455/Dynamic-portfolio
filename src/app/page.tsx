@@ -3,7 +3,7 @@ import Intro from "@/blocks/sections/frontend/Intro/Intro";
 import HeraBanner from "@/blocks/sections/frontend/heroBanner/HeroBanner";
 import Objective from "@/blocks/sections/frontend/objective/Objective";
 import Project from "@/blocks/sections/frontend/projectsOne/Project";
-import Experience from "@/blocks/sections/frontend/experience/Edperience";
+import Experience from "@/blocks/sections/frontend/Experience/Edperience";
 import ProjectTwo from "@/blocks/sections/frontend/projectTwo/ProjectTwo";
 import Footer from "@/blocks/sections/frontend/Footer/Footer";
 

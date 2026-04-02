@@ -4,6 +4,5 @@ export type SilkProps = {
   color?: string;
   noiseIntensity?: number;
   rotation?: number;
-  /** Wrapper around the canvas (needs explicit height for the WebGL layer). */
   className?: string;
 };

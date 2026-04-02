@@ -3,7 +3,6 @@ export interface CountdownProps {
   hours?: number;
   minutes?: number;
   containerClassName?: string;
-  /** Class for the box wrapping each timer value (day, hour, minute, second) */
   unitBoxClassName?: string;
   timerClassName?: string;
   timerTextClassName?: string;

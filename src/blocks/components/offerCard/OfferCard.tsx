@@ -90,18 +90,3 @@ export const OfferCard = (props: OfferCardProps) => {
 };
 
 export default OfferCard;
-
-/*
-Import:
-import OfferCard from "@/blocks/componets/offerCard/OfferCard";
-
-Props:
-- preHeader, title, text: optional copy
-- buttonLabel: text for the button
-- buttonLink: href for the button (button renders as link when provided)
-- buttonVariation: "box" | "underline" (default "box")
-- containerClassName, preHeaderClassName, titleClassName, textClassName, buttonClassName
-- bgImage: background image URL
-- bgImageClassName: classes for bg (e.g. bg-cover bg-center)
-- ...props: extra native div attributes for the outer container
-*/

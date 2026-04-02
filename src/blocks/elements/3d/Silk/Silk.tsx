@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable react/no-unknown-property -- R3F maps Three.js elements to JSX */
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useLayoutEffect, useMemo, useRef } from "react";
 import type { Mesh, ShaderMaterial } from "three";
