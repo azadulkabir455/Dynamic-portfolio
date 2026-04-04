@@ -7,6 +7,7 @@ export interface GlassIconsItem {
   icon: ReactNode;
   color: GradientKey;
   label: string;
+  href?: string;
 }
 
 export interface GlassIconsProps {

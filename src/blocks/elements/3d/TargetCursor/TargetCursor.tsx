@@ -1,11 +1,26 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { gsap } from "gsap";
 import type { TargetCursorProps } from "./type";
 import { getIsMobile } from "./functions";
+import Container from "../../container/Container";
+import { cn } from "@/utilities/helpers/classMerge";
 
 type CornerPos = { x: number; y: number };
+
+function subscribePageLoaderFlag(callback: () => void) {
+  const observer = new MutationObserver(callback);
+  observer.observe(document.body, {
+    attributes: true,
+    attributeFilter: ["data-page-loader"],
+  });
+  return () => observer.disconnect();
+}
+
+function getPageLoaderActiveSnapshot() {
+  return document.body.dataset.pageLoader === "active";
+}
 
 const TargetCursor = ({
   targetSelector = ".cursor-target",
@@ -18,6 +33,12 @@ const TargetCursor = ({
     if (typeof window === "undefined") return false;
     return getIsMobile();
   }, []);
+
+  const pageLoaderActive = useSyncExternalStore(
+    subscribePageLoaderFlag,
+    getPageLoaderActiveSnapshot,
+    () => false,
+  );
 
   const cursorRef = useRef<HTMLDivElement | null>(null);
   const dotRef = useRef<HTMLDivElement | null>(null);
@@ -79,7 +100,7 @@ const TargetCursor = ({
   }, []);
 
   useEffect(() => {
-    if (isMobile || !cursorRef.current) return;
+    if (isMobile || !cursorRef.current || pageLoaderActive) return;
 
     const originalCursor = document.body.style.cursor;
     if (hideDefaultCursor) document.body.style.cursor = "none";
@@ -189,13 +210,32 @@ const TargetCursor = ({
       if (hideDefaultCursor) document.body.style.cursor = originalCursor;
       spinTlRef.current?.kill();
     };
-  }, [hideDefaultCursor, hoverDuration, isMobile, moveCursor, parallaxOn, spinDuration, stopTick, targetSelector, ensureTick]);
+  }, [
+    hideDefaultCursor,
+    hoverDuration,
+    isMobile,
+    moveCursor,
+    pageLoaderActive,
+    parallaxOn,
+    spinDuration,
+    stopTick,
+    targetSelector,
+    ensureTick,
+  ]);
 
   if (isMobile) return null;
 
   return (
-    <div ref={cursorRef} className="fixed top-0 left-0 w-[1px] h-[1px] pointer-events-none z-[9999]" style={{ willChange: "transform" }}>
-      <div
+    <Container
+      as="div"
+      ref={cursorRef}
+      className={cn(
+        "target-cursor-root fixed top-0 left-0 w-[1px] h-[1px] pointer-events-none z-[9999]",
+        pageLoaderActive && "opacity-0 invisible",
+      )}
+      style={{ willChange: "transform" }}
+    >
+      <Container as="div"
         ref={dotRef}
         className="absolute top-1/2 left-1/2 w-1 h-1 bg-white rounded-full -translate-x-1/2 -translate-y-1/2"
         style={{ willChange: "transform" }}
@@ -215,7 +255,7 @@ const TargetCursor = ({
           />
         );
       })}
-    </div>
+    </Container>
   );
 };
 

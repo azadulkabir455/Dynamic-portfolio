@@ -2,10 +2,13 @@
 
 import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
+import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
 import { cn } from "@/utilities/helpers/classMerge";
 import { getTimelineKey } from "./functions";
 import type { TimelineItem, TimelineProps } from "./type";
+
+const MotionContainer = motion(Container);
 
 const SCROLL_OFFSET: ["start start", "end end"] = ["start start", "end end"];
 
@@ -18,8 +21,8 @@ const Timeline = ({
 }: TimelineProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLElement | null)[]>([]);
-  const firstOrbRef = useRef<HTMLDivElement | null>(null);
-  const lastOrbRef = useRef<HTMLDivElement | null>(null);
+  const firstOrbRef = useRef<HTMLElement | null>(null);
+  const lastOrbRef = useRef<HTMLElement | null>(null);
   const [spineLine, setSpineLine] = useState<{
     top: number;
     height: number;
@@ -92,18 +95,18 @@ const Timeline = ({
   if (!items.length) return null;
 
   return (
-    <div
+    <Container
       className={cn(
         "w-full",
         "[perspective:1200px]",
         className,
       )}
     >
-      <div ref={trackRef} className="relative">
+      <Container ref={trackRef} className="relative">
         {showSpine &&
           spineLine &&
           spineLine.height > 0 && (
-            <div
+            <Container
               aria-hidden
               className={cn(
                 "pointer-events-none absolute z-0 hidden -translate-x-1/2 lg:block",
@@ -114,12 +117,12 @@ const Timeline = ({
                 height: spineLine.height,
               }}
             >
-              <div className="h-full w-full bg-white" />
-              <div
+              <Container className="h-full w-full bg-white" />
+              <Container
                 className="absolute left-0 top-0 w-full rounded-t-full bg-primary"
                 style={{ height: spineFillHeight }}
               />
-            </div>
+            </Container>
           )}
 
         <ul className="relative z-[1] m-0 flex list-none flex-col gap-8 p-0 lg:gap-10">
@@ -130,13 +133,13 @@ const Timeline = ({
 
             return (
               <li key={key}>
-                <div
+                <Container
                   className={cn(
                     "grid grid-cols-1 gap-6",
                     "lg:grid-cols-[88px_minmax(0,1fr)] lg:items-start lg:gap-x-4",
                   )}
                 >
-                  <div
+                  <Container
                     ref={(el) => {
                       if (isFirst) firstOrbRef.current = el;
                       if (isLast) lastOrbRef.current = el;
@@ -147,9 +150,9 @@ const Timeline = ({
                     )}
                   >
                     <SpineOrb index={index} />
-                  </div>
+                  </Container>
 
-                  <div className="min-w-0">
+                  <Container className="min-w-0">
                     <TimelineEntryCard
                       item={item}
                       index={index}
@@ -157,20 +160,20 @@ const Timeline = ({
                         cardRefs.current[index] = el;
                       }}
                     />
-                  </div>
-                </div>
+                  </Container>
+                </Container>
               </li>
             );
           })}
         </ul>
-      </div>
-    </div>
+      </Container>
+    </Container>
   );
 };
 
 function SpineOrb({ index }: { index: number }) {
   return (
-    <motion.div
+    <MotionContainer
       className={cn(
         "relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full",
         "border-2 border-white bg-primary",
@@ -193,7 +196,7 @@ function SpineOrb({ index }: { index: number }) {
       >
         {String(index + 1).padStart(2, "0")}
       </span>
-    </motion.div>
+    </MotionContainer>
   );
 }
 

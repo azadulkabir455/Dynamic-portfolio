@@ -4,7 +4,6 @@
   --primary: #C33F40;
   --secondary: #e5ceb1;
   --ternary: #003049;
-  --quaternary: #F77F00;
   --text-color: #75635D;
   
 }
@@ -24,6 +23,35 @@ body {
   background: var(--secondary);
   color: var(--text-color);
   font-family: var(--font-open-sans);
+}
+
+/* GSAP ScrollSmoother controls scroll; avoid CSS smooth-scroll fighting it. */
+
+/* Scrollbar: track = secondary, thumb = primary + rounded (Firefox + WebKit) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) var(--secondary);
+  scrollbar-gutter: stable;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: var(--secondary);
+  border: 1px solid var(--ternary);
+  border-radius: 9999px;
+}
+
+html::-webkit-scrollbar-thumb {
+  background-color: var(--primary);
+  border-radius: 9999px;
+  border: 2px solid var(--secondary);
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  filter: brightness(0.92);
 }
 
 h1,
@@ -59,9 +87,7 @@ h6 {
 .ternaryBacgroundColor {
   background-color: var(--ternary);
 }
-.quaternaryBacgroundColor {
-  background-color: var(--quaternary);
-}
+
 .primaryTextColor {
   color: var(--primary);
 }
@@ -71,9 +97,7 @@ h6 {
 .ternaryTextColor {
   color: var(--ternary);
 } 
-.quaternaryTextColor {
-  color: var(--quaternary);
-}
+
 .textTextColor {
   color: var(--text-color);
 }
@@ -85,7 +109,4 @@ h6 {
 }
 .ternaryBorderColor {
   border-color: var(--ternary);
-}
-.quaternaryBorderColor {
-  border-color: var(--quaternary);
 }

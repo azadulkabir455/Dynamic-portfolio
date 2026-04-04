@@ -1,8 +1,11 @@
-export type InfoArea = {
-  text?: string;
-  email?: string;
-  phone?: string;
-  cvHref?: string;
-  cvFileName?: string;
-};
+import type { HeroBannerData } from "../../type";
 
+export type InfoAreaProps = Pick<
+  HeroBannerData,
+  | "introCircleText"
+  | "introText"
+  | "contactEmail"
+  | "whatsappNumber"
+  | "cvHref"
+  | "cvFileName"
+>;

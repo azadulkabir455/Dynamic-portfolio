@@ -8,7 +8,9 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type ReactNode,
 } from "react";
+import NextImage from "next/image";
 import { ANIMATION_CONFIG, cx, toCssLength } from "./functions";
 import type { LogoLoopItem, LogoLoopProps } from "./type";
 
@@ -249,40 +251,49 @@ const LogoLoop = memo(
           );
         }
 
-        const content = isNodeItem(item) ? (
-          <span
-            className={cx(
-              "inline-flex items-center",
-              "motion-reduce:transition-none",
-              scaleOnHover &&
-                "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120",
-            )}
-            aria-hidden={Boolean(item.href && !item.ariaLabel)}
-          >
-            {item.node}
-          </span>
-        ) : (
-          <img
-            className={cx(
-              "h-[var(--logoloop-logoHeight)] w-auto block object-contain",
-              "[-webkit-user-drag:none] pointer-events-none",
-              "[image-rendering:-webkit-optimize-contrast]",
-              "motion-reduce:transition-none",
-              scaleOnHover &&
-                "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120",
-            )}
-            src={item.src}
-            srcSet={item.srcSet}
-            sizes={item.sizes}
-            width={item.width}
-            height={item.height}
-            alt={item.alt ?? ""}
-            title={item.title}
-            loading="lazy"
-            decoding="async"
-            draggable={false}
-          />
-        );
+        let content: ReactNode;
+        if (isNodeItem(item)) {
+          content = (
+            <span
+              className={cx(
+                "inline-flex items-center",
+                "motion-reduce:transition-none",
+                scaleOnHover &&
+                  "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120",
+              )}
+              aria-hidden={Boolean(item.href && !item.ariaLabel)}
+            >
+              {item.node}
+            </span>
+          );
+        } else {
+          const imgHeight = item.height ?? logoHeight;
+          const imgWidth = item.width ?? Math.round(imgHeight * 4);
+          const isRemote =
+            item.src.startsWith("http://") || item.src.startsWith("https://");
+          content = (
+            <NextImage
+              className={cx(
+                "h-[var(--logoloop-logoHeight)] w-auto block object-contain",
+                "[-webkit-user-drag:none] pointer-events-none",
+                "[image-rendering:-webkit-optimize-contrast]",
+                "motion-reduce:transition-none",
+                scaleOnHover &&
+                  "transition-transform duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] group-hover/item:scale-120",
+              )}
+              src={item.src}
+              width={imgWidth}
+              height={imgHeight}
+              sizes={item.sizes ?? `${imgWidth}px`}
+              alt={item.alt ?? ""}
+              title={item.title}
+              loading="lazy"
+              decoding="async"
+              draggable={false}
+              unoptimized={isRemote}
+            />
+          );
+        }
 
         const itemAriaLabel = isNodeItem(item) ? (item.ariaLabel ?? item.title) : (item.alt ?? item.title);
         const inner = item.href ? (
@@ -317,7 +328,7 @@ const LogoLoop = memo(
           </li>
         );
       },
-      [isVertical, scaleOnHover, renderItem],
+      [isVertical, scaleOnHover, renderItem, logoHeight],
     );
 
     const containerStyle = useMemo(

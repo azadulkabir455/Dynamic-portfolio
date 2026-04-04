@@ -2,10 +2,17 @@ import type { Metadata } from "next";
 import { Antonio } from "next/font/google";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import Container from "@/blocks/elements/container/Container";
 import ClickSpark from "@/blocks/elements/3d/ClickSpark/ClickSpark";
 import LiquidScrollTop from "@/blocks/elements/3d/LiquidScrollTop/LiquidScrollTop";
+import PageLoadLoader from "@/blocks/elements/3d/PageLoadLoader/PageLoadLoader";
+import { PageLoadLoaderProvider } from "@/blocks/elements/3d/PageLoadLoader/functions";
+import PageLoadGate from "@/blocks/elements/3d/PageLoadLoader/PageLoadGate";
 import TargetCursor from "@/blocks/elements/3d/TargetCursor/TargetCursor";
 import BubbleMenu from "@/blocks/elements/3d/BubbleMenu/BubbleMenu";
+import { defaultItems } from "@/blocks/elements/3d/BubbleMenu/functions";
+import HeraBanner from "@/blocks/sections/frontend/heroBanner/HeroBanner";
+import GsapScrollSmoother from "@/components/GsapScrollSmoother";
 import { ParallaxRoot } from "@/hooks/parallax";
 
 const antonio = Antonio({
@@ -30,48 +37,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const bubbleMenuItems = [
-    {
-      label: "home",
-      href: "#",
-      ariaLabel: "Home",
-      rotation: -8,
-      hoverStyles: { bgColor: "#3b82f6", textColor: "#ffffff" },
-    },
-    {
-      label: "about",
-      href: "#",
-      ariaLabel: "About",
-      rotation: 8,
-      hoverStyles: { bgColor: "#10b981", textColor: "#ffffff" },
-    },
-    {
-      label: "projects",
-      href: "#",
-      ariaLabel: "Projects",
-      rotation: 8,
-      hoverStyles: { bgColor: "#f59e0b", textColor: "#ffffff" },
-    },
-    {
-      label: "blog",
-      href: "#",
-      ariaLabel: "Blog",
-      rotation: 8,
-      hoverStyles: { bgColor: "#ef4444", textColor: "#ffffff" },
-    },
-    {
-      label: "contact",
-      href: "#",
-      ariaLabel: "Contact",
-      rotation: -8,
-      hoverStyles: { bgColor: "#8b5cf6", textColor: "#ffffff" },
-    },
-  ];
   return (
     <html lang="en">
       <body
         className={`${antonio.variable} ${openSans.variable} ${openSans.className} antialiased`}
       >
+        <PageLoadLoaderProvider>
+        <PageLoadGate />
         <ParallaxRoot>
         <TargetCursor
           spinDuration={2}
@@ -87,9 +59,9 @@ export default function RootLayout({
           duration={400}
         >
         <BubbleMenu
-          items={bubbleMenuItems}
+          items={defaultItems}
           menuAriaLabel="Toggle navigation"
-          menuBg="var(--ternary)"
+          menuBg="var(--primary)"
           menuContentColor="var(--secondary)"
           useFixedPosition={true}
           animationEase="back.out(1.5)"
@@ -98,9 +70,19 @@ export default function RootLayout({
         />
         <LiquidScrollTop />
 
-          {children}
+          <GsapScrollSmoother>
+            <Container
+              as="div"
+              className="overflow-x-clip overflow-y-visible"
+            >
+              <HeraBanner />
+              {children}
+            </Container>
+          </GsapScrollSmoother>
+          <PageLoadLoader />
         </ClickSpark>
         </ParallaxRoot>
+        </PageLoadLoaderProvider>
       </body>
     </html>
   );

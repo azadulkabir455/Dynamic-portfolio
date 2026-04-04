@@ -1,24 +1,29 @@
-export interface HeaderStat {
+import type { GradientKey } from "@/blocks/elements/3d/GlassIcons/type";
+
+export type HeroSocialLink = {
+  iconName: string;
+  link: string;
   label: string;
-  value: string;
-  sublabel?: string;
-}
+  color: GradientKey;
+};
 
-export interface HeaderContact {
-  address: string;
-  email: string;
-  phone: string;
-}
-
-export interface HeaderContent {
-  title: string;
-  subtitle: string;
-  stats: HeaderStat[];
-  biographyTitle: string;
-  biographyText: string;
-  contactTitle: string;
-  contact: HeaderContact;
+export type HeroBannerData = {
+  preTitle: string;
+  preTitleHighlight: string;
+  titleLine1: string;
+  titleLine2: string;
+  socialLinks: HeroSocialLink[];
+  introCircleText: string;
+  introText: string;
+  contactEmail: string;
+  contactPhone: string;
+  whatsappNumber: string;
+  cvHref: string;
+  cvFileName: string;
   imageSrc: string;
   imageAlt: string;
-}
+};
 
+export type HeroBannerProps = {
+  content?: Partial<HeroBannerData> | null;
+};

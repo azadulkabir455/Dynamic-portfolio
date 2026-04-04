@@ -3,7 +3,8 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { gsap } from "gsap";
 import type { BubbleMenuProps } from "./type";
-import { DEFAULT_ITEMS } from "./functions";
+import { defaultItems, randomMenuTilt } from "./functions";
+import { cn } from "@/utilities/helpers/classMerge";
 import Container from "@/blocks/elements/container/Container";
 import Button from "@/blocks/elements/button/Button";
 
@@ -25,7 +26,7 @@ const BubbleMenu = ({
   const [showOverlay, setShowOverlay] = useState(false);
 
   const overlayRef = useRef<HTMLDivElement | null>(null);
-  const bubblesRef = useRef<(HTMLAnchorElement | null)[]>([]);
+  const bubblesRef = useRef<(HTMLDivElement | null)[]>([]);
   const labelRefs = useRef<(HTMLSpanElement | null)[]>([]);
   const handleDocPointerDown = (e: MouseEvent | TouchEvent) => {
     const target = e.target as Node | null;
@@ -44,7 +45,15 @@ const BubbleMenu = ({
     onMenuClick?.(false);
   };
 
-  const menuItems = items?.length ? items : DEFAULT_ITEMS;
+  const sourceItems = items?.length ? items : defaultItems;
+  const menuItems = useMemo(
+    () =>
+      sourceItems.map((item) => ({
+        ...item,
+        rotation: randomMenuTilt(),
+      })),
+    [sourceItems],
+  );
 
   const navJustifyClass = logo ? "justify-between" : "justify-end";
 
@@ -70,7 +79,7 @@ const BubbleMenu = ({
 
   useEffect(() => {
     const overlay = overlayRef.current;
-    const bubbles = bubblesRef.current.filter(Boolean) as HTMLAnchorElement[];
+    const bubbles = bubblesRef.current.filter(Boolean) as HTMLDivElement[];
     const labels = labelRefs.current.filter(Boolean) as HTMLSpanElement[];
 
     if (!overlay || !bubbles.length) return;
@@ -123,24 +132,6 @@ const BubbleMenu = ({
   }, [isMenuOpen, showOverlay, animationEase, animationDuration, staggerDelay]);
 
   useEffect(() => {
-    const handleResize = () => {
-      if (isMenuOpen) {
-        const bubbles = bubblesRef.current.filter(Boolean) as HTMLAnchorElement[];
-        const isDesktop = window.innerWidth >= 900;
-        bubbles.forEach((bubble, i) => {
-          const item = menuItems[i];
-          if (bubble && item) {
-            const rotation = isDesktop ? item.rotation ?? 0 : 0;
-            gsap.set(bubble, { rotation });
-          }
-        });
-      }
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [isMenuOpen, menuItems]);
-
-  useEffect(() => {
     if (!isMenuOpen) return;
 
     document.addEventListener("mousedown", handleDocPointerDown);
@@ -168,23 +159,18 @@ const BubbleMenu = ({
           transform-origin: center;
           will-change: transform;
         }
-        .bubble-menu-items .pill-list .pill-col:nth-child(4):nth-last-child(2) {
-          margin-left: calc(100% / 6);
-        }
-        .bubble-menu-items .pill-list .pill-col:nth-child(4):last-child {
-          margin-left: calc(100% / 3);
-        }
         @media (min-width: 900px) {
-          .bubble-menu-items .pill-link {
+          .bubble-menu-items .pill-scale-wrap .pill-link {
             transform: rotate(var(--item-rot));
+            transform-origin: center center;
           }
-          .bubble-menu-items .pill-link:hover {
+          .bubble-menu-items .pill-scale-wrap .pill-link:hover {
             transform: rotate(var(--item-rot)) scale(1.06);
             background: var(--hover-bg) !important;
             color: var(--hover-color) !important;
           }
-          .bubble-menu-items .pill-link:active {
-            transform: rotate(var(--item-rot)) scale(.94);
+          .bubble-menu-items .pill-scale-wrap .pill-link:active {
+            transform: rotate(var(--item-rot)) scale(0.94);
           }
         }
         @media (max-width: 899px) {
@@ -192,12 +178,7 @@ const BubbleMenu = ({
             padding-top: 120px;
             align-items: flex-start;
           }
-          .bubble-menu-items .pill-list {
-            row-gap: 16px;
-          }
           .bubble-menu-items .pill-list .pill-col {
-            flex: 0 0 100% !important;
-            margin-left: 0 !important;
             overflow: visible;
           }
           .bubble-menu-items .pill-link {
@@ -224,7 +205,7 @@ const BubbleMenu = ({
               "bubble logo-bubble",
               "inline-flex items-center justify-center",
               "rounded-full",
-              "bg-white",
+              "border-2 border-secondary bg-primary",
               "shadow-[0_4px_16px_rgba(0,0,0,0.12)]",
               "pointer-events-auto",
               "h-12 md:h-14",
@@ -234,7 +215,6 @@ const BubbleMenu = ({
             ].join(" ")}
             aria-label="Logo"
             style={{
-              background: menuBg,
               minHeight: "48px",
               borderRadius: "9999px",
             }}
@@ -259,56 +239,44 @@ const BubbleMenu = ({
             isMenuOpen ? "open" : "",
             "inline-flex flex-col items-center justify-center",
             "rounded-full",
-            "bg-white",
+            "relative border-2 border-secondary bg-primary",
             "cursor-target",
             "pointer-events-auto",
-            "w-12 h-12 md:w-14 md:h-14",
-            "border-0 cursor-pointer p-0",
+            "h-14 w-14",
+            "cursor-pointer p-0",
             "will-change-transform",
           ].join(" ")}
           onClick={handleToggle}
           data-bubble-menu-toggle="true"
           aria-label={menuAriaLabel}
           aria-pressed={isMenuOpen}
-          style={{ background: menuBg }}
         >
           <Container
             as="span"
-            className="menu-icon-spin relative flex h-full w-full items-center justify-center"
+            className={[
+              "menu-icon-spin absolute top-1/2 flex -translate-y-1/2 flex-col",
+              isMenuOpen
+                ? "left-1/2 items-center justify-center gap-0 -translate-x-1/2"
+                : "left-3 items-start justify-center gap-2",
+            ].join(" ")}
           >
             <Container
               as="span"
-              className="menu-line block absolute rounded-full"
+              className="menu-line block shrink-0 rounded-full bg-secondary"
               style={{
-                width: 20,
+                width: isMenuOpen ? 28 : 28,
                 height: 4,
-                background: menuContentColor,
-                transform: isMenuOpen
-                  ? "translateY(0) rotate(45deg)"
-                  : "translateY(-10px)",
+                transform: isMenuOpen ? "rotate(45deg)" : undefined,
               }}
             />
             <Container
               as="span"
-              className="menu-line block absolute rounded-full"
+              className="menu-line block shrink-0 rounded-full bg-secondary"
               style={{
-                width: 28,
+                width: isMenuOpen ? 28 : 22,
                 height: 4,
-                background: menuContentColor,
-                opacity: isMenuOpen ? 0 : 1,
-                transform: isMenuOpen ? "scaleX(0.2)" : "translateY(0)",
-              }}
-            />
-            <Container
-              as="span"
-              className="menu-line block absolute rounded-full"
-              style={{
-                width: 20,
-                height: 4,
-                background: menuContentColor,
-                transform: isMenuOpen
-                  ? "translateY(0) rotate(-45deg)"
-                  : "translateY(10px)",
+                marginTop: isMenuOpen ? -4 : 0,
+                transform: isMenuOpen ? "rotate(-45deg)" : undefined,
               }}
             />
           </Container>
@@ -331,10 +299,8 @@ const BubbleMenu = ({
           <ul
             className={[
               "pill-list",
-              "list-none m-0 px-6",
-              "w-full max-w-[1600px] mx-auto",
-              "flex flex-wrap",
-              "gap-x-0 gap-y-1",
+              "list-none m-0 grid w-full max-w-[1600px] grid-cols-1 gap-[20px] px-6",
+              "mx-auto min-[900px]:grid-cols-12",
               "pointer-events-auto",
             ].join(" ")}
             role="menu"
@@ -344,66 +310,73 @@ const BubbleMenu = ({
               <li
                 key={idx}
                 role="none"
-                className={[
-                  "pill-col",
-                  "flex justify-center items-stretch",
-                  "[flex:0_0_calc(100%/3)]",
-                  "box-border",
-                ].join(" ")}
+                className={cn(
+                  "pill-col box-border flex w-full min-w-0 justify-center items-stretch",
+                  idx < 3 ? "min-[900px]:col-span-4" : "min-[900px]:col-span-3",
+                  idx === 3 &&
+                    menuItems.length === 4 &&
+                    "min-[900px]:col-start-5",
+                )}
               >
-                <a
-                  role="menuitem"
-                  href={item.href}
-                  aria-label={item.ariaLabel || item.label}
-                  className={[
-                    "pill-link",
-                    "w-full",
-                    "rounded-[999px]",
-                    "no-underline",
-                    "bg-white",
-                    "text-inherit",
-                    "cursor-target",
-                    "shadow-[0_4px_14px_rgba(0,0,0,0.10)]",
-                    "flex items-center justify-center",
-                    "relative",
-                    "transition-[background,color] duration-300 ease-in-out",
-                    "box-border",
-                    "whitespace-nowrap overflow-hidden",
-                  ].join(" ")}
-                  style={{
-                    ["--item-rot" as any]: `${item.rotation ?? 0}deg`,
-                    ["--pill-bg" as any]: menuBg,
-                    ["--pill-color" as any]: menuContentColor,
-                    ["--hover-bg" as any]: item.hoverStyles?.bgColor || "#f3f4f6",
-                    ["--hover-color" as any]: item.hoverStyles?.textColor || menuContentColor,
-                    background: "var(--pill-bg)",
-                    color: "var(--pill-color)",
-                    minHeight: "var(--pill-min-h, 160px)",
-                    padding: "clamp(1.5rem, 3vw, 8rem) 0",
-                    fontSize: "clamp(1.5rem, 4vw, 4rem)",
-                    fontWeight: 400,
-                    lineHeight: 0,
-                    willChange: "transform",
-                    height: 10,
-                  }}
+                <div
+                  className="pill-scale-wrap flex w-full justify-center"
+                  style={{ transformOrigin: "50% 50%" }}
                   ref={(el) => {
                     bubblesRef.current[idx] = el;
                   }}
                 >
-                  <span
-                    className="pill-label inline-block"
+                  <a
+                    role="menuitem"
+                    href={item.href}
+                    aria-label={item.ariaLabel || item.label}
+                    className={[
+                      "pill-link",
+                      "w-full",
+                      "rounded-[999px]",
+                      "no-underline",
+                      "border-2 border-secondary",
+                      "bg-white",
+                      "text-inherit",
+                      "font-open-sans capitalize text-center",
+                      "cursor-target",
+                      "shadow-[0_4px_14px_rgba(0,0,0,0.10)]",
+                      "flex items-center justify-center",
+                      "relative",
+                      "transition-[transform,background,color] duration-300 ease-in-out",
+                      "box-border",
+                      "whitespace-nowrap overflow-hidden",
+                    ].join(" ")}
                     style={{
-                      willChange: "transform, opacity",
-                      height: "1.2em",
+                      ["--item-rot" as any]: `${item.rotation ?? 0}deg`,
+                      ["--pill-bg" as any]: menuBg,
+                      ["--pill-color" as any]: menuContentColor,
+                      ["--hover-bg" as any]: item.hoverStyles?.bgColor || "#f3f4f6",
+                      ["--hover-color" as any]: item.hoverStyles?.textColor || menuContentColor,
+                      background: "var(--pill-bg)",
+                      color: "var(--pill-color)",
+                      minHeight: "var(--pill-min-h, 160px)",
+                      padding: "clamp(1.5rem, 3vw, 8rem) 0",
+                      fontSize: "clamp(1.5rem, 4vw, 4rem)",
+                      fontWeight: 400,
                       lineHeight: 1.2,
-                    }}
-                    ref={(el) => {
-                      labelRefs.current[idx] = el;
+                      willChange: "transform",
                     }}
                   >
-                    {item.label}
-                  </span>
-                </a>
+                    <span
+                      className="pill-label inline-block"
+                      style={{
+                        willChange: "transform, opacity",
+                        height: "1.2em",
+                        lineHeight: 1.2,
+                      }}
+                      ref={(el) => {
+                        labelRefs.current[idx] = el;
+                      }}
+                    >
+                      {item.label}
+                    </span>
+                  </a>
+                </div>
               </li>
             ))}
           </ul>

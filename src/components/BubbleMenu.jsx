@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
-const DEFAULT_ITEMS = [
+const defaultItems = [
   {
     label: 'home',
     href: '#',
@@ -60,7 +60,7 @@ export default function BubbleMenu({
   const bubblesRef = useRef([]);
   const labelRefs = useRef([]);
 
-  const menuItems = items?.length ? items : DEFAULT_ITEMS;
+  const menuItems = items?.length ? items : defaultItems;
 
   const containerClassName = [
     'bubble-menu',

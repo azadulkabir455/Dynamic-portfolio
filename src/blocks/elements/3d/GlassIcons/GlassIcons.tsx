@@ -3,7 +3,6 @@
 import type { GlassIconsItem, GlassIconsProps } from "./type";
 import { gradientMapping } from "./functions";
 import Container from "@/blocks/elements/container/Container";
-import Button from "@/blocks/elements/button/Button";
 import { cn } from "@/utilities/helpers/classMerge";
 
 const GlassIcons = ({ items, className = "" }: GlassIconsProps) => {
@@ -45,42 +44,56 @@ const GlassIcons = ({ items, className = "" }: GlassIconsProps) => {
     "group-hover:opacity-100 group-hover:[transform:translateY(20%)]",
   );
 
+  const tileContent = (item: GlassIconsItem) => (
+    <>
+      <Container
+        as="span"
+        className={cn(shineLayerClassName, "primaryBacgroundColor shadow-lg")}
+      />
+
+      <Container
+        as="span"
+        className={glassLayerClassName}
+        style={{
+          boxShadow: "0 0 0 0.1em hsla(0, 0%, 100%, 0.3) inset",
+        }}
+      >
+        <Container as="span" className={iconWrapClassName}>
+          {item.icon}
+        </Container>
+      </Container>
+
+      <Container as="span" className={labelClassName}>
+        {item.label}
+      </Container>
+    </>
+  );
+
   return (
-    <Container as="div" className={cn(gridClassName, "gap-6 justify-items-center")} >
-      {items.map((item: GlassIconsItem, index: number) => (
-        <Button
-          key={index}
-          type="button"
-          aria-label={item.label}
-          className={cn(tileClassName)}
-        >
-          <Container as="span"
-            className={cn(shineLayerClassName, "primaryBacgroundColor shadow-lg")}
-          />
-
-          <Container
-            as="span"
-            className={glassLayerClassName}
-            style={{
-              boxShadow: "0 0 0 0.1em hsla(0, 0%, 100%, 0.3) inset",
-            }}
+    <Container as="div" className={cn(gridClassName, "gap-6 justify-items-center")}>
+      {items.map((item: GlassIconsItem, index: number) =>
+        item.href ? (
+          <a
+            key={index}
+            href={item.href}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={item.label}
+            className={cn(tileClassName, "inline-flex")}
           >
-            <Container
-              as="span"
-              className={iconWrapClassName}
-            >
-              {item.icon}
-            </Container>
-          </Container>
-
-          <Container
-            as="span"
-            className={labelClassName}
+            {tileContent(item)}
+          </a>
+        ) : (
+          <button
+            key={index}
+            type="button"
+            aria-label={item.label}
+            className={cn(tileClassName, "inline-flex")}
           >
-            {item.label}
-          </Container>
-        </Button>
-      ))}
+            {tileContent(item)}
+          </button>
+        ),
+      )}
     </Container>
   );
 };

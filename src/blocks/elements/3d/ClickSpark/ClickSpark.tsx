@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import type { ClickSparkProps } from "./type";
 import { getEasedValue } from "./functions";
+import Container from "../../container/Container";
 
 type Spark = {
   x: number;
@@ -144,14 +145,14 @@ const ClickSpark = ({
   );
 
   return (
-    <div ref={wrapperRef} style={wrapperStyle} onClick={handleClick}>
+    <Container as="div" ref={wrapperRef} style={wrapperStyle} onClick={handleClick}>
       <canvas
         ref={canvasRef}
         className="w-full h-full block absolute top-0 left-0 select-none pointer-events-none"
         style={{ zIndex: zIndex + 1 }}
       />
       {children}
-    </div>
+    </Container>
   );
 };
 

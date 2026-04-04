@@ -1,5 +1,5 @@
 export type LiquidScrollTopProps = {
   className?: string;
   size?: number;
-  reappearScroll?: number;
+  hideNearTopPx?: number;
 };
