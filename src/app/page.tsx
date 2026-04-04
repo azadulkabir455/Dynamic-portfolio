@@ -1,4 +1,4 @@
-import Intro from "@/blocks/sections/frontend/intro";
+import Intro from "@/blocks/sections/frontend/intro/Intro";
 import Objective from "@/blocks/sections/frontend/objective/Objective";
 import Project from "@/blocks/sections/frontend/projectsOne/Project";
 import Experience from "@/blocks/sections/frontend/experience/Experience";
