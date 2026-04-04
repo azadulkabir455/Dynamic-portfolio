@@ -25,13 +25,10 @@ const Experience = () => {
   const imageSrc = active.panelImageSrc ?? fallbackImage;
   const imageAlt = active.panelImageAlt ?? active.title;
 
-  const scrollTrackVh = 100 * defaultTimeLineData.length;
-  const scrollTrackStyle = { minHeight: `${scrollTrackVh}vh` } as const;
-
   return (
     <section id="experience" className="w-full">
-      <div ref={experienceSectionRef} className="relative w-full" style={scrollTrackStyle}>
-        <div className="relative w-full" style={scrollTrackStyle}>
+      <div ref={experienceSectionRef} className="relative w-full">
+        <div className="relative w-full">
           <div className="rounded-t-xl bg-primary pt-5">
             <Container
               as="div"
