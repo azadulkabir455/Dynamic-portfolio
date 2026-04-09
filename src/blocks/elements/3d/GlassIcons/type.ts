@@ -14,5 +14,10 @@ export interface GlassIconsProps {
   items: GlassIconsItem[];
   className?: string;
   colorful?: boolean;
+  /** Slide each tile up from below, one after another (hero stagger). */
+  staggerSlideUp?: boolean;
+  staggerBaseDelay?: number;
+  staggerStep?: number;
+  loaderExited?: boolean;
 }
 

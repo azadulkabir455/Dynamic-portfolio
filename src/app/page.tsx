@@ -1,8 +1,9 @@
 import Intro from "@/blocks/sections/frontend/intro/Intro";
 import Objective from "@/blocks/sections/frontend/objective/Objective";
-import Project from "@/blocks/sections/frontend/projectsOne/Project";
+import Project from "@/blocks/sections/frontend/project/Project";
 import Experience from "@/blocks/sections/frontend/experience/Experience";
-import ProjectTwo from "@/blocks/sections/frontend/projectTwo/ProjectTwo";
+import Clients from "@/blocks/sections/frontend/certificates/Certificates";
+import ProjectTwo from "@/blocks/sections/frontend/portfolio/Portfolio";
 import Footer from "@/blocks/sections/frontend/footer/Footer";
 
 export default function Page() {
@@ -11,6 +12,7 @@ export default function Page() {
       <Objective />
       <Project />
       <Experience />
+      <Clients />
       <Intro />
       <ProjectTwo />
       <Footer />

@@ -1,11 +1,21 @@
 "use client";
 
+import { motion } from "motion/react";
 import type { GlassIconsItem, GlassIconsProps } from "./type";
-import { gradientMapping } from "./functions";
 import Container from "@/blocks/elements/container/Container";
 import { cn } from "@/utilities/helpers/classMerge";
 
-const GlassIcons = ({ items, className = "" }: GlassIconsProps) => {
+const STAGGER_MOVE_S = 0.55;
+const STAGGER_EASE = "easeOut" as const;
+
+const GlassIcons = ({
+  items,
+  className = "",
+  staggerSlideUp = false,
+  staggerBaseDelay = 0,
+  staggerStep = 0.12,
+  loaderExited = true,
+}: GlassIconsProps) => {
   const gridClassName = cn("grid grid-cols-3 gap-4 mx-auto overflow-visible", className);
   const tileClassName = cn(
     "cursor-target relative w-[3.5em] h-[3.5em]",
@@ -32,8 +42,8 @@ const GlassIcons = ({ items, className = "" }: GlassIconsProps) => {
   );
 
   const iconWrapClassName = cn(
-    "m-auto w-[1.5em] h-[1.5em]",
-    "flex items-center justify-center",
+    "m-auto flex shrink-0 items-center justify-center",
+    "p-[0.14em] min-h-[1.45em] min-w-[1.45em] max-h-[1.75em] max-w-[1.75em]",
   );
 
   const labelClassName = cn(
@@ -69,31 +79,74 @@ const GlassIcons = ({ items, className = "" }: GlassIconsProps) => {
     </>
   );
 
+  const tileNode = (item: GlassIconsItem) =>
+    item.href ? (
+      <a
+        href={item.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={item.label}
+        className={cn(tileClassName, "inline-flex")}
+      >
+        {tileContent(item)}
+      </a>
+    ) : (
+      <button
+        type="button"
+        aria-label={item.label}
+        className={cn(tileClassName, "inline-flex")}
+      >
+        {tileContent(item)}
+      </button>
+    );
+
   return (
     <Container as="div" className={cn(gridClassName, "gap-6 justify-items-center")}>
-      {items.map((item: GlassIconsItem, index: number) =>
-        item.href ? (
-          <a
+      {items.map((item: GlassIconsItem, index: number) => {
+        if (!staggerSlideUp) {
+          return item.href ? (
+            <a
+              key={index}
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={item.label}
+              className={cn(tileClassName, "inline-flex")}
+            >
+              {tileContent(item)}
+            </a>
+          ) : (
+            <button
+              key={index}
+              type="button"
+              aria-label={item.label}
+              className={cn(tileClassName, "inline-flex")}
+            >
+              {tileContent(item)}
+            </button>
+          );
+        }
+        const delay = staggerBaseDelay + index * staggerStep;
+        return (
+          <motion.div
             key={index}
-            href={item.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={item.label}
-            className={cn(tileClassName, "inline-flex")}
+            className="justify-self-center"
+            initial={{ opacity: 0, y: "100%" }}
+            animate={
+              loaderExited
+                ? { opacity: 1, y: 0 }
+                : { opacity: 0, y: "100%" }
+            }
+            transition={{
+              duration: STAGGER_MOVE_S,
+              delay,
+              ease: STAGGER_EASE,
+            }}
           >
-            {tileContent(item)}
-          </a>
-        ) : (
-          <button
-            key={index}
-            type="button"
-            aria-label={item.label}
-            className={cn(tileClassName, "inline-flex")}
-          >
-            {tileContent(item)}
-          </button>
-        ),
-      )}
+            {tileNode(item)}
+          </motion.div>
+        );
+      })}
     </Container>
   );
 };

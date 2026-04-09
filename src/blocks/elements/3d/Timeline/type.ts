@@ -10,6 +10,20 @@ export interface TimelineItem {
   panelParagraph?: string;
   panelImageSrc?: string;
   panelImageAlt?: string;
+  /** কোম্পানির লোগো */
+  logoSrc?: string;
+  logoAlt?: string;
+  /** ব্যানার / অফিস ইমেজ */
+  imageSrc?: string;
+  imageAlt?: string;
+  /** লোকেশন */
+  location?: string;
+  /** অফিসের নাম */
+  officeName?: string;
+  /** অফিস সম্পর্কে সংক্ষিপ্ত বিবরণ */
+  officeInfo?: string;
+  /** উল্লেখযোগ্য অর্জন */
+  achievements?: string[];
 }
 
 export interface TimelineProps {

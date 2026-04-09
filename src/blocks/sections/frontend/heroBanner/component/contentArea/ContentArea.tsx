@@ -16,41 +16,46 @@ import { useLoaderExited } from "@/blocks/elements/3d/PageLoadLoader/functions";
  */
 
 /** How long each move takes (seconds). Same for image + text blocks so timing feels consistent. */
-const HERO_MOVE_MS = 0.55;
+const heroMoveMs = 0.55;
 
 /**
  * Motion’s `"easeOut"` → same as CSS `ease-out`: fast at the start, smooth deceleration at the end.
  * (Browser DevTools / WAAPI show `ease-out` — easy to recognize and tweak.)
  */
-const EASE_OUT = "easeOut" as const;
+const easeOut = "easeOut" as const;
+
+/** Match Objective section title lines (split reveal). */
+const titleEase = [0.76, 0, 0.24, 1] as const;
+const titleDuration = 0.78;
+
+/** Right column: gap between block 1 → 2 (contact) → 3 (icons). */
+const gapAfterSectionS = 0.06;
+
+/** Left image + right block 1 একই ফ্রেমে শুরু (০ = লোডার exit-এ সাথে সাথে). */
+const delayHeroStartS = 0;
 
 const heroTransition = (delay: number) => ({
-  duration: HERO_MOVE_MS,
+  duration: heroMoveMs,
   delay,
-  ease: EASE_OUT,
+  ease: easeOut,
 });
 
 /** Positive y = starts lower (below), animates to 0 = rises into place */
-const imageMotion = {
-  initial: { opacity: 0, y: 220 },
-  animate: { opacity: 1, y: 0 },
-  transition: heroTransition(0.04),
-};
+const heroImageInitial = { opacity: 0, y: 220 };
+const heroImageAnimate = { opacity: 1, y: 0 };
 
-function slideFromRight(delay: number) {
-  return {
-    initial: { opacity: 0, x: 52 },
-    animate: { opacity: 1, x: 0 },
-    transition: heroTransition(delay),
-  };
-}
+/** Contact + social rows: slide up duration. */
+const rowMoveMs = 0.4;
 
-function gatedSlideFromRight(delay: number, loaderExited: boolean) {
-  const m = slideFromRight(delay);
+function rowSlideUp(delay: number, loaderExited: boolean) {
   return {
-    initial: m.initial,
-    animate: loaderExited ? m.animate : m.initial,
-    transition: m.transition,
+    initial: { opacity: 0, y: 28 },
+    animate: loaderExited ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 },
+    transition: {
+      duration: rowMoveMs,
+      delay,
+      ease: easeOut,
+    },
   };
 }
 
@@ -71,10 +76,30 @@ const ContentArea = ({
     ? `tel:${contactPhone.replace(/[^\d+]/g, "")}`
     : "#";
 
+  const hasContactPills = Boolean(contactEmail || contactPhone);
+
+  /** Block 1: pre-title + headline line 1 একসাথে; line 2 অল্প পরে। */
+  const headlineLine2StaggerS = 0.05;
+  const delayTitleLine1S = delayHeroStartS;
+  const delayTitleLine2S = delayHeroStartS + headlineLine2StaggerS;
+
+  /** Block 1 শেষ — তারপর contact → icons. */
+  const endBlock1S = titleLine2
+    ? delayTitleLine2S + titleDuration
+    : delayTitleLine1S + titleDuration;
+
+  /** Block 2 — contact pills. */
+  const delayContactPillsS = endBlock1S + gapAfterSectionS;
+  /** Block 3 — social icons. */
+  const delaySocialRowS = hasContactPills
+    ? delayContactPillsS + rowMoveMs + gapAfterSectionS
+    : endBlock1S + gapAfterSectionS;
+
+  /** বাম ইমেজ = ডান ব্লক ১-এর সাথে প্যারালেল (একই delay). */
   const imageMotionProps = {
-    initial: imageMotion.initial,
-    animate: loaderExited ? imageMotion.animate : imageMotion.initial,
-    transition: imageMotion.transition,
+    initial: heroImageInitial,
+    animate: loaderExited ? heroImageAnimate : heroImageInitial,
+    transition: heroTransition(delayHeroStartS),
   };
 
   const badgeClass = cn(
@@ -106,45 +131,99 @@ const ContentArea = ({
         className="relative z-[2] order-1 flex w-full flex-col items-center justify-end text-center lg:order-2 lg:basis-[60%] lg:items-start lg:text-left"
       >
         <motion.div
-          className="w-full"
-          {...((): ReturnType<typeof slideFromRight> & {
-            initial: (typeof slideFromRight)["prototype"];
-          } => {
-            const m = slideFromRight(0.12);
-            return {
-              initial: m.initial,
-              animate: loaderExited ? m.animate : m.initial,
-              transition: m.transition,
-            };
-          })()}
+          className="w-full overflow-hidden"
+          initial="hidden"
+          animate={loaderExited ? "visible" : "hidden"}
+          variants={{ hidden: {}, visible: {} }}
         >
-          <Text
-            variant="p"
-            className="relative -bottom-2 text-base font-semibold textTextColor font-open-sans capitalize sm:text-lg"
+          <motion.div
+            className="relative -bottom-2"
+            variants={{
+              hidden: { y: "110%" },
+              visible: {
+                y: "0%",
+                transition: {
+                  duration: titleDuration,
+                  ease: titleEase,
+                  delay: delayHeroStartS,
+                },
+              },
+            }}
           >
-            {preTitle}{" "}
-            <Text variant="span" className="primaryTextColor">
-              {preTitleHighlight}
+            <Text
+              variant="p"
+              className="text-base font-semibold leading-relaxed textTextColor font-open-sans capitalize sm:text-lg"
+            >
+              {preTitle}{" "}
+              <Text variant="span" className="primaryTextColor">
+                {preTitleHighlight}
+              </Text>
             </Text>
-          </Text>
+          </motion.div>
         </motion.div>
-        <motion.div className="w-full" {...gatedSlideFromRight(0.22, loaderExited)}>
-          <Text
-            variant="h1"
-            className="mb-0 text-[80px] font-bold leading-[100%] text-[var(--primary)] lg:text-[120px]"
+
+        <h1
+          className={cn(
+            "font-antonio flex flex-col",
+            "text-[110px] font-bold text-[var(--primary)]",
+            "leading-[120%] ",
+          )}
+        >
+          <motion.div
+            className="overflow-hidden"
+            initial="hidden"
+            animate={loaderExited ? "visible" : "hidden"}
+            variants={{ hidden: {}, visible: {} }}
           >
-            {titleLine1}
-            <Container as="span" className="block">
-              {titleLine2}
-            </Container>
-          </Text>
-        </motion.div>
+            <motion.span
+              className="block leading-[inherit]"
+              variants={{
+                hidden: { y: "110%" },
+                visible: {
+                  y: "0%",
+                  transition: {
+                    duration: titleDuration,
+                    ease: titleEase,
+                    delay: delayTitleLine1S,
+                  },
+                },
+              }}
+            >
+              {titleLine1}
+            </motion.span>
+          </motion.div>
+          {titleLine2 ? (
+            <motion.div
+              className="overflow-hidden"
+              initial="hidden"
+              animate={loaderExited ? "visible" : "hidden"}
+              variants={{ hidden: {}, visible: {} }}
+            >
+              <motion.span
+                className="block leading-[inherit] md:inline lg:block"
+                variants={{
+                  hidden: { y: "-110%" },
+                  visible: {
+                    y: "0%",
+                    transition: {
+                      duration: titleDuration,
+                      ease: titleEase,
+                      delay: delayTitleLine2S,
+                    },
+                  },
+                }}
+              >
+                {titleLine2}
+              </motion.span>
+            </motion.div>
+          ) : null}
+        </h1>
 
         {(contactEmail || contactPhone) && (
           <motion.div
-            className="mt-6 mb-8 flex w-full flex-wrap items-center justify-center gap-2 sm:mt-7 sm:mb-10 lg:justify-start"
+            className="mt-4 mb-5 flex w-full flex-wrap items-center justify-center gap-2 overflow-hidden sm:mt-4 sm:mb-6 lg:justify-start"
             aria-label="Contact"
-            {...gatedSlideFromRight(0.34, loaderExited)}
+            {...rowSlideUp(delayContactPillsS, loaderExited)}
           >
             {contactEmail ? (
               <a href={mailtoHref} className={badgeClass}>
@@ -162,22 +241,25 @@ const ContentArea = ({
         )}
 
         <motion.div
-          className="relative z-10 flex w-full justify-center pt-0 pb-[30px] lg:justify-start"
-          {...gatedSlideFromRight(0.44, loaderExited)}
+          className={cn(
+            "relative z-10 flex w-full justify-center overflow-visible",
+            "pt-2 pb-[30px] lg:justify-start",
+          )}
+          {...rowSlideUp(delaySocialRowS, loaderExited)}
         >
           <GlassIcons
             className="lg:mx-0"
-            items={socialLinks.map((s) => ({
+            items={socialLinks.map((social) => ({
               icon: (
                 <Icon
-                  name={s.iconName}
-                  size={22}
+                  name={social.iconName}
+                  size={20}
                   className="secondaryTextColor"
                 />
               ),
-              color: s.color,
-              label: s.label,
-              href: s.link,
+              color: social.color,
+              label: social.label,
+              href: social.link,
             }))}
           />
         </motion.div>

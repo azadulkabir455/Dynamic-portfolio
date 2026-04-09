@@ -31,10 +31,14 @@ const HeroBanner = ({ content }: HeroBannerProps) => {
   } = data;
 
   return (
-    <Container as="section" className="relative w-full">
+    <Container
+      as="section"
+      id="hero"
+      className="relative flex h-[100vh] min-h-[100vh] max-h-[100vh] w-full shrink-0 flex-col overflow-hidden"
+    >
       <Container
         as="div"
-        className="relative flex min-h-screen flex-col justify-start lg:justify-end"
+        className="relative flex min-h-0 flex-1 flex-col justify-start overflow-hidden lg:justify-end"
       >
         <Container as="div" className="absolute inset-0 z-5 overflow-hidden">
           <Particles

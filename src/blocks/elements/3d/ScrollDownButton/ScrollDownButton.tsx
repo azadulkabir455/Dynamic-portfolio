@@ -5,7 +5,7 @@ import { useCallback } from "react";
 import Container from "@/blocks/elements/container/Container";
 import { Button } from "@/blocks/elements/button/Button";
 import type { ScrollDownButtonProps } from "./type";
-import { getScrollTargetY } from "./functions";
+import { scrollToNextSectionFromHero } from "@/blocks/elements/3d/SectionScrollSnap/functions";
 import { cn } from "@/utilities/helpers/classMerge";
 
 const ScrollDownButton = ({
@@ -14,8 +14,11 @@ const ScrollDownButton = ({
   scrollByPx,
 }: ScrollDownButtonProps) => {
   const handleClick = useCallback(() => {
-    const y = getScrollTargetY(scrollByPx);
-    window.scrollTo({ top: y, behavior: "smooth" });
+    if (typeof scrollByPx === "number") {
+      window.scrollTo({ top: scrollByPx, behavior: "smooth" });
+      return;
+    }
+    scrollToNextSectionFromHero();
   }, [scrollByPx]);
 
   return (

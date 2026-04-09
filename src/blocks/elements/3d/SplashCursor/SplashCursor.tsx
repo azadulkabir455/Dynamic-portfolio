@@ -1,23 +1,26 @@
-'use client';
-import { useEffect, useRef } from 'react';
+// @ts-nocheck — legacy WebGL fluid sim; types left loose intentionally.
+"use client";
+
+import { useEffect, useRef } from "react";
+import type { SplashCursorProps } from "./type";
 
 function SplashCursor({
-  SIM_RESOLUTION = 128,
-  DYE_RESOLUTION = 1440,
-  CAPTURE_RESOLUTION = 512,
-  DENSITY_DISSIPATION = 3.5,
-  VELOCITY_DISSIPATION = 2,
-  PRESSURE = 0.1,
-  PRESSURE_ITERATIONS = 20,
-  CURL = 3,
-  SPLAT_RADIUS = 0.2,
-  SPLAT_FORCE = 6000,
-  SHADING = true,
-  COLOR_UPDATE_SPEED = 10,
-  BACK_COLOR = { r: 0.5, g: 0, b: 0 },
-  TRANSPARENT = true
-}) {
-  const canvasRef = useRef(null);
+  simResolution = 128,
+  dyeResolution = 1440,
+  captureResolution = 512,
+  densityDissipation = 3.5,
+  velocityDissipation = 2,
+  pressure = 0.1,
+  pressureIterations = 20,
+  curl = 3,
+  splatRadius = 0.2,
+  splatForce = 6000,
+  shading = true,
+  colorUpdateSpeed = 10,
+  backColor = { r: 0.5, g: 0, b: 0 },
+  transparent = true,
+}: SplashCursorProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -37,21 +40,21 @@ function SplashCursor({
     }
 
     let config = {
-      SIM_RESOLUTION,
-      DYE_RESOLUTION,
-      CAPTURE_RESOLUTION,
-      DENSITY_DISSIPATION,
-      VELOCITY_DISSIPATION,
-      PRESSURE,
-      PRESSURE_ITERATIONS,
-      CURL,
-      SPLAT_RADIUS,
-      SPLAT_FORCE,
-      SHADING,
-      COLOR_UPDATE_SPEED,
+      SIM_RESOLUTION: simResolution,
+      DYE_RESOLUTION: dyeResolution,
+      CAPTURE_RESOLUTION: captureResolution,
+      DENSITY_DISSIPATION: densityDissipation,
+      VELOCITY_DISSIPATION: velocityDissipation,
+      PRESSURE: pressure,
+      PRESSURE_ITERATIONS: pressureIterations,
+      CURL: curl,
+      SPLAT_RADIUS: splatRadius,
+      SPLAT_FORCE: splatForce,
+      SHADING: shading,
+      COLOR_UPDATE_SPEED: colorUpdateSpeed,
       PAUSED: false,
-      BACK_COLOR,
-      TRANSPARENT
+      BACK_COLOR: backColor,
+      TRANSPARENT: transparent,
     };
 
     let pointers = [new pointerPrototype()];
@@ -534,7 +537,11 @@ function SplashCursor({
       };
     })();
 
-    let dye, velocity, divergence, curl, pressure;
+    let dye;
+    let velocity;
+    let divergence;
+    let curlFbo;
+    let pressureFbo;
 
     const copyProgram = new Program(baseVertexShader, copyShader);
     const clearProgram = new Program(baseVertexShader, clearShader);
@@ -576,8 +583,8 @@ function SplashCursor({
         );
 
       divergence = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
-      curl = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
-      pressure = createDoubleFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
+      curlFbo = createFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
+      pressureFbo = createDoubleFBO(simRes.width, simRes.height, r.internalFormat, r.format, texType, gl.NEAREST);
     }
 
     function createFBO(w, h, internalFormat, format, type, param) {
@@ -724,12 +731,12 @@ function SplashCursor({
       curlProgram.bind();
       gl.uniform2f(curlProgram.uniforms.texelSize, velocity.texelSizeX, velocity.texelSizeY);
       gl.uniform1i(curlProgram.uniforms.uVelocity, velocity.read.attach(0));
-      blit(curl);
+      blit(curlFbo);
 
       vorticityProgram.bind();
       gl.uniform2f(vorticityProgram.uniforms.texelSize, velocity.texelSizeX, velocity.texelSizeY);
       gl.uniform1i(vorticityProgram.uniforms.uVelocity, velocity.read.attach(0));
-      gl.uniform1i(vorticityProgram.uniforms.uCurl, curl.attach(1));
+      gl.uniform1i(vorticityProgram.uniforms.uCurl, curlFbo.attach(1));
       gl.uniform1f(vorticityProgram.uniforms.curl, config.CURL);
       gl.uniform1f(vorticityProgram.uniforms.dt, dt);
       blit(velocity.write);
@@ -741,23 +748,23 @@ function SplashCursor({
       blit(divergence);
 
       clearProgram.bind();
-      gl.uniform1i(clearProgram.uniforms.uTexture, pressure.read.attach(0));
+      gl.uniform1i(clearProgram.uniforms.uTexture, pressureFbo.read.attach(0));
       gl.uniform1f(clearProgram.uniforms.value, config.PRESSURE);
-      blit(pressure.write);
-      pressure.swap();
+      blit(pressureFbo.write);
+      pressureFbo.swap();
 
       pressureProgram.bind();
       gl.uniform2f(pressureProgram.uniforms.texelSize, velocity.texelSizeX, velocity.texelSizeY);
       gl.uniform1i(pressureProgram.uniforms.uDivergence, divergence.attach(0));
       for (let i = 0; i < config.PRESSURE_ITERATIONS; i++) {
-        gl.uniform1i(pressureProgram.uniforms.uPressure, pressure.read.attach(1));
-        blit(pressure.write);
-        pressure.swap();
+        gl.uniform1i(pressureProgram.uniforms.uPressure, pressureFbo.read.attach(1));
+        blit(pressureFbo.write);
+        pressureFbo.swap();
       }
 
       gradienSubtractProgram.bind();
       gl.uniform2f(gradienSubtractProgram.uniforms.texelSize, velocity.texelSizeX, velocity.texelSizeY);
-      gl.uniform1i(gradienSubtractProgram.uniforms.uPressure, pressure.read.attach(0));
+      gl.uniform1i(gradienSubtractProgram.uniforms.uPressure, pressureFbo.read.attach(0));
       gl.uniform1i(gradienSubtractProgram.uniforms.uVelocity, velocity.read.attach(1));
       blit(velocity.write);
       velocity.swap();
@@ -1030,20 +1037,20 @@ function SplashCursor({
 
     updateFrame();
   }, [
-    SIM_RESOLUTION,
-    DYE_RESOLUTION,
-    CAPTURE_RESOLUTION,
-    DENSITY_DISSIPATION,
-    VELOCITY_DISSIPATION,
-    PRESSURE,
-    PRESSURE_ITERATIONS,
-    CURL,
-    SPLAT_RADIUS,
-    SPLAT_FORCE,
-    SHADING,
-    COLOR_UPDATE_SPEED,
-    BACK_COLOR,
-    TRANSPARENT
+    simResolution,
+    dyeResolution,
+    captureResolution,
+    densityDissipation,
+    velocityDissipation,
+    pressure,
+    pressureIterations,
+    curl,
+    splatRadius,
+    splatForce,
+    shading,
+    colorUpdateSpeed,
+    backColor,
+    transparent,
   ]);
 
   return (

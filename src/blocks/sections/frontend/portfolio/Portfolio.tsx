@@ -1,13 +1,24 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
 import { cn } from "@/utilities/helpers/classMerge";
-import ProjectTwoCard from "@/blocks/sections/frontend/projectTwo/component/card/ProjectTwoCard";
-import ProjectTwoHighlightCards from "@/blocks/sections/frontend/projectTwo/component/highlightCards/ProjectTwoHighlightCards";
-import { PROJECT_TWO_CARDS } from "@/blocks/sections/frontend/projectTwo/projectTwoData";
-import { PROJECT_TWO_HIGHLIGHTS } from "@/blocks/sections/frontend/projectTwo/projectTwoHighlights";
-import type { ProjectTwoProps } from "@/blocks/sections/frontend/projectTwo/type";
+import ProjectTwoCard from "@/blocks/sections/frontend/portfolio/component/card/ProjectTwoCard";
+import ProjectTwoHighlightCards from "@/blocks/sections/frontend/portfolio/component/highlightCards/ProjectTwoHighlightCards";
+import { PROJECT_TWO_CARDS } from "@/blocks/sections/frontend/portfolio/projectTwoData";
+import { PROJECT_TWO_HIGHLIGHTS } from "@/blocks/sections/frontend/portfolio/projectTwoHighlights";
+import type { ProjectTwoProps } from "@/blocks/sections/frontend/portfolio/type";
+import {
+  animateScrollTo,
+  clampScrollY,
+  lockPageScroll,
+  unlockPageScroll,
+  scrollDurationMs,
+} from "@/blocks/elements/3d/SectionScrollSnap/functions";
+
+const EASE = "cubic-bezier(0.72,0,0.28,1)";
+const DUR_S = scrollDurationMs / 1000;
 
 const defaultTitle = "Featured work";
 
@@ -15,6 +26,54 @@ const ProjectTwo = ({
   sectionTitle = defaultTitle,
   titleClassName,
 }: ProjectTwoProps) => {
+  const busyRef = useRef(false);
+
+  useEffect(() => {
+    const handler = (e: WheelEvent) => {
+      if (busyRef.current) return;
+      const portfolio = document.getElementById("project-two");
+      const footer = document.querySelector("footer") as HTMLElement | null;
+      if (!portfolio || !footer) return;
+
+      const scrollY = window.scrollY;
+      const vpH = window.innerHeight;
+      const portfolioEndY = portfolio.offsetTop + portfolio.offsetHeight - vpH;
+
+      /* last card দেখা যাচ্ছে, scroll down → footer curtain reveal */
+      if (e.deltaY > 0 && Math.abs(scrollY - portfolioEndY) < 40) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        busyRef.current = true;
+
+        const offset = portfolio.offsetHeight - vpH;
+        portfolio.style.cssText = `
+          position:fixed;top:0;left:0;width:100%;
+          height:${portfolio.offsetHeight}px;
+          z-index:50;overflow-y:hidden;
+          transform:translateY(-${offset}px);
+        `;
+
+        requestAnimationFrame(() => {
+          portfolio.style.transition = `transform ${DUR_S}s ${EASE}`;
+          portfolio.style.transform = `translateY(-${offset + vpH}px)`;
+        });
+
+        animateScrollTo(clampScrollY(footer.offsetTop), scrollDurationMs, {
+          onStart: lockPageScroll,
+          onComplete: () => {
+            unlockPageScroll();
+            portfolio.style.cssText = "";
+            busyRef.current = false;
+          },
+        });
+      }
+    };
+
+    window.addEventListener("wheel", handler, { passive: false, capture: true });
+    return () =>
+      window.removeEventListener("wheel", handler, { capture: true });
+  }, []);
+
   return (
     <Container
       as="section"

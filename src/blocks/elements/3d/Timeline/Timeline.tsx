@@ -4,6 +4,8 @@ import { useCallback, useLayoutEffect, useRef, useState } from "react";
 import { motion, useMotionValueEvent, useScroll } from "motion/react";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
+import NextImage from "next/image";
+import { MapPin, CalendarDays, Building2, CheckCircle2 } from "lucide-react";
 import { cn } from "@/utilities/helpers/classMerge";
 import { getTimelineKey } from "./functions";
 import type { TimelineItem, TimelineProps } from "./type";
@@ -212,7 +214,7 @@ function TimelineEntryCard({
   return (
     <motion.article
       ref={cardRef}
-      initial={{ opacity: 0, x: 28, rotateX: 0 }}
+      initial={{ opacity: 0, x: 28 }}
       whileInView={{ opacity: 1, x: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{
@@ -221,52 +223,108 @@ function TimelineEntryCard({
         ease: [0.22, 1, 0.36, 1],
       }}
       className={cn(
-        "relative flex min-h-[260px] h-full min-w-0 flex-col overflow-hidden rounded-2xl",
-        "border border-secondary",
+        "relative min-w-0 overflow-hidden rounded-2xl",
+        "border border-secondary/30",
         "bg-transparent",
-        "p-6 shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
-        "md:min-h-[280px] md:p-8",
+        "shadow-[0_12px_40px_rgba(0,0,0,0.12)]",
         "[transform-style:preserve-3d]",
       )}
       whileHover={{
         y: -4,
-        rotateX: 2,
         transition: { type: "spring", stiffness: 400, damping: 28 },
       }}
     >
-      <Text
-        variant="p"
-        className={cn(
-          "font-open-sans mb-2 text-sm font-medium uppercase tracking-widest",
-          "text-secondary",
-        )}
-      >
-        {item.period}
-      </Text>
-      <Text
-        variant="h3"
-        className={cn("font-antonio mb-3 text-2xl text-secondary md:text-3xl")}
-      >
-        {item.title}
-      </Text>
-      {item.tag ? (
-        <span
-          className={cn(
-            "mb-4 inline-block self-start rounded-full border border-secondary",
-            "bg-transparent px-3 py-1 text-xs font-medium text-secondary",
+      <div className="p-6 md:p-8">
+        {/* শীর্ষ সারি: লোগো + অফিসের নাম + ব্যাজ */}
+        <div className="flex items-start gap-5">
+          {item.logoSrc && (
+            <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border border-secondary/20 bg-white/10 backdrop-blur-sm">
+              <NextImage
+                src={item.logoSrc}
+                alt={item.logoAlt ?? ""}
+                fill
+                className="object-contain p-1.5"
+                sizes="48px"
+              />
+            </div>
           )}
-        >
-          {item.tag}
-        </span>
-      ) : null}
-      <Text
-        variant="p"
-        className={cn(
-          "font-open-sans mt-auto max-w-2xl flex-1 leading-relaxed text-secondary",
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            {item.officeName && (
+              <Text
+                variant="span"
+                className="font-open-sans text-sm font-semibold text-secondary/70 truncate"
+              >
+                {item.officeName}
+              </Text>
+            )}
+            <Text
+              variant="h3"
+              className="font-antonio text-2xl font-bold leading-tight text-secondary md:text-3xl"
+            >
+              {item.title}
+            </Text>
+          </div>
+        </div>
+
+        {/* মেটা: তারিখ + লোকেশন */}
+        <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+          {item.period && (
+            <span className="flex items-center gap-1.5 font-open-sans text-sm text-secondary/70">
+              <CalendarDays size={14} className="shrink-0 text-secondary/50" />
+              {item.period}
+            </span>
+          )}
+          {item.location && (
+            <span className="flex items-center gap-1.5 font-open-sans text-sm text-secondary/70">
+              <MapPin size={14} className="shrink-0 text-secondary/50" />
+              {item.location}
+            </span>
+          )}
+        </div>
+
+        {/* অফিস ইনফো */}
+        {item.officeInfo && (
+          <div className="mt-4 flex items-start gap-2 rounded-xl border border-secondary/15 bg-secondary/5 px-4 py-3">
+            <Building2 size={15} className="mt-0.5 shrink-0 text-secondary/50" />
+            <Text
+              variant="p"
+              className="font-open-sans text-sm leading-relaxed text-secondary/70"
+            >
+              {item.officeInfo}
+            </Text>
+          </div>
         )}
-      >
-        {item.description}
-      </Text>
+
+        {/* জব ইনফো */}
+        {item.description && (
+          <Text
+            variant="p"
+            className="mt-4 font-open-sans leading-relaxed text-secondary/90"
+          >
+            {item.description}
+          </Text>
+        )}
+
+        {/* অর্জনের তালিকা */}
+        {item.achievements && item.achievements.length > 0 && (
+          <ul className="mt-5 flex flex-col gap-2.5">
+            {item.achievements.map((ach, i) => (
+              <li key={i} className="flex items-start gap-2.5">
+                <CheckCircle2
+                  size={16}
+                  className="mt-0.5 shrink-0 text-secondary/60"
+                />
+                <Text
+                  variant="span"
+                  className="font-open-sans text-sm leading-snug text-secondary/80"
+                >
+                  {ach}
+                </Text>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </motion.article>
   );
 }

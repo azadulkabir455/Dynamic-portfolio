@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type RefObject,
+} from "react";
 import { motion } from "motion/react";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
@@ -14,42 +19,42 @@ const TITLE_DURATION = 0.78;
 
 const LOGO_MOVE_S = 0.55;
 const LOGO_EASE_OUT = "easeOut" as const;
-const BETWEEN_ROWS_S = 0.12;
 
-/** Matches Tailwind `lg:` — 2 cols below, 3 cols at lg+. */
-function useLogoGridColumns(): 2 | 3 {
-  const [cols, setCols] = useState<2 | 3>(2);
+/** Section টপ ভিউপোর্ট টপে এলে (স্ন্যাপ/স্ক্রল) একবার `visible` — সব অ্যানিমেশন একসাথে। */
+const SECTION_TOP_ALIGN_PX = 2;
+
+function useObjectiveSectionReveal(sectionRef: RefObject<HTMLElement | null>) {
+  const [phase, setPhase] = useState<"hidden" | "visible">("hidden");
+  const doneRef = useRef(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(min-width: 1024px)");
-    const update = () => setCols(mq.matches ? 3 : 2);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+    const el = sectionRef.current;
+    if (!el) return;
 
-  return cols;
+    const tick = () => {
+      if (doneRef.current) return;
+      const top = el.getBoundingClientRect().top;
+      if (top <= SECTION_TOP_ALIGN_PX) {
+        doneRef.current = true;
+        setPhase("visible");
+      }
+    };
+
+    tick();
+    window.addEventListener("scroll", tick, { passive: true });
+    window.addEventListener("resize", tick);
+    return () => {
+      window.removeEventListener("scroll", tick);
+      window.removeEventListener("resize", tick);
+    };
+  }, [sectionRef]);
+
+  return phase;
 }
-
-function logoRowDelay(index: number, cols: 2 | 3) {
-  const row = Math.floor(index / cols);
-  return row * (LOGO_MOVE_S + BETWEEN_ROWS_S);
-}
-
-const inViewFull = {
-  once: true,
-  amount: "all" as const,
-  margin: "0px",
-};
-
-const inViewParagraph = {
-  once: true,
-  amount: 0.92,
-  margin: "0px",
-};
 
 const Objective = (props: ObjectiveProps) => {
-  const logoCols = useLogoGridColumns();
+  const sectionRef = useRef<HTMLElement>(null);
+  const sectionAnimate = useObjectiveSectionReveal(sectionRef);
   const { titlePrefix, titleEmphasis, paragraph, logos } = {
     ...defaultObjectiveData,
     ...props,
@@ -63,20 +68,26 @@ const Objective = (props: ObjectiveProps) => {
   );
 
   return (
-    <Container
-      as="section"
+    <section
+      ref={sectionRef}
       id="objective"
       className={cn(
-        "bg-primary rounded-b-xl",
-        "maxContainer",
-        "px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16",
-        "lg:px-10 lg:pb-[120px] lg:pt-[120px]",
+        "-mt-px flex h-[100vh] min-h-[100vh] max-h-[100vh] w-full shrink-0 flex-col overflow-hidden",
+        "bg-[var(--secondary)]",
       )}
     >
       <Container
         as="div"
         className={cn(
-          "border-t border-secondary",
+          "maxContainer w-full flex-1",
+          "bg-primary rounded-b-xl",
+          "overflow-x-hidden",
+          "lg:px-10",
+        )}
+      >
+      <Container
+        as="div"
+        className={cn(
           "pt-10 sm:pt-14",
           "lg:pt-[120px]",
         )}
@@ -86,21 +97,21 @@ const Objective = (props: ObjectiveProps) => {
           className={cn(
             "flex flex-col gap-8",
             "lg:flex-row lg:items-center lg:gap-10",
+            "min-w-0",
           )}
         >
           <Container
             as="div"
             className={cn(
-              "flex w-full flex-col gap-4 sm:gap-5",
-              "lg:basis-1/2 lg:shrink-0",
+              "flex w-full min-w-0 flex-col gap-4 sm:gap-5",
+              "lg:flex-1",
             )}
           >
-            <h2 className="m-0 flex flex-col p-0">
+            <h2 className="m-0 flex flex-col p-0 font-antonio">
               <motion.div
                 className="overflow-hidden"
                 initial="hidden"
-                whileInView="visible"
-                viewport={inViewFull}
+                animate={sectionAnimate}
                 variants={{ hidden: {}, visible: {} }}
               >
                 <motion.span
@@ -123,8 +134,7 @@ const Objective = (props: ObjectiveProps) => {
               <motion.div
                 className="overflow-hidden"
                 initial="hidden"
-                whileInView="visible"
-                viewport={inViewFull}
+                animate={sectionAnimate}
                 variants={{ hidden: {}, visible: {} }}
               >
                 <motion.span
@@ -149,8 +159,7 @@ const Objective = (props: ObjectiveProps) => {
             <motion.div
               className="overflow-hidden"
               initial="hidden"
-              whileInView="visible"
-              viewport={inViewParagraph}
+              animate={sectionAnimate}
               variants={{ hidden: {}, visible: {} }}
             >
               <motion.div
@@ -186,9 +195,9 @@ const Objective = (props: ObjectiveProps) => {
           <Container
             as="div"
             className={cn(
-              "w-full shrink-0",
-              "grid grid-cols-2 gap-0.5 p-1.5",
-              "lg:basis-1/2 lg:grid-cols-3",
+              "w-full min-w-0 shrink-0",
+              "grid grid-cols-2 gap-1",
+              "lg:flex-1 lg:grid-cols-3",
               "rounded-xl",
               "overflow-hidden",
             )}
@@ -198,12 +207,10 @@ const Objective = (props: ObjectiveProps) => {
                 key={`objective-logo-${index}`}
                 className={cn(
                   "overflow-hidden rounded-[10px]",
-                  "min-h-[140px] sm:min-h-[160px]",
-                  "lg:min-h-[200px]",
+                  "min-h-[200px]",
                 )}
                 initial="hidden"
-                whileInView="visible"
-                viewport={inViewFull}
+                animate={sectionAnimate}
                 variants={{ hidden: {}, visible: {} }}
               >
                 <motion.div
@@ -220,7 +227,7 @@ const Objective = (props: ObjectiveProps) => {
                       opacity: 1,
                       transition: {
                         duration: LOGO_MOVE_S,
-                        delay: logoRowDelay(index, logoCols),
+                        delay: 0,
                         ease: LOGO_EASE_OUT,
                       },
                     },
@@ -229,13 +236,11 @@ const Objective = (props: ObjectiveProps) => {
                   <Image
                     src={logo.src}
                     alt={logo.alt}
-                    width={150}
-                    height={44}
+                    width={200}
+                    height={200}
                     className={cn(
-                      "w-auto object-contain",
-                      "h-7 sm:h-8",
+                      "h-[200px] w-auto max-w-full object-contain",
                       "grayscale brightness-0 invert opacity-90",
-                      "lg:h-9",
                     )}
                   />
                 </motion.div>
@@ -244,7 +249,8 @@ const Objective = (props: ObjectiveProps) => {
           </Container>
         </Container>
       </Container>
-    </Container>
+      </Container>
+    </section>
   );
 };
 

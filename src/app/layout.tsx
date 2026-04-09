@@ -12,11 +12,11 @@ import TargetCursor from "@/blocks/elements/3d/TargetCursor/TargetCursor";
 import BubbleMenu from "@/blocks/elements/3d/BubbleMenu/BubbleMenu";
 import { defaultItems } from "@/blocks/elements/3d/BubbleMenu/functions";
 import HeraBanner from "@/blocks/sections/frontend/heroBanner/HeroBanner";
-import GsapScrollSmoother from "@/components/GsapScrollSmoother";
+import SectionScrollSnap from "@/blocks/elements/3d/SectionScrollSnap/SectionScrollSnap";
 import { ParallaxRoot } from "@/hooks/parallax";
 
 const antonio = Antonio({
-  weight: "400",
+  weight: ["400", "700"],
   subsets: ["latin"],
   variable: "--font-antonio",
 });
@@ -42,6 +42,7 @@ export default function RootLayout({
       <body
         className={`${antonio.variable} ${openSans.variable} ${openSans.className} antialiased`}
       >
+        <SectionScrollSnap />
         <PageLoadLoaderProvider>
         <PageLoadGate />
         <ParallaxRoot>
@@ -70,15 +71,13 @@ export default function RootLayout({
         />
         <LiquidScrollTop />
 
-          <GsapScrollSmoother>
-            <Container
-              as="div"
-              className="overflow-x-clip overflow-y-visible"
-            >
-              <HeraBanner />
-              {children}
-            </Container>
-          </GsapScrollSmoother>
+          <Container
+            as="div"
+            className="flex flex-col gap-0 overflow-x-clip overflow-y-visible"
+          >
+            <HeraBanner />
+            {children}
+          </Container>
           <PageLoadLoader />
         </ClickSpark>
         </ParallaxRoot>

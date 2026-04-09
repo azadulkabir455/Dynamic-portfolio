@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
 import AnimatedButton from "@/blocks/elements/3d/AnimatedButton/AnimatedButton";
@@ -10,6 +10,17 @@ import IntroVideoModal from "./component/modal/IntroVideoModal";
 import type { IntroProps } from "./type";
 import LogoLoop from "@/blocks/elements/3d/LogoLoop/LogoLoop";
 import type { LogoLoopItem } from "@/blocks/elements/3d/LogoLoop/type";
+import {
+  animateScrollTo,
+  clampScrollY,
+  lockPageScroll,
+  unlockPageScroll,
+  scrollDurationMs,
+  scrollToSectionById,
+} from "@/blocks/elements/3d/SectionScrollSnap/functions";
+
+const EASE = "cubic-bezier(0.72,0,0.28,1)";
+const DUR_S = scrollDurationMs / 1000;
 
 const introStatic = {
   title: "Who’s Behind the Screen",
@@ -46,15 +57,93 @@ const Intro = ({
   posterSrc,
 }: IntroProps = {}) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const sectionRef = useRef<HTMLElement>(null);
+  const busyRef = useRef(false);
+
+  useEffect(() => {
+    const handler = (e: WheelEvent) => {
+      if (busyRef.current) return;
+      const section = sectionRef.current;
+      if (!section) return;
+      const scrollY = window.scrollY;
+
+      /* ── DOWN: Intro → Portfolio (curtain reveal) ── */
+      if (e.deltaY > 0 && Math.abs(scrollY - section.offsetTop) < 10) {
+        const portfolio = document.getElementById("project-two");
+        if (!portfolio) return;
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        busyRef.current = true;
+
+        /* fix Intro on top, slide it away */
+        section.style.position = "fixed";
+        section.style.inset = "0";
+        section.style.height = "100vh";
+        section.style.zIndex = "50";
+        section.style.borderRadius = "0";
+
+        requestAnimationFrame(() => {
+          section.style.transition = `transform ${DUR_S}s ${EASE}`;
+          section.style.transform = "translateY(-100vh)";
+        });
+
+        animateScrollTo(clampScrollY(portfolio.offsetTop), scrollDurationMs, {
+          onStart: lockPageScroll,
+          onComplete: () => {
+            unlockPageScroll();
+            section.style.cssText = "";
+            busyRef.current = false;
+          },
+        });
+        return;
+      }
+
+      /* ── UP: Portfolio top → Intro (curtain close) ── */
+      const portfolio = document.getElementById("project-two");
+      if (e.deltaY < 0 && portfolio && Math.abs(scrollY - portfolio.offsetTop) < 10) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        busyRef.current = true;
+
+        /* start Intro above viewport, slide it down into view */
+        section.style.position = "fixed";
+        section.style.inset = "0";
+        section.style.height = "100vh";
+        section.style.zIndex = "50";
+        section.style.borderRadius = "0";
+        section.style.transform = "translateY(-100vh)";
+
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            section.style.transition = `transform ${DUR_S}s ${EASE}`;
+            section.style.transform = "translateY(0)";
+          }),
+        );
+
+        animateScrollTo(clampScrollY(section.offsetTop), scrollDurationMs, {
+          onStart: lockPageScroll,
+          onComplete: () => {
+            unlockPageScroll();
+            section.style.cssText = "";
+            busyRef.current = false;
+          },
+        });
+      }
+    };
+
+    window.addEventListener("wheel", handler, { passive: false, capture: true });
+    return () =>
+      window.removeEventListener("wheel", handler, { capture: true });
+  }, []);
 
   return (
     <>
-      <Container
-        as="section"
+      <section
+        ref={sectionRef}
         className={cn(
           "relative isolate z-10",
-          "min-h-[min(100vh,920px)] w-full",
-          "overflow-hidden rounded-b-2xl",
+          "h-screen w-full",
+          "overflow-hidden",
         )}
         id="intro"
       >
@@ -133,32 +222,7 @@ const Intro = ({
 
 
         </Container>
-        <Container
-          as="div"
-          className={cn(
-            "relative z-20 w-full pointer-events-auto",
-          )}
-        >
-          <Container
-            as="div"
-            className={cn(
-              "flex h-[360px] w-full min-w-0 items-center justify-center",
-            )}
-          >
-            <LogoLoop
-              logos={imageLogos}
-              speed={36}
-              direction="left"
-              width="100%"
-              logoHeight={112}
-              gap={48}
-              pauseOnHover
-              ariaLabel="Companies and partners"
-              className="w-full min-w-0"
-            />
-          </Container>
-        </Container>
-      </Container>
+      </section>
 
       <IntroVideoModal
         open={modalOpen}

@@ -1,6 +1,19 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import Container from "@/blocks/elements/container/Container";
 import { cn } from "@/utilities/helpers/classMerge";
 import type { FooterProps } from "./type";
+import {
+  animateScrollTo,
+  clampScrollY,
+  lockPageScroll,
+  unlockPageScroll,
+  scrollDurationMs,
+} from "@/blocks/elements/3d/SectionScrollSnap/functions";
+
+const EASE = "cubic-bezier(0.72,0,0.28,1)";
+const DUR_S = scrollDurationMs / 1000;
 
 function defaultTelHref(phone: string): string {
   const cleaned = phone.replace(/[^\d+]/g, "");
@@ -15,11 +28,89 @@ const Footer = ({
   phoneHref,
 }: FooterProps = {}) => {
   const tel = phoneHref ?? defaultTelHref(phone);
+  const busyRef = useRef(false);
+
+  useEffect(() => {
+    const handler = (e: WheelEvent) => {
+      if (busyRef.current) return;
+      const footer = document.querySelector("footer") as HTMLElement | null;
+      const portfolio = document.getElementById("project-two");
+      if (!footer || !portfolio) return;
+
+      const scrollY = window.scrollY;
+      const vpH = window.innerHeight;
+      const portfolioEndY = portfolio.offsetTop + portfolio.offsetHeight - vpH;
+
+      const fixPortfolio = (startTranslate: number) => {
+        portfolio.style.cssText = `
+          position:fixed;top:0;left:0;width:100%;
+          height:${portfolio.offsetHeight}px;
+          z-index:50;overflow-y:hidden;
+          transform:translateY(-${startTranslate}px);
+        `;
+      };
+
+      /* ── DOWN: portfolio bottom → footer ── */
+      if (e.deltaY > 0 && Math.abs(scrollY - portfolioEndY) < 30) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        busyRef.current = true;
+
+        const offset = portfolio.offsetHeight - vpH;
+        fixPortfolio(offset);
+
+        requestAnimationFrame(() => {
+          portfolio.style.transition = `transform ${DUR_S}s ${EASE}`;
+          portfolio.style.transform = `translateY(-${offset + vpH}px)`;
+        });
+
+        animateScrollTo(clampScrollY(footer.offsetTop), scrollDurationMs, {
+          onStart: lockPageScroll,
+          onComplete: () => {
+            unlockPageScroll();
+            portfolio.style.cssText = "";
+            busyRef.current = false;
+          },
+        });
+        return;
+      }
+
+      /* ── UP: footer top → portfolio bottom ── */
+      if (e.deltaY < 0 && Math.abs(scrollY - footer.offsetTop) < 10) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        busyRef.current = true;
+
+        const offset = portfolio.offsetHeight - vpH;
+        fixPortfolio(offset + vpH);
+
+        requestAnimationFrame(() =>
+          requestAnimationFrame(() => {
+            portfolio.style.transition = `transform ${DUR_S}s ${EASE}`;
+            portfolio.style.transform = `translateY(-${offset}px)`;
+          }),
+        );
+
+        animateScrollTo(clampScrollY(portfolioEndY), scrollDurationMs, {
+          onStart: lockPageScroll,
+          onComplete: () => {
+            unlockPageScroll();
+            portfolio.style.cssText = "";
+            busyRef.current = false;
+          },
+        });
+      }
+    };
+
+    window.addEventListener("wheel", handler, { passive: false, capture: true });
+    return () =>
+      window.removeEventListener("wheel", handler, { capture: true });
+  }, []);
 
   return (
     <Container
       as="footer"
-      className={cn("w-full bg-primary px-4 py-5 md:px-5 md:py-6")}
+      className={cn("flex h-screen w-full items-center bg-secondary px-4 py-5 md:px-5 md:py-6")}
     >
       <Container
         as="div"

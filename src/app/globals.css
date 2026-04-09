@@ -29,6 +29,7 @@ body {
 
 /* Scrollbar: track = secondary, thumb = primary + rounded (Firefox + WebKit) */
 html {
+  /* ভার্টিক্যাল স্ন্যাপ: SectionScrollSnap (JS) — html-এ CSS snap না (ডক স্ক্রলে অস্থির) */
   scrollbar-width: thin;
   scrollbar-color: var(--primary) var(--secondary);
   scrollbar-gutter: stable;
@@ -76,6 +77,23 @@ h6 {
   max-width: 1540px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* #project-title: নিচের অ্যারো — উচ্চতা scaleY ৫০% ↔ ১০০% */
+@keyframes projectTitleArrowPulse {
+  0%,
+  100% {
+    transform: scaleY(0.5);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.projectTitleScrollArrow {
+  display: inline-flex;
+  transform-origin: center center;
+  animation: projectTitleArrowPulse 1.8s ease-in-out infinite;
 }
 
 .primaryBacgroundColor {
