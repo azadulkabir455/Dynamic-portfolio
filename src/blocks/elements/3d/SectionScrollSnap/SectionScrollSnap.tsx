@@ -7,12 +7,20 @@ import {
   isScrollAnimationRunning,
   lockPageScroll,
   scrollDurationMs,
+  scrollToSectionById,
   setSnapCompleteListener,
   snapCooldownMs,
   thresholdForHeight,
   unlockPageScroll,
   visibleInViewport,
 } from "./functions";
+import {
+  getPortfolioStackStep,
+  isInPortfolioStackScrollZone,
+  isPortfolioStackScrollLocked,
+  portfolioCardCount,
+  setPortfolioStackStep,
+} from "@/blocks/sections/frontend/portfolio/functions";
 
 /** স্ক্রল ইভেন্টে ডেল্টা এত কম হলে ইগনোর। */
 const minDeltaPx = 1;
@@ -90,6 +98,33 @@ function isJustAfterExperience(
   return scrollY >= exitY && scrollY <= exitY + vpH * 0.5;
 }
 
+/** project-two ও skills এর মাঝের স্ক্রল জোন — এখানে #project-title এ স্ন্যাপ করব না। */
+function isInPortfolioSkillsScrollGap(
+  scrollY: number,
+  projectTwo: HTMLElement | null,
+  skills: HTMLElement | null,
+): boolean {
+  if (!projectTwo || !skills) return false;
+  return (
+    scrollY >= projectTwo.offsetTop - 8 &&
+    scrollY < skills.offsetTop - 8
+  );
+}
+
+/**
+ * #skills এ লম্বা স্ক্রল ট্র্যাক আছে — পুরো রেঞ্জে (স্টার্ট/এন্ড সহ) নেটিভ স্ক্রল দিয়ে কন্টেন্ট রিভিল;
+ * JS স্ন্যাপ চালাব না, যাতে মাঝখানে না গিয়ে পরের সেকশনে লাফ না করে।
+ */
+function isInSkillsScrollInterior(scrollY: number, vpH: number): boolean {
+  const skills = document.getElementById("skills");
+  if (!skills) return false;
+  if (skills.offsetHeight <= vpH + 1) return false;
+  const start = skills.offsetTop;
+  const end = start + skills.offsetHeight - vpH;
+  const eps = 4;
+  return scrollY >= start - eps && scrollY <= end + eps;
+}
+
 const scrollKeys = new Set([
   "ArrowUp",
   "ArrowDown",
@@ -120,10 +155,7 @@ export default function SectionScrollSnap() {
   const lastScrollYRef = useRef(0);
 
   useEffect(() => {
-    const objective = document.getElementById("objective");
-    const hero = document.getElementById("hero");
-    if (!objective || !hero) return;
-
+    /** হিরো/অবজেক্টিভ পরে মাউন্ট হলেও স্ন্যাপ চালু রাখতে — প্রতি ইভেন্টে `#id` রিসলভ। */
     lastScrollYRef.current = window.scrollY;
 
     setSnapCompleteListener(() => {
@@ -162,6 +194,12 @@ export default function SectionScrollSnap() {
       if (Math.abs(delta) < minDeltaPx) return;
 
       const vpH = window.innerHeight;
+      if (isInSkillsScrollInterior(scrollY, vpH)) {
+        return;
+      }
+      const hero = document.getElementById("hero");
+      const objective = document.getElementById("objective");
+      if (!hero || !objective) return;
       const heroRect = hero.getBoundingClientRect();
       const objRect = objective.getBoundingClientRect();
       const projectTitle = document.getElementById("project-title");
@@ -218,6 +256,17 @@ export default function SectionScrollSnap() {
 
       if (delta > 0) {
         if (objRect.top <= 1) {
+          const projectTwoEl = document.getElementById("project-two");
+          const skillsEl = document.getElementById("skills");
+          if (
+            isInPortfolioStackScrollZone(scrollY) &&
+            getPortfolioStackStep() < portfolioCardCount
+          ) {
+            return;
+          }
+          if (isInPortfolioSkillsScrollGap(scrollY, projectTwoEl, skillsEl)) {
+            return;
+          }
           if (
             projectTitle &&
             titleRect &&
@@ -279,6 +328,10 @@ export default function SectionScrollSnap() {
       }
 
       if (delta < 0) {
+        if (isInPortfolioStackScrollZone(scrollY)) {
+          return;
+        }
+
         if (
           projectTitle &&
           projects &&
@@ -321,7 +374,10 @@ export default function SectionScrollSnap() {
           )
         ) {
           unlockPageScroll();
-          const targetY = clampScrollY(scrollY + objRect.top);
+          const skillsSnap = document.getElementById("skills");
+          const targetY = skillsSnap
+            ? clampScrollY(skillsSnap.offsetTop)
+            : clampScrollY(scrollY + objRect.top);
           animateScrollTo(targetY, scrollDurationMs, snapOpts);
           return;
         }
@@ -348,6 +404,84 @@ export default function SectionScrollSnap() {
     const onWheel = (e: WheelEvent) => {
       const scrollY = window.scrollY;
       const vpH = window.innerHeight;
+
+      const projectTwoGuard = document.getElementById("project-two");
+      if (
+        projectTwoGuard &&
+        e.deltaY > 0 &&
+        isInPortfolioStackScrollZone(scrollY) &&
+        getPortfolioStackStep() < portfolioCardCount
+      ) {
+        const pr = projectTwoGuard.getBoundingClientRect();
+        if (pr.bottom > 8 && pr.top < vpH - 8) {
+          if (isPortfolioStackScrollLocked()) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          /* Chain কুলডাউনে স্কিপ হলে এখানে স্টেপ বাড়াতে হবে — না হলে হুইল ব্লক হয় কোনো কাজ ছাড়াই */
+          const step = getPortfolioStackStep();
+          setPortfolioStackStep(step + 1);
+          lockUntilRef.current = performance.now() + 420;
+          return;
+        }
+      }
+
+      /* স্ক্রল আপ: এক এক করে কার্ড নিচে (স্টেপ কমে) — Chain মিস হলে এখানে স্টেপ কমানো */
+      if (
+        projectTwoGuard &&
+        e.deltaY < 0 &&
+        isInPortfolioStackScrollZone(scrollY) &&
+        getPortfolioStackStep() > 1
+      ) {
+        const pr = projectTwoGuard.getBoundingClientRect();
+        if (pr.bottom > 8 && pr.top < vpH - 8) {
+          if (isPortfolioStackScrollLocked()) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          const step = getPortfolioStackStep();
+          setPortfolioStackStep(step - 1);
+          lockUntilRef.current = performance.now() + 420;
+          return;
+        }
+      }
+
+      /* শুধু শেষ কার্ড (স্টেপ 1) — আপে objective */
+      if (
+        projectTwoGuard &&
+        e.deltaY < 0 &&
+        isInPortfolioStackScrollZone(scrollY) &&
+        getPortfolioStackStep() === 1
+      ) {
+        const pr = projectTwoGuard.getBoundingClientRect();
+        if (pr.bottom > 8 && pr.top < vpH - 8) {
+          if (isPortfolioStackScrollLocked()) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
+          e.preventDefault();
+          e.stopPropagation();
+          scrollToSectionById("objective");
+          lockUntilRef.current = performance.now() + snapCooldownMs;
+          return;
+        }
+      }
+
+      if (isInSkillsScrollInterior(scrollY, vpH)) {
+        return;
+      }
+
+      const hero = document.getElementById("hero");
+      const objective = document.getElementById("objective");
+      if (!hero || !objective) return;
+
       const heroRect = hero.getBoundingClientRect();
       const objRect = objective.getBoundingClientRect();
       const projectTitle = document.getElementById("project-title");
@@ -356,6 +490,13 @@ export default function SectionScrollSnap() {
       const titleRect = projectTitle?.getBoundingClientRect();
       const projectsRect = projects?.getBoundingClientRect();
       const expRect = experience?.getBoundingClientRect();
+      const projectTwo = document.getElementById("project-two");
+      const skills = document.getElementById("skills");
+      const inPortfolioSkillsGap = isInPortfolioSkillsScrollGap(
+        scrollY,
+        projectTwo,
+        skills,
+      );
 
       const inExperienceUpToProjectsZone =
         !!experience &&
@@ -393,13 +534,15 @@ export default function SectionScrollSnap() {
         !!titleRect &&
         objRect.top <= 1 &&
         titleRect.top > 2 &&
-        scrollY < projectTitle.offsetTop + vpH - 1;
+        scrollY < projectTitle.offsetTop + vpH - 1 &&
+        !inPortfolioSkillsGap;
 
       const inProjectsListUpZone =
         !!projectTitle &&
         !!projects &&
         !!titleRect &&
         !!projectsRect &&
+        !isInPortfolioStackScrollZone(scrollY) &&
         canSnapFromProjectsListToTitle(
           scrollY,
           vpH,
@@ -412,6 +555,7 @@ export default function SectionScrollSnap() {
       const inProjectTitleUpZone =
         !!projectTitle &&
         !!titleRect &&
+        !isInPortfolioStackScrollZone(scrollY) &&
         canSnapTitleToObjective(
           scrollY,
           vpH,
@@ -419,6 +563,10 @@ export default function SectionScrollSnap() {
           titleRect,
           objRect,
         );
+
+      const inPortfolioStackUpZone =
+        isInPortfolioStackScrollZone(scrollY) &&
+        getPortfolioStackStep() > 1;
 
       const inExperienceBottomDownZone =
         !!experience && isExperienceScrollComplete(scrollY, vpH, experience);
@@ -440,6 +588,7 @@ export default function SectionScrollSnap() {
           (inExperienceUpToProjectsZone && e.deltaY < 0) ||
           (inProjectsListUpZone && e.deltaY < 0) ||
           (inProjectTitleUpZone && e.deltaY < 0) ||
+          (inPortfolioStackUpZone && e.deltaY < 0) ||
           (inExperienceBottomDownZone && e.deltaY > 0) ||
           (inJustAfterExperienceUpZone && e.deltaY < 0)
         ) {
@@ -465,6 +614,19 @@ export default function SectionScrollSnap() {
         }
 
         if (objRect.top <= 1) {
+          const skillsBlock = document.getElementById("skills");
+          const projectTwoBlock = document.getElementById("project-two");
+          if (
+            skillsBlock &&
+            projectTwoBlock &&
+            getPortfolioStackStep() < portfolioCardCount &&
+            scrollY < skillsBlock.offsetTop - 2 &&
+            scrollY >= projectTwoBlock.offsetTop - 56
+          ) {
+            e.preventDefault();
+            e.stopPropagation();
+            return;
+          }
           if (inProjectTitleDownZone) {
             e.preventDefault();
             lockPageScroll();
@@ -544,7 +706,10 @@ export default function SectionScrollSnap() {
           e.preventDefault();
           lockPageScroll();
           lastScrollYRef.current = scrollY;
-          const targetY = clampScrollY(scrollY + objRect.top);
+          const skillsSnap = document.getElementById("skills");
+          const targetY = skillsSnap
+            ? clampScrollY(skillsSnap.offsetTop)
+            : clampScrollY(scrollY + objRect.top);
           animateScrollTo(targetY, scrollDurationMs, snapOpts);
           return;
         }

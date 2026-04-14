@@ -1,6 +1,5 @@
 export interface ScrollDownButtonProps {
-  parentClassName?: string;
-  buttonClassName?: string;
-  scrollByPx?: number;
+  className?: string;
+  scrollTargetId?: string;
+  type?: "button" | "submit" | "reset";
 }
-

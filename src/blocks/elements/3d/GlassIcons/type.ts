@@ -5,7 +5,7 @@ export type GradientKey = "blue" | "purple" | "red" | "indigo" | "orange" | "gre
 
 export interface GlassIconsItem {
   icon: ReactNode;
-  color: GradientKey;
+  color?: GradientKey;
   label: string;
   href?: string;
 }
@@ -14,7 +14,6 @@ export interface GlassIconsProps {
   items: GlassIconsItem[];
   className?: string;
   colorful?: boolean;
-  /** Slide each tile up from below, one after another (hero stagger). */
   staggerSlideUp?: boolean;
   staggerBaseDelay?: number;
   staggerStep?: number;

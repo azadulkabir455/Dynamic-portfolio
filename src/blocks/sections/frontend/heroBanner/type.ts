@@ -4,24 +4,20 @@ export type HeroSocialLink = {
   iconName: string;
   link: string;
   label: string;
-  color: GradientKey;
+  color?: GradientKey;
 };
 
 export type HeroBannerData = {
-  preTitle: string;
-  preTitleHighlight: string;
-  titleLine1: string;
-  titleLine2: string;
-  socialLinks: HeroSocialLink[];
-  introCircleText: string;
+  name: string;
+  designation: string;
   introText: string;
-  contactEmail: string;
-  contactPhone: string;
-  whatsappNumber: string;
-  cvHref: string;
-  cvFileName: string;
+  experience: string;
+  aboutMe: string;
   imageSrc: string;
   imageAlt: string;
+  ctaURL: string;
+  socialLinks: HeroSocialLink[];
+  ctaLabel?: string;
 };
 
 export type HeroBannerProps = {

@@ -3,7 +3,9 @@
 :root {
   --primary: #C33F40;
   --secondary: #e5ceb1;
-  --ternary: #003049;
+  --ternary:  #0F172B;
+  --ternaryLight: #3D405B;
+  --quaternary: #FFC300;
   --text-color: #75635D;
   
 }
@@ -11,9 +13,11 @@
 @theme inline {
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-ternary: var(--ternary);
+  --color-ternary-light: var(--ternaryLight);
+  --color-quaternary: var(--quaternary);
   --color-text: var(--text-color);
   --font-sans: var(--font-open-sans);
-  
 }
 
 html,
@@ -25,11 +29,8 @@ body {
   font-family: var(--font-open-sans);
 }
 
-/* GSAP ScrollSmoother controls scroll; avoid CSS smooth-scroll fighting it. */
 
-/* Scrollbar: track = secondary, thumb = primary + rounded (Firefox + WebKit) */
 html {
-  /* ভার্টিক্যাল স্ন্যাপ: SectionScrollSnap (JS) — html-এ CSS snap না (ডক স্ক্রলে অস্থির) */
   scrollbar-width: thin;
   scrollbar-color: var(--primary) var(--secondary);
   scrollbar-gutter: stable;
@@ -74,12 +75,12 @@ h6 {
 
 .maxContainer {
   width: 100%;
-  max-width: 1540px;
+  max-width: 1280px;
+  padding: 0 20px;
   margin-left: auto;
   margin-right: auto;
 }
 
-/* #project-title: নিচের অ্যারো — উচ্চতা scaleY ৫০% ↔ ১০০% */
 @keyframes projectTitleArrowPulse {
   0%,
   100% {
@@ -127,4 +128,14 @@ h6 {
 }
 .ternaryBorderColor {
   border-color: var(--ternary);
+}
+
+/* Portfolio: স্ক্রল স্ন্যাপ লক্ষ্য স্থির; কন্টেন্ট লোডে ব্রাউজার স্ক্রল অ্যাঙ্কর বন্ধ */
+#project-two {
+  scroll-margin-top: 0;
+  overflow-anchor: none;
+}
+
+#skills {
+  overflow-anchor: none;
 }

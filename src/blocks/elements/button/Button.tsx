@@ -20,6 +20,7 @@ export const Button = ({
   iconClassName,
   leftIconClassName,
   rightIconClassName,
+  rightIconWrapperClassName,
   loading = false,
   className,
   disabled = false,
@@ -42,7 +43,26 @@ export const Button = ({
       {loading ? (
         <Icon name="LoaderCircle" size={iconSize} className={cn("shrink-0 animate-spin", iconClassName, rightIconClassName)} />
       ) : rightIcon ? (
-        <Icon name={rightIcon} size={iconSize} className={cn("shrink-0", iconClassName, rightIconClassName)} />
+        rightIconWrapperClassName ? (
+          <span
+            className={cn(
+              "inline-flex shrink-0 items-center justify-center",
+              rightIconWrapperClassName,
+            )}
+          >
+            <Icon
+              name={rightIcon}
+              size={iconSize}
+              className={cn("shrink-0", iconClassName, rightIconClassName)}
+            />
+          </span>
+        ) : (
+          <Icon
+            name={rightIcon}
+            size={iconSize}
+            className={cn("shrink-0", iconClassName, rightIconClassName)}
+          />
+        )
       ) : null}
     </>
   );

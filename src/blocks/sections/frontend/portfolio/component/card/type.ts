@@ -1,12 +1,10 @@
-export type ProjectTwoCardProps = {
-  imageSrc: string;
-  imageAlt: string;
-  tag: string;
+export type PortfolioCardProps = {
   title: string;
   description: string;
-  liveLink: string;
-  viewLink: string;
-  liveLabel?: string;
-  viewLabel?: string;
+  duration?: string;
+  buttonText: string;
+  buttonLink: string;
+  imageSrc: string;
+  imageAlt: string;
   className?: string;
 };

@@ -2,13 +2,14 @@ import type { HeroBannerData } from "../../type";
 
 export type ContentAreaProps = Pick<
   HeroBannerData,
-  | "preTitle"
-  | "preTitleHighlight"
-  | "titleLine1"
-  | "titleLine2"
-  | "socialLinks"
+  | "name"
+  | "designation"
+  | "introText"
+  | "experience"
+  | "aboutMe"
   | "imageSrc"
   | "imageAlt"
-  | "contactEmail"
-  | "contactPhone"
+  | "socialLinks"
+  | "ctaLabel"
+  | "ctaURL"
 >;

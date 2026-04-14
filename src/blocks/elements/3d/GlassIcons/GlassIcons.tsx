@@ -16,9 +16,9 @@ const GlassIcons = ({
   staggerStep = 0.12,
   loaderExited = true,
 }: GlassIconsProps) => {
-  const gridClassName = cn("grid grid-cols-3 gap-4 mx-auto overflow-visible", className);
+  const gridClassName = cn("grid grid-cols-3 gap-3  overflow-visible", className);
   const tileClassName = cn(
-    "cursor-target relative w-[3.5em] h-[3.5em]",
+    "cursor-target relative h-[50px] w-[50px]",
     "bg-transparent outline-none border-none cursor-pointer",
     "[perspective:24em] [transform-style:preserve-3d]",
     "[-webkit-tap-highlight-color:transparent] group",

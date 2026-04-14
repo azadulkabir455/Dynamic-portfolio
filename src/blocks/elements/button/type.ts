@@ -12,6 +12,8 @@ export interface ButtonProps {
   iconClassName?: string;
   leftIconClassName?: string;
   rightIconClassName?: string;
+  /** Wraps the right icon (e.g. circular frosted bg). */
+  rightIconWrapperClassName?: string;
   loading?: boolean;
   className?: string;
   disabled?: boolean;

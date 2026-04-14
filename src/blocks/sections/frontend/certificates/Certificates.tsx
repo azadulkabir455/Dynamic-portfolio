@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import { motion } from "motion/react";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
@@ -8,8 +7,6 @@ import LogoLoop from "@/blocks/elements/3d/LogoLoop/LogoLoop";
 import { cn } from "@/utilities/helpers/classMerge";
 import { clientsData } from "./component/data/Data";
 import type { ClientsProps } from "./type";
-import { scrollToSectionById } from "@/blocks/elements/3d/SectionScrollSnap/functions";
-
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
@@ -27,34 +24,6 @@ const Clients = ({
   title = clientsData.title,
   paragraph = clientsData.paragraph,
 }: ClientsProps = {}) => {
-  useEffect(() => {
-    const handler = (e: WheelEvent) => {
-      const section = document.getElementById("clients");
-      if (!section) return;
-      const scrollY = window.scrollY;
-
-      /* DOWN at clients → intro */
-      if (e.deltaY > 0 && Math.abs(scrollY - section.offsetTop) < 10) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        scrollToSectionById("intro");
-        return;
-      }
-
-      /* UP at intro → clients */
-      const intro = document.getElementById("intro");
-      if (e.deltaY < 0 && intro && Math.abs(scrollY - intro.offsetTop) < 10) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        scrollToSectionById("clients");
-      }
-    };
-
-    window.addEventListener("wheel", handler, { passive: false, capture: true });
-    return () =>
-      window.removeEventListener("wheel", handler, { capture: true });
-  }, []);
-
   return (
     <Container
       as="section"

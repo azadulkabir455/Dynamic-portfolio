@@ -1,17 +1,14 @@
-import type { AnchorHTMLAttributes, ReactNode } from "react";
+import type { AnchorHTMLAttributes, MouseEventHandler } from "react";
 
 export type AnimatedButtonProps = {
   text: string;
   link: string;
-  downloadFile?: string;
-  icon?: string;
-  /** When set, replaces Lucide `icon` (e.g. brand SVG from react-icons) */
-  iconNode?: ReactNode;
+  iconName?: string;
   iconSize?: number;
   iconClassName?: string;
-  textClassName?: string;
+  iconContainerClassName?: string;
+  buttonClassName?: string;
   className?: string;
-  dark?: boolean;
-  bordered?: boolean;
+  isWhatsApp?: boolean;
+  onClick?: MouseEventHandler<HTMLAnchorElement>;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "children" | "download">;
-

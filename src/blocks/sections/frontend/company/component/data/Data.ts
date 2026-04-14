@@ -1,10 +1,7 @@
-import type { ObjectiveData } from "../../type";
+import type { CompanyData } from "../../type";
 
-export const defaultObjectiveData: ObjectiveData = {
-  titlePrefix: "Companies",
-  titleEmphasis: "I’ve grown with",
-  paragraph:
-    "Frontend developer focused on responsive, accessible interfaces and fast user experiences. I work with React, Next.js, TypeScript, and modern CSS shipping maintainable code, collaborating with design and product, and turning ideas into polished web applications.",
+export const defaultCompanyData: CompanyData = {
+  title: "Company <br /> I've grown with",
   logos: [
     { src: "/images/logo/americanbestit.png", alt: "American Best IT", href: "#" },
     { src: "/images/logo/beatnik.png", alt: "Beatnik", href: "#" },

@@ -3,7 +3,6 @@
 import Particles from "@/blocks/elements/3d/Particles/Particles";
 import Container from "@/blocks/elements/container/Container";
 import type { HeroBannerProps } from "./type";
-import InfoArea from "@/blocks/sections/frontend/heroBanner/component/infoArea/InfoArea";
 import ContentArea from "@/blocks/sections/frontend/heroBanner/component/contentArea/ContentArea";
 import { defaultHeroBannerData } from "@/blocks/sections/frontend/heroBanner/component/data/Data";
 
@@ -16,29 +15,25 @@ const HeroBanner = ({ content }: HeroBannerProps) => {
   const {
     imageSrc,
     imageAlt,
-    preTitle,
-    preTitleHighlight,
-    titleLine1,
-    titleLine2,
-    socialLinks,
-    introCircleText,
     introText,
-    contactEmail,
-    contactPhone,
-    whatsappNumber,
-    cvHref,
-    cvFileName,
+    name,
+    designation,
+    experience,
+    aboutMe,
+    ctaURL,
+    ctaLabel,
+    socialLinks,
   } = data;
 
   return (
     <Container
       as="section"
       id="hero"
-      className="relative flex h-[100vh] min-h-[100vh] max-h-[100vh] w-full shrink-0 flex-col overflow-hidden"
+      className="relative"
     >
       <Container
         as="div"
-        className="relative flex min-h-0 flex-1 flex-col justify-start overflow-hidden lg:justify-end"
+        className="relative flex min-h-0 flex-1 flex-col justify-start"
       >
         <Container as="div" className="absolute inset-0 z-5 overflow-hidden">
           <Particles
@@ -55,23 +50,16 @@ const HeroBanner = ({ content }: HeroBannerProps) => {
         </Container>
 
         <ContentArea
+          name={name}
+          designation={designation}
+          introText={introText}
+          experience={experience}
+          aboutMe={aboutMe}
           imageSrc={imageSrc}
           imageAlt={imageAlt}
-          preTitle={preTitle}
-          preTitleHighlight={preTitleHighlight}
-          titleLine1={titleLine1}
-          titleLine2={titleLine2}
+          ctaURL={ctaURL}
           socialLinks={socialLinks}
-          contactEmail={contactEmail}
-          contactPhone={contactPhone}
-        />
-        <InfoArea
-          introCircleText={introCircleText}
-          introText={introText}
-          contactEmail={contactEmail}
-          whatsappNumber={whatsappNumber}
-          cvHref={cvHref}
-          cvFileName={cvFileName}
+          ctaLabel={ctaLabel}
         />
       </Container>
     </Container>

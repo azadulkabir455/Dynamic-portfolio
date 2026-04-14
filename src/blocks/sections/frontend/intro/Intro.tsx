@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
 import AnimatedButton from "@/blocks/elements/3d/AnimatedButton/AnimatedButton";
@@ -10,17 +10,6 @@ import IntroVideoModal from "./component/modal/IntroVideoModal";
 import type { IntroProps } from "./type";
 import LogoLoop from "@/blocks/elements/3d/LogoLoop/LogoLoop";
 import type { LogoLoopItem } from "@/blocks/elements/3d/LogoLoop/type";
-import {
-  animateScrollTo,
-  clampScrollY,
-  lockPageScroll,
-  unlockPageScroll,
-  scrollDurationMs,
-  scrollToSectionById,
-} from "@/blocks/elements/3d/SectionScrollSnap/functions";
-
-const EASE = "cubic-bezier(0.72,0,0.28,1)";
-const DUR_S = scrollDurationMs / 1000;
 
 const introStatic = {
   title: "Who’s Behind the Screen",
@@ -58,83 +47,6 @@ const Intro = ({
 }: IntroProps = {}) => {
   const [modalOpen, setModalOpen] = useState(false);
   const sectionRef = useRef<HTMLElement>(null);
-  const busyRef = useRef(false);
-
-  useEffect(() => {
-    const handler = (e: WheelEvent) => {
-      if (busyRef.current) return;
-      const section = sectionRef.current;
-      if (!section) return;
-      const scrollY = window.scrollY;
-
-      /* ── DOWN: Intro → Portfolio (curtain reveal) ── */
-      if (e.deltaY > 0 && Math.abs(scrollY - section.offsetTop) < 10) {
-        const portfolio = document.getElementById("project-two");
-        if (!portfolio) return;
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        busyRef.current = true;
-
-        /* fix Intro on top, slide it away */
-        section.style.position = "fixed";
-        section.style.inset = "0";
-        section.style.height = "100vh";
-        section.style.zIndex = "50";
-        section.style.borderRadius = "0";
-
-        requestAnimationFrame(() => {
-          section.style.transition = `transform ${DUR_S}s ${EASE}`;
-          section.style.transform = "translateY(-100vh)";
-        });
-
-        animateScrollTo(clampScrollY(portfolio.offsetTop), scrollDurationMs, {
-          onStart: lockPageScroll,
-          onComplete: () => {
-            unlockPageScroll();
-            section.style.cssText = "";
-            busyRef.current = false;
-          },
-        });
-        return;
-      }
-
-      /* ── UP: Portfolio top → Intro (curtain close) ── */
-      const portfolio = document.getElementById("project-two");
-      if (e.deltaY < 0 && portfolio && Math.abs(scrollY - portfolio.offsetTop) < 10) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        busyRef.current = true;
-
-        /* start Intro above viewport, slide it down into view */
-        section.style.position = "fixed";
-        section.style.inset = "0";
-        section.style.height = "100vh";
-        section.style.zIndex = "50";
-        section.style.borderRadius = "0";
-        section.style.transform = "translateY(-100vh)";
-
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => {
-            section.style.transition = `transform ${DUR_S}s ${EASE}`;
-            section.style.transform = "translateY(0)";
-          }),
-        );
-
-        animateScrollTo(clampScrollY(section.offsetTop), scrollDurationMs, {
-          onStart: lockPageScroll,
-          onComplete: () => {
-            unlockPageScroll();
-            section.style.cssText = "";
-            busyRef.current = false;
-          },
-        });
-      }
-    };
-
-    window.addEventListener("wheel", handler, { passive: false, capture: true });
-    return () =>
-      window.removeEventListener("wheel", handler, { capture: true });
-  }, []);
 
   return (
     <>
@@ -209,14 +121,15 @@ const Intro = ({
             <AnimatedButton
               text={buttonLabel}
               link={contactLink}
-              icon="Mail"
+              iconName="Mail"
               iconSize={18}
-              dark={true}
-              bordered={false}
               className="mt-8 min-w-[320px]"
-              textClassName={cn(
-                "font-open-sans text-sm font-semibold tracking-widest",
+              buttonClassName={cn(
+                "border-2 border-primary bg-primary backdrop-blur-md hover:bg-primary/90",
+                "[&>span:first-child]:font-open-sans [&>span:first-child]:text-sm [&>span:first-child]:font-semibold [&>span:first-child]:tracking-widest [&>span:first-child]:text-secondary",
+                "[&>span:last-child]:border-2 [&>span:last-child]:border-secondary [&>span:last-child]:bg-primary",
               )}
+              iconClassName="text-secondary"
             />
           </Container>
 

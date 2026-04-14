@@ -1,10 +1,15 @@
 import type { HeroBannerData } from "../../type";
 
 export const defaultHeroBannerData: HeroBannerData = {
-  preTitle: "I Am",
-  preTitleHighlight: "Azad Ul Kabir",
-  titleLine1: "Senior",
-  titleLine2: "Frontend Developer",
+  name: "Azad",
+  designation: "Frontend Developer",
+  introText: "A Frontend Engineer who enjoys working at the intersection of code, design and art.",
+  experience: "7+",
+  aboutMe:"This is my personal space on the internet to share my work, interests, and passions freely.",
+  imageSrc: "/images/azadulkabir.png",
+  imageAlt: "Azad Ul Kabir — Frontend Developer",
+  ctaURL: "tel:+8801704337027",
+  ctaLabel: "Let's Talk",
   socialLinks: [
     {
       iconName: "Linkedin",
@@ -25,13 +30,4 @@ export const defaultHeroBannerData: HeroBannerData = {
       color: "orange",
     },
   ],
-  introCircleText: "CODE*CREATE*OPTIMIZE*SHIP",
-  introText:"I am a performance-driven and user-focused Frontend Developer with 7+ years of experience. Expertise in React, Next.js, and scalable modern web applications.",
-  contactEmail: "azadulkabir455@gmail.com",
-  contactPhone: "+880 1704337027",
-  whatsappNumber: "01704337027",
-  cvHref: "/cv.pdf",
-  cvFileName: "Fatema-Tuz-Sultana-CV.pdf",
-  imageSrc: "/images/azadulkabir.png",
-  imageAlt: "Azadul Kabir — Senior UI UX Designer",
 };

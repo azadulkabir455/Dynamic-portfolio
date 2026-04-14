@@ -242,8 +242,8 @@ const BubbleMenu = ({
             "relative border-2 border-secondary bg-primary",
             "cursor-target",
             "pointer-events-auto",
-            "h-14 w-14",
-            "cursor-pointer p-0",
+            "box-border h-12 min-h-12 w-12 min-w-12",
+            "cursor-pointer p-3",
             "will-change-transform",
           ].join(" ")}
           onClick={handleToggle}
@@ -254,31 +254,53 @@ const BubbleMenu = ({
           <Container
             as="span"
             className={[
-              "menu-icon-spin absolute top-1/2 flex -translate-y-1/2 flex-col",
+              "menu-icon-spin absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col",
               isMenuOpen
-                ? "left-1/2 items-center justify-center gap-0 -translate-x-1/2"
-                : "left-3 items-start justify-center gap-2",
+                ? "items-center justify-center gap-0"
+                : "items-start justify-center gap-[5px]",
             ].join(" ")}
           >
-            <Container
-              as="span"
-              className="menu-line block shrink-0 rounded-full bg-secondary"
-              style={{
-                width: isMenuOpen ? 28 : 28,
-                height: 4,
-                transform: isMenuOpen ? "rotate(45deg)" : undefined,
-              }}
-            />
-            <Container
-              as="span"
-              className="menu-line block shrink-0 rounded-full bg-secondary"
-              style={{
-                width: isMenuOpen ? 28 : 22,
-                height: 4,
-                marginTop: isMenuOpen ? -4 : 0,
-                transform: isMenuOpen ? "rotate(-45deg)" : undefined,
-              }}
-            />
+            {isMenuOpen ? (
+              <>
+                <Container
+                  as="span"
+                  className="menu-line block shrink-0 rounded-full bg-secondary"
+                  style={{
+                    width: 22,
+                    height: 3,
+                    transform: "rotate(45deg)",
+                  }}
+                />
+                <Container
+                  as="span"
+                  className="menu-line block shrink-0 rounded-full bg-secondary"
+                  style={{
+                    width: 22,
+                    height: 3,
+                    marginTop: -3,
+                    transform: "rotate(-45deg)",
+                  }}
+                />
+              </>
+            ) : (
+              <>
+                <Container
+                  as="span"
+                  className="menu-line block shrink-0 rounded-full bg-secondary"
+                  style={{ width: 20, height: 3 }}
+                />
+                <Container
+                  as="span"
+                  className="menu-line block shrink-0 rounded-full bg-secondary"
+                  style={{ width: 14, height: 3 }}
+                />
+                <Container
+                  as="span"
+                  className="menu-line block shrink-0 rounded-full bg-secondary"
+                  style={{ width: 8, height: 3 }}
+                />
+              </>
+            )}
           </Container>
         </Button>
       </nav>
@@ -288,7 +310,7 @@ const BubbleMenu = ({
           ref={overlayRef}
           className={[
             "bubble-menu-items",
-            useFixedPosition ? "fixed" : "absolute",
+            "fixed",
             "inset-0",
             "flex items-center justify-center",
             overlayPointerClass,

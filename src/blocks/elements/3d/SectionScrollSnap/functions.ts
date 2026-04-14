@@ -41,7 +41,10 @@ export function scrollToNextSectionFromHero(): void {
 }
 
 /** নির্দিষ্ট `#id` সেকশনে স্মুথ স্ক্রল — লক + স্ন্যাপ কুলডাউন সিঙ্ক। */
-export function scrollToSectionById(elementId: string): void {
+export function scrollToSectionById(
+  elementId: string,
+  onCompleteExtra?: () => void,
+): void {
   const el = document.getElementById(elementId);
   if (!el) return;
   const rect = el.getBoundingClientRect();
@@ -51,6 +54,7 @@ export function scrollToSectionById(elementId: string): void {
     onComplete: () => {
       unlockPageScroll();
       snapCompleteListener?.();
+      onCompleteExtra?.();
     },
   });
 }
@@ -107,6 +111,7 @@ export function animateScrollTo(
   const endY = clampScrollY(targetY);
   const delta = endY - startY;
   if (Math.abs(delta) < 0.5) {
+    opts?.onComplete?.();
     return;
   }
 
