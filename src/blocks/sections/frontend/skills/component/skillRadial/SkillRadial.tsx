@@ -1,0 +1,49 @@
+"use client";
+
+import Container from "@/blocks/elements/container/Container";
+import Text from "@/blocks/elements/text/Text";
+import { cn } from "@/utilities/helpers/classMerge";
+import type { SkillOrbits } from "../../type";
+import RadialSkills from "./element/RadialSkills";
+import type { SkillRadialProps, SkillRing } from "./type";
+
+function orbitsToRings(orbits: SkillOrbits): SkillRing[] {
+  return [
+    null,
+    { skills: orbits.orbitOne },
+    null,
+    { skills: orbits.orbitTwo },
+    null,
+    { skills: orbits.orbitThree },
+  ];
+}
+
+export default function SkillRadial({
+  title,
+  centerText = "Technical Skill",
+  orbits,
+  className,
+}: SkillRadialProps) {
+  return (
+    <Container as="div" className={cn("maxContainer", className)}>
+      <Text
+        variant="h3"
+        className={cn(
+          "font-antonio font-bold capitalize text-left",
+          "text-[64px] leading-[70px] tracking-normal",
+          "text-ternary-light",
+          "py-[60px]",
+        )}
+      >
+        {title}
+      </Text>
+      {orbits && (
+        <RadialSkills
+          rings={orbitsToRings(orbits)}
+          centerText={centerText}
+          className="mx-auto"
+        />
+      )}
+    </Container>
+  );
+}

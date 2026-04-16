@@ -41,7 +41,7 @@ const HeroIntroColumn = ({
         >
           <span>Hey</span>
           <Image
-            src="/images/Icons/smily.png"
+            src="/images/Icons/smily.svg"
             alt=""
             width={28}
             height={28}

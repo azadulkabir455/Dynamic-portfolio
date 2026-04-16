@@ -48,65 +48,69 @@ const Portfolio = ({ content }: PortfolioProps) => {
         as="div"
         className={cn("maxContainer")}
       >
-          <Container className="relative w-full">
-            <Container
+        <Container className="relative w-full">
+          <Container
+            className={cn(
+              "sticky mb-[60px]",
+              stickyTitleTopClass,
+            )}
+            style={{ zIndex: 20 }}
+          >
+            <Text
+              variant="h2"
               className={cn(
-                "sticky mb-[60px]",
-                stickyTitleTopClass,
+                "text-center text-[64px] text-primary",
+                "font-antonio font-bold capitalize leading-[70px] tracking-normal ",
               )}
-              style={{ zIndex: 20 }}
             >
-              <Text
-                variant="h2"
-                className={cn(
-                  "text-center text-[64px] text-primary",
-                  "font-antonio font-bold capitalize leading-[70px] tracking-normal ",
-                )}
-              >
-                {data.portfolioTitle}
-              </Text>
-            </Container>
+              {data.portfolioTitle}
+            </Text>
+          </Container>
 
-            <Container className="flex w-full flex-col gap-[50px]">
-              {data.portfolios.map((card, stackIndex) => (
-                <Container
-                  key={`${card.title}-${card.buttonLink}-${stackIndex}`}
-                  className={cn(
-                    "sticky w-full",
-                    stickyItemTopClasses[stackIndex],
-                  )}
-                  style={{ zIndex: 30 + stackIndex }}
-                >
-                  <PortfolioCard {...card} className="w-full" />
-                </Container>
-              ))}
-
+          <Container className="flex w-full flex-col gap-[50px]">
+            {data.portfolios.map((card, stackIndex) => (
               <Container
+                key={`${card.title}-${card.buttonLink}-${stackIndex}`}
                 className={cn(
-                  "sticky flex w-full justify-center",
-                  stickyItemTopClasses[3],
+                  "sticky w-full",
+                  stickyItemTopClasses[stackIndex],
                 )}
-                style={{ zIndex: 60 }}
+                style={{ zIndex: 30 + stackIndex }}
               >
-                <ViewAllProjectsButton
-                  allProjectHref={data.viewAllButton.href}
-                  allProjectLabel={data.viewAllButton.label}
+                <PortfolioCard
+                  {...card}
+                  className="w-full"
+                  surface={stackIndex % 3 === 1 ? "primary" : "ternary"}
                 />
               </Container>
-            </Container>
+            ))}
 
             <Container
-              className={cn("sticky w-full", stickyItemTopClasses[3])}
-              style={{ zIndex: 70 }}
-              aria-hidden
+              className={cn(
+                "sticky flex w-full justify-center",
+                stickyItemTopClasses[3],
+              )}
+              style={{ zIndex: 60 }}
             >
+              <ViewAllProjectsButton
+                allProjectHref={data.viewAllButton.href}
+                allProjectLabel={data.viewAllButton.label}
+              />
             </Container>
-
-            <Container
-              className="w-full shrink-0"
-              aria-hidden
-            />
           </Container>
+
+          <Container
+            className={cn("sticky w-full", stickyItemTopClasses[3])}
+            style={{ zIndex: 70 }}
+            aria-hidden
+          >
+          </Container>
+
+          <Container
+            className="w-full shrink-0"
+            aria-hidden
+          />
+        </Container>
       </Container>
     </Container>
   );

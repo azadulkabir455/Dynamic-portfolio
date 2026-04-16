@@ -1,3 +1,5 @@
+export type PortfolioCardSurface = "primary" | "ternary";
+
 export type PortfolioCardProps = {
   title: string;
   description: string;
@@ -7,4 +9,5 @@ export type PortfolioCardProps = {
   imageSrc: string;
   imageAlt: string;
   className?: string;
+  surface?: PortfolioCardSurface;
 };

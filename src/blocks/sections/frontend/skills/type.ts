@@ -1,14 +1,19 @@
 export type SkillItem = {
-  name: string;
-  blurb: string;
+  imageUrl: string;
+  label: string;
+};
+
+export type SkillOrbits = {
+  orbitOne: SkillItem[];
+  orbitTwo: SkillItem[];
+  orbitThree: SkillItem[];
 };
 
 export type SkillsData = {
-  title: string;
-  subtitle: string;
-  backgroundImage: string;
-  backgroundAlt: string;
-  items: SkillItem[];
+  skillBackgroundImage: string;
+  skillTitle: string;
+  skillRadialTitle: string;
+  skillOrbits: SkillOrbits;
 };
 
 export type SkillsProps = Partial<SkillsData>;
