@@ -16,6 +16,7 @@ const PortfolioCard = ({
   buttonText,
   buttonLink,
   className,
+  surface = "ternary",
 }: PortfolioCardProps) => {
   return (
     <Container
@@ -25,8 +26,9 @@ const PortfolioCard = ({
     >
       <Container
         as="div"
-        className={cn(
-          "bg-ternary flex min-h-[465px] flex-col rounded-2xl overflow-hidden px-[50px] pb-0 pt-[50px]",
+        className={cn(  
+          surface === "primary" ? "bg-primary" : "bg-ternary",
+          "flex min-h-[465px] flex-col rounded-2xl overflow-hidden px-[50px] pb-0 pt-[50px]",
         )}
       >
         <Container

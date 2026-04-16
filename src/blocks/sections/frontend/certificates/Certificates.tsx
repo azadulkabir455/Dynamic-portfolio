@@ -1,13 +1,13 @@
 "use client";
 
-import { motion } from "motion/react";
+import { motion, type Variants } from "motion/react";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
 import LogoLoop from "@/blocks/elements/3d/LogoLoop/LogoLoop";
 import { cn } from "@/utilities/helpers/classMerge";
 import { clientsData } from "./component/data/Data";
 import type { ClientsProps } from "./type";
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
   visible: (i: number) => ({
     opacity: 1,

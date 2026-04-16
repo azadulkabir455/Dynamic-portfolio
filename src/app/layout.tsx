@@ -7,12 +7,9 @@ import ClickSpark from "@/blocks/elements/3d/ClickSpark/ClickSpark";
 import LiquidScrollTop from "@/blocks/elements/3d/LiquidScrollTop/LiquidScrollTop";
 import PageLoadLoader from "@/blocks/elements/3d/PageLoadLoader/PageLoadLoader";
 import { PageLoadLoaderProvider } from "@/blocks/elements/3d/PageLoadLoader/functions";
-import PageLoadGate from "@/blocks/elements/3d/PageLoadLoader/PageLoadGate";
 import TargetCursor from "@/blocks/elements/3d/TargetCursor/TargetCursor";
 import BubbleMenu from "@/blocks/elements/3d/BubbleMenu/BubbleMenu";
 import { defaultItems } from "@/blocks/elements/3d/BubbleMenu/functions";
-import SectionScrollChain from "@/blocks/elements/3d/SectionScrollSnap/SectionScrollChain";
-import SectionScrollSnap from "@/blocks/elements/3d/SectionScrollSnap/SectionScrollSnap";
 import { ParallaxRoot } from "@/hooks/parallax";
 import AnimatedButton from "@/blocks/elements/3d/AnimatedButton/AnimatedButton";
 import { cn } from "@/utilities/helpers/classMerge";
@@ -44,10 +41,7 @@ export default function RootLayout({
       <body
         className={`${antonio.variable} ${openSans.variable} ${openSans.className} antialiased`}
       >
-        {/* <SectionScrollChain />
-        <SectionScrollSnap /> */}
         <PageLoadLoaderProvider>
-          {/* <PageLoadGate /> */}
           <ParallaxRoot>
             <TargetCursor
               spinDuration={2}
