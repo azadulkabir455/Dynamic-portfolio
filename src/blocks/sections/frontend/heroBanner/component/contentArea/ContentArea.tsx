@@ -23,7 +23,7 @@ const ContentArea = ({
 }: ContentAreaProps) => {
   const heroHeadlineClass = cn(
     "font-antonio font-bold text-primary",
-    "text-[88px] xl:text-[98px] leading-[90px] xl:leading-[100px]",
+    "text-[48px] lg:text-[88px] xl:text-[98px] leading-[56px] lg:leading-[90px] xl:leading-[100px]",
     "tracking-normal text-center uppercase",
   );
 
@@ -37,14 +37,13 @@ const ContentArea = ({
           "relative flex flex-col maxContainer",
         )}
       >
-        <Container as="div" className="absolute top-[0] left-[20px]">
+        <Container as="div" className="pt-10 lg:pt-0 lg:absolute lg:top-[0] lg:left-[20px]">
           <Text
             variant="h3"
             className={cn(
               "font-antonio font-semibold text-primary",
-              "text-[24px] leading-[32px]",
+              "text-[20px] leading-[28px] lg:text-[24px] lg:leading-[32px]",
               "tracking-normal text-center",
-              "inline-block align-middle",
             )}
           >
             With {experience} Professional Experience
@@ -53,7 +52,7 @@ const ContentArea = ({
         <Container
           as="div"
           className={cn(
-            "relative pt-[40px]",
+            "relative pt-[15px] lg:pt-[40px]",
           )}
         >
           <Text
@@ -71,7 +70,7 @@ const ContentArea = ({
               unoptimized
               className={cn(
                 "inline-block shrink-0 object-contain align-middle",
-                "h-[105px] w-auto",
+                "h-[90px] lg:h-[105px] w-auto",
                 "rotate-[-10deg]",
                 "absolute bottom-[10%]",
               )}
@@ -85,7 +84,8 @@ const ContentArea = ({
 
         <Container
           className={cn(
-            "grid min-h-0 grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)_minmax(0,1.15fr)] items-stretch gap-5",
+            "min-h-0 py-3 lg:py-0",
+            "grid items-stretch gap-5 grid-cols-1  lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)_minmax(0,1.15fr)]",
           )}
         >
 
@@ -106,8 +106,8 @@ const ContentArea = ({
                 width={520}
                 height={650}
                 className={cn(
-                  "relative top-[-50px] z-[1] mx-auto block min-h-0 min-w-0",
-                  "h-[520px] w-auto max-w-full",
+                  "relative lg:top-[-50px] z-[1] mx-auto block min-h-0 min-w-0",
+                  "h-[320px] lg:h-[520px] w-auto max-w-full",
                   "object-contain object-bottom",
                 )}
                 priority
@@ -115,7 +115,7 @@ const ContentArea = ({
               <Container
                 as="div"
                 className={cn(
-                  "absolute bottom-[15%] left-1/2 z-10 -translate-x-1/2",
+                  "absolute bottom-[0] lg:bottom-[15%] left-1/2 z-10 -translate-x-1/2",
                 )}
               >
                 <ScrollDownButton

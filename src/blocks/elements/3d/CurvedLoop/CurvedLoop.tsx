@@ -23,7 +23,7 @@ const wordSpacingStyle = {
 
 const curvedTextTypography = cn(
   "font-antonio font-bold uppercase tracking-normal text-center",
-  "text-[28px] leading-none",
+  "text-[56px] leading-none lg:text-[28px]",
   "fill-secondary",
 );
 
@@ -62,9 +62,14 @@ const CurvedLoop = ({
   const ready = spacing > 0;
 
   useEffect(() => {
-    if (measureRef.current) {
-      setSpacing(measureRef.current.getComputedTextLength());
-    }
+    const measure = () => {
+      if (measureRef.current) {
+        setSpacing(measureRef.current.getComputedTextLength());
+      }
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
   }, [text, className]);
 
   useEffect(() => {
@@ -149,7 +154,10 @@ const CurvedLoop = ({
       onPointerLeave={endDrag}
     >
       <svg
-        className="block h-auto w-full max-w-full overflow-visible align-top select-none"
+        className={cn(
+          "block h-auto w-full max-w-full overflow-visible align-top select-none",
+          "max-lg:-mb-1 max-lg:-translate-y-px",
+        )}
         viewBox={curvedLoopViewBox}
         preserveAspectRatio="xMidYMin meet"
       >

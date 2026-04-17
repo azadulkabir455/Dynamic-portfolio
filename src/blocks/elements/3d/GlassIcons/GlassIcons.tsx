@@ -16,11 +16,14 @@ const GlassIcons = ({
   staggerStep = 0.12,
   loaderExited = true,
 }: GlassIconsProps) => {
-  const gridClassName = cn("grid grid-cols-3 gap-3  overflow-visible", className);
+  const gridClassName = cn(
+    "grid grid-cols-3 overflow-visible justify-items-center gap-2 lg:gap-6",
+    className,
+  );
   const tileClassName = cn(
-    "cursor-target relative h-[50px] w-[50px]",
+    "cursor-target relative h-10 w-10 lg:h-[50px] lg:w-[50px]",
     "bg-transparent outline-none border-none cursor-pointer",
-    "[perspective:24em] [transform-style:preserve-3d]",
+    "[perspective:20em] [transform-style:preserve-3d] lg:[perspective:24em]",
     "[-webkit-tap-highlight-color:transparent] group",
   );
 
@@ -43,12 +46,13 @@ const GlassIcons = ({
 
   const iconWrapClassName = cn(
     "m-auto flex shrink-0 items-center justify-center",
-    "p-[0.14em] min-h-[1.45em] min-w-[1.45em] max-h-[1.75em] max-w-[1.75em]",
+    "p-[0.1em] min-h-[1.25em] min-w-[1.25em] max-h-[1.5em] max-w-[1.5em]",
+    "lg:p-[0.14em] lg:min-h-[1.45em] lg:min-w-[1.45em] lg:max-h-[1.75em] lg:max-w-[1.75em]",
   );
 
   const labelClassName = cn(
     "absolute top-full left-0 right-0 text-center whitespace-nowrap",
-    "leading-[2] text-base",
+    "leading-[2] text-xs lg:text-base",
     "opacity-0 transition-[opacity,transform] duration-300",
     "ease-[cubic-bezier(0.83,0,0.17,1)] translate-y-0",
     "group-hover:opacity-100 group-hover:[transform:translateY(20%)]",
@@ -101,7 +105,7 @@ const GlassIcons = ({
     );
 
   return (
-    <Container as="div" className={cn(gridClassName, "gap-6 justify-items-center")}>
+    <Container as="div" className={gridClassName}>
       {items.map((item: GlassIconsItem, index: number) => {
         if (!staggerSlideUp) {
           return item.href ? (

@@ -5,6 +5,7 @@ import Icon from "@/blocks/elements/icon/Icon";
 import { cn } from "@/utilities/helpers/classMerge";
 import { getSafeLink, getWhatsAppHref } from "./function";
 import type { AnimatedButtonProps } from "./type";
+import { useEffect, useState } from "react";
 
 const defaultAnchor =
   "border-0 bg-primary text-secondary";
@@ -17,7 +18,7 @@ const whatsAppGlyph = "text-secondary";
 const whatsAppLabel = "text-primary";
 
 const labelTypography = cn(
-  "font-open-sans font-bold text-[18px] leading-[18px]",
+  "font-open-sans font-bold text-[15px] leading-[15px] lg:text-[18px] lg:leading-[18px]",
   "tracking-normal text-center capitalize",
   "inline-block align-middle self-center",
 );
@@ -36,10 +37,16 @@ const iconLayerIn = cn(
 
 const whatsAppIconPx = 18;
 const defaultIconPx = 22;
+const mobileWhatsAppIconPx = 15;
+const mobileDefaultIconPx = 18;
+const lgBreakpoint = 1024;
 
-/**
- * WhatsApp-style bubble SVG (circle + tail). Sized by parent; use absolute + w-10 h-auto.
- */
+function getIsLgUp(): boolean {
+  if (typeof window === "undefined") return true;
+  return window.innerWidth >= lgBreakpoint;
+}
+
+
 function WhatsAppBubbleShape({ className }: { className?: string }) {
   return (
     <svg
@@ -70,20 +77,29 @@ const AnimatedButton = ({
   onClick,
   ...rest
 }: AnimatedButtonProps) => {
+  const [isLgUp, setIsLgUp] = useState<boolean>(getIsLgUp);
+
+  useEffect(() => {
+    const updateIsLgUp = () => setIsLgUp(getIsLgUp());
+    updateIsLgUp();
+    window.addEventListener("resize", updateIsLgUp);
+    return () => window.removeEventListener("resize", updateIsLgUp);
+  }, []);
+
   const href = isWhatsApp ? getWhatsAppHref(link) : getSafeLink(link);
 
   const anchorBase = cn(
     "group cursor-target relative z-10",
     "inline-flex items-center",
-    "h-12 min-h-12 max-h-12 w-fit shrink-0 max-w-none",
-    "rounded-full border-0 pl-6",
+    "h-10 min-h-10 max-h-10 w-fit shrink-0 max-w-none lg:h-12 lg:min-h-12 lg:max-h-12",
+    "rounded-full border-0 pl-4 lg:pl-6",
     isWhatsApp ? "transition-none" : "transition-colors duration-300",
   );
 
   const anchorLayout = cn(
     isWhatsApp
-      ? "gap-4 overflow-visible py-[4px] pr-[4px]"
-      : "justify-between gap-4 overflow-hidden py-[4px] pr-[4px]",
+      ? "gap-3 overflow-visible py-[3px] pr-[3px] lg:gap-4 lg:py-[4px] lg:pr-[4px]"
+      : "justify-between gap-3 overflow-hidden py-[3px] pr-[3px] lg:gap-4 lg:py-[4px] lg:pr-[4px]",
   );
 
   const anchorVariant = isWhatsApp ? whatsAppAnchor : defaultAnchor;
@@ -98,9 +114,9 @@ const AnimatedButton = ({
 
   const iconDiscBase = cn(
     "relative inline-flex items-center justify-center",
-    "h-10 w-10 shrink-0",
+    "h-8 w-8 shrink-0 lg:h-10 lg:w-10",
     "overflow-hidden rounded-full",
-    "py-1 px-[4px]",
+    "py-[2px] px-[3px] lg:py-1 lg:px-[4px]",
   );
 
   const iconDiscClass = cn(iconDiscBase, defaultIconBg, iconContainerClassName);
@@ -120,16 +136,22 @@ const AnimatedButton = ({
   );
 
   const strokeWidth = isWhatsApp ? 2.75 : 2;
-  const resolvedIconSize = isWhatsApp ? whatsAppIconPx : defaultIconPx;
+  const resolvedIconSize = isWhatsApp
+    ? isLgUp
+      ? whatsAppIconPx
+      : mobileWhatsAppIconPx
+    : isLgUp
+      ? defaultIconPx
+      : mobileDefaultIconPx;
 
   const whatsAppBubbleWrap = cn(
     "pointer-events-none absolute z-0",
-    "left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2",
+    "left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 lg:h-10 lg:w-10",
   );
 
   const whatsAppIconSlot = cn(
     "absolute z-[2] flex",
-    "left-[55%] top-1/2 size-9 -translate-x-1/2 -translate-y-1/2",
+    "left-[55%] top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 lg:size-9",
     "items-center justify-center overflow-hidden rounded-full",
   );
 
@@ -139,7 +161,7 @@ const AnimatedButton = ({
         {text}
       </Container>
       {isWhatsApp ? (
-        <span className="relative size-10 shrink-0 overflow-visible">
+        <span className="relative size-8 shrink-0 overflow-visible lg:size-10">
           <span className={whatsAppBubbleWrap}>
             <WhatsAppBubbleShape className="text-primary" />
           </span>

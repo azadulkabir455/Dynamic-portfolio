@@ -15,7 +15,7 @@ export type HeroIntroColumnProps = {
 
 const heroIntroBodyTextClass = cn(
   "font-open-sans font-semibold text-base xl:text-[20px] leading-[30px] xl:leading-[40px] tracking-normal",
-  "text-ternary-light align-middle text-left",
+  "text-ternary-light align-middle text-center lg:text-left",
 );
 
 const HeroIntroColumn = ({
@@ -28,14 +28,14 @@ const HeroIntroColumn = ({
     <Container
       as="div"
       className={cn(
-        "order-1 flex flex-col items-start gap-0",
+        "order-1 flex flex-col items-start gap-2 lg:gap-0",
       )}
     >
       <Container as="div" className="flex flex-col items-start">
         <Text
           variant="p"
           className={cn(
-            "flex items-center gap-2",
+            "flex items-center gap-2 justify-center lg:justify-start w-full",
             heroIntroBodyTextClass,
           )}
         >
@@ -64,7 +64,7 @@ const HeroIntroColumn = ({
         as="div"
         className={cn(
           "relative w-full max-w-[min(100%,28rem)]",
-          "flex flex-col gap-4",
+          "flex flex-col items-center lg:items-start gap-4",
         )}
       >
         <Container

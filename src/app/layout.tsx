@@ -59,7 +59,7 @@ export default function RootLayout({
               <Container
                 as="div"
                 className={cn(
-                  "fixed top-[50px] z-[100] max-w-none",
+                  "fixed top-[30px] lg:top-[50px] z-[100] max-w-none",
                   "flex flex-row flex-wrap items-center justify-end gap-2",
                   "right-[max(20px,calc((100vw-1280px)/2+20px))]",
                 )}

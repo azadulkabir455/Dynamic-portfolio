@@ -30,7 +30,7 @@ const HeroExperienceColumn = ({
       <Text
         variant="p"
         className={cn(
-          "text-left align-middle",
+          "text-center lg:text-left align-middle",
           "font-open-sans font-normal not-italic",
           "text-base xl:text-[20px] leading-[28px] xl:leading-[32px] tracking-normal",
           "text-ternary-light",
@@ -38,11 +38,11 @@ const HeroExperienceColumn = ({
       >
         {aboutMe}
       </Text>
-      <Container className="mt-6 flex flex-col gap-3 z-10">
+      <Container className="mt-3 lg:mt-6 flex flex-col items-center gap-3 z-10 lg:items-start">
         <Text
           variant="h2"
           className={cn(
-            "text-left align-middle",
+            "text-center lg:text-left align-middle",
             "font-open-sans font-semibold not-italic",
             "text-base xl:text-[20px] leading-[28px] xl:leading-[30px] tracking-normal",
             "text-ternary",
@@ -53,7 +53,7 @@ const HeroExperienceColumn = ({
         <GlassIcons
           items={socialItems}
           className={cn(
-            "w-fit max-w-none cursor-target justify-items-center",
+            "w-fit max-w-none cursor-target justify-items-center mt-3 lg:mt-0",
           )}
         />
       </Container>

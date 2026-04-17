@@ -15,11 +15,11 @@ export default function Page() {
       <Company />
       <Portfolio />
       <Skills />
-      <Project />
+      {/* <Project />
       <Experience />
       <Clients />
       <Intro />
-      <Footer />
+      <Footer /> */}
     </>
   );
 }

@@ -10,10 +10,10 @@ import type { PortfolioData, PortfolioProps } from "./type";
 
 const stickyTitleTopClass = "top-[60px]";
 const stickyItemTopClasses = [
-  "top-[190px]",
-  "top-[220px]",
-  "top-[250px]",
-  "top-[250px]",
+  "top-[130px] lg:top-[190px]",
+  "top-[160px] lg:top-[220px]",
+  "top-[190px] lg:top-[250px]",
+  "top-[220px] lg:top-[280px]",
 ] as const;
 
 function mergePortfolioData(content: Partial<PortfolioData>): PortfolioData {
@@ -51,7 +51,7 @@ const Portfolio = ({ content }: PortfolioProps) => {
         <Container className="relative w-full">
           <Container
             className={cn(
-              "sticky mb-[60px]",
+              "sticky mb-[30px] lg:mb-[60px]",
               stickyTitleTopClass,
             )}
             style={{ zIndex: 20 }}
@@ -59,8 +59,8 @@ const Portfolio = ({ content }: PortfolioProps) => {
             <Text
               variant="h2"
               className={cn(
-                "text-center text-[60px] xl:text-[80px] text-primary",
-                "font-antonio font-bold capitalize leading-[70px] xl:leading-[90px] tracking-normal ",
+                "text-center text-[40px] lg:text-[60px] xl:text-[80px] text-primary",
+                "font-antonio font-bold capitalize leading-[48px] lg:leading-[70px] xl:leading-[90px] tracking-normal ",
               )}
             >
               {data.portfolioTitle}

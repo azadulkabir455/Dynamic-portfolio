@@ -19,7 +19,6 @@ const primaryG = 63;
 const primaryB = 64;
 const p = (a: number) => `rgba(${primaryR},${primaryG},${primaryB},${a})`;
 
-const containerH = 575;
 const iconPad = 48;
 const iconSize = 55;
 const iconBorderRadius = 15;
@@ -250,7 +249,13 @@ export default function RadialSkills({
         >
           <Text
             variant="h3"
-            className="font-antonio text-[44px] xl:text-[54px] font-bold leading-[70px] xl:leading-[78px] tracking-[0%] capitalize text-secondary"
+            className={
+              cn(
+                "hidden sm:block",
+                'text-[30px] lg:text-[44px] xl:text-[54px] leading-[36px] lg:leading-[48px] xl:leading-[78px]',
+                'font-antonio font-bold tracking-[0%] capitalize text-secondary'
+              )
+            }
           >
             {centerText}
           </Text>
