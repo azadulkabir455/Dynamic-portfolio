@@ -29,7 +29,7 @@ const ContentArea = ({
 
   return (
     <Container
-      className="py-[60px] z-10"
+      className="py-[60px]"
     >
       <Container
         as="div"
@@ -119,7 +119,7 @@ const ContentArea = ({
                 )}
               >
                 <ScrollDownButton
-                  scrollTargetId="objective"
+                  scrollTargetId="company"
                   className="text-ternary"
                 />
               </Container>

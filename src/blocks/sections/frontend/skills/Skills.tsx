@@ -15,7 +15,7 @@ const Skills = (props: SkillsProps = {}) => {
       as="section"
       id="skills"
       className={cn(
-        "relative w-full",
+        "relative w-full overflow-hidden",
         "bg-cover bg-center bg-no-repeat bg-fixed",
       )}
       style={{

@@ -72,7 +72,7 @@ const HeroIntroColumn = ({
           className="flex items-end pl-[160px] gap-2"
         >
           <Image
-            src="/images/icons/talkbuttonindicator.svg"
+            src="/images/Icons/talkButtonIndicator.svg"
             alt=""
             width={100}
             height={250}
