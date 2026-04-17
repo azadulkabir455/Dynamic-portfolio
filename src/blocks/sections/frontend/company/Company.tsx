@@ -36,7 +36,7 @@ const Company = (props: CompanyProps) => {
       as="section"
       id="company"
       className={cn(
-        "pt-[60px]",
+        "pt-[30px] xl:pt-[60px]",
       )}
     >
       <Container
@@ -47,26 +47,26 @@ const Company = (props: CompanyProps) => {
       >
         <Container
           as="div"
-          className={cn("flex flex-col gap-x-[15px] gap-y-[50px]")}
+          className={cn("flex flex-col gap-x-[15px] gap-y-[30px] xl:gap-y-[50px]")}
         >
           <Container
             as="div"
             className={cn(
-              "flex w-full min-w-0 items-start gap-[15px]",
+              "grid grid-cols-5 w-full min-w-0 items-end gap-[15px]",
             )}
           >
             <Text
               variant="h2"
               className={cn(
-                "min-w-0 flex-1 font-antonio font-bold capitalize text-primary",
-                "text-[64px] leading-[70px] tracking-normal",
+                "col-span-3 min-w-0 flex-1 font-antonio font-bold capitalize text-primary",
+                "text-[60px] xl:text-[80px] leading-[70px] xl:leading-[90px] tracking-normal",
               )}
             >
               {renderTitleWithBreaks(title)}
             </Text>
             <Container
               as="div"
-              className="flex shrink-0 flex-row flex-wrap gap-[15px]"
+              className="col-span-2 grid grid-cols-2 shrink-0 flex-row flex-wrap gap-[15px]"
             >
               {firstRowLogos.map((logo, index) =>
                 renderLogo(logo, index, "company-logo-top"),
@@ -77,7 +77,7 @@ const Company = (props: CompanyProps) => {
           {restLogos.length > 0 ? (
               <Container
                 className={cn(
-                  "grid grid-cols-5 justify-items-start gap-x-[15px] gap-y-[50px]",
+                  "grid grid-cols-5 justify-items-start gap-x-[15px] gap-y-[30px] xl:gap-y-[50px]",
                 )}
               >
                 {restLogos.map((logo, index) =>

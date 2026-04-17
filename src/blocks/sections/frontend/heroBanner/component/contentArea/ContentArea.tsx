@@ -23,7 +23,7 @@ const ContentArea = ({
 }: ContentAreaProps) => {
   const heroHeadlineClass = cn(
     "font-antonio font-bold text-primary",
-    "text-[98px] leading-[100px]",
+    "text-[88px] xl:text-[98px] leading-[90px] xl:leading-[100px]",
     "tracking-normal text-center uppercase",
   );
 

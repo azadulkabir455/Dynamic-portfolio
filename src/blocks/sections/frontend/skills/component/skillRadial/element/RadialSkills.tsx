@@ -9,7 +9,7 @@ import {
   useTransform,
   type MotionValue,
 } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { RadialSkillsProps, SkillItem, SkillRing } from "../type";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
@@ -25,6 +25,8 @@ const iconSize = 55;
 const iconBorderRadius = 15;
 const baseRadius = 200;
 const maxIconsPerRing = 20;
+const xlBreakpoint = 1280;
+const lgBreakpoint = 1024;
 
 type RingCfg = {
   duration: number;
@@ -33,12 +35,12 @@ type RingCfg = {
 };
 
 const ringConfigs: RingCfg[] = [
-  { duration: 38, direction: 1, spacing: iconSize * 8 },
-  { duration: 45, direction: -1, spacing: iconSize * 5 },
-  { duration: 65, direction: 1, spacing: iconSize * 8 },
-  { duration: 67, direction: -1, spacing: iconSize * 6 },
-  { duration: 95, direction: 1, spacing: iconSize * 8 },
-  { duration: 88, direction: -1, spacing: iconSize * 8 },
+  { duration: 68, direction: 1, spacing: iconSize * 8 },
+  { duration: 50, direction: -1, spacing: iconSize * 5 },
+  { duration: 50, direction: 1, spacing: iconSize * 8 },
+  { duration: 80, direction: -1, spacing: iconSize * 6 },
+  { duration: 50, direction: 1, spacing: iconSize * 8 },
+  { duration: 90, direction: -1, spacing: iconSize * 8 },
 ];
 
 function getIconCount(radius: number, minCount: number, spacing: number): number {
@@ -57,6 +59,13 @@ function getRingBg(ringIndex: number, totalRings: number): string {
   const centerAlpha = +(1.0 * dimFactor).toFixed(2);
   const edgeAlpha = +(0.2 * dimFactor).toFixed(2);
   return `radial-gradient(circle, ${p(centerAlpha)} 0%, ${p(edgeAlpha)} 100%)`;
+}
+
+function getResponsiveContainerHeight(): number {
+  if (typeof window === "undefined") return 575;
+  if (window.innerWidth >= xlBreakpoint) return 575;
+  if (window.innerWidth >= lgBreakpoint) return 500;
+  return 380;
 }
 
 function RingIcon({
@@ -182,6 +191,18 @@ export default function RadialSkills({
   centerText,
   className,
 }: RadialSkillsProps) {
+  const [containerH, setContainerH] = useState<number>(getResponsiveContainerHeight);
+
+  useEffect(() => {
+    const updateContainerHeight = () => {
+      setContainerH(getResponsiveContainerHeight());
+    };
+
+    updateContainerHeight();
+    window.addEventListener("resize", updateContainerHeight);
+    return () => window.removeEventListener("resize", updateContainerHeight);
+  }, []);
+
   const totalRings = rings.length;
   const maxRadius = containerH - iconPad;
   const ringGap = totalRings > 1 ? (maxRadius - baseRadius) / (totalRings - 1) : 0;
@@ -225,16 +246,11 @@ export default function RadialSkills({
         <Container
           as="span"
           className="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none select-none"
-          style={{ bottom: Math.round(baseRadius * 0.45), zIndex: totalRings + 1 }}
+          style={{ bottom: 20, zIndex: totalRings + 1 }}
         >
           <Text
             variant="h3"
-            className="font-antonio font-bold capitalize text-secondary"
-            style={{
-              fontSize: "53.63px",
-              lineHeight: "78.2px",
-              letterSpacing: "0%",
-            }}
+            className="font-antonio text-[44px] xl:text-[54px] font-bold leading-[70px] xl:leading-[78px] tracking-[0%] capitalize text-secondary"
           >
             {centerText}
           </Text>

@@ -32,7 +32,7 @@ const HeroExperienceColumn = ({
         className={cn(
           "text-left align-middle",
           "font-open-sans font-normal not-italic",
-          "text-[20px] leading-[32px] tracking-normal",
+          "text-base xl:text-[20px] leading-[28px] xl:leading-[32px] tracking-normal",
           "text-ternary-light",
         )}
       >
@@ -44,7 +44,7 @@ const HeroExperienceColumn = ({
           className={cn(
             "text-left align-middle",
             "font-open-sans font-semibold not-italic",
-            "text-[20px] leading-[30px] tracking-normal",
+            "text-base xl:text-[20px] leading-[28px] xl:leading-[30px] tracking-normal",
             "text-ternary",
           )}
         >

@@ -30,10 +30,10 @@ export default function SkillRadial({
         variant="h3"
         className={cn(
           "font-antonio font-bold capitalize text-left",
-          "text-[64px] leading-[70px] tracking-normal",
+          "text-[60px] xl:text-[80px] leading-[70px] xl:leading-[90px] tracking-normal",
           "text-ternary-light",
-          "py-[60px]",
-        )}
+          "py-[60px] xl:py-[120px]",
+        )} 
       >
         {title}
       </Text>

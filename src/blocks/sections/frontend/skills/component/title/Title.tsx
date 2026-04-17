@@ -22,7 +22,7 @@ export default function SkillsTitle({
       <Text
         variant="h2"
         className={cn(
-          "font-antonio text-[130px] text-center font-extrabold",
+          "font-antonio text-[90px] xl:text-[130px] text-center font-extrabold",
           "leading-tight tracking-none",
           "bg-clip-text text-transparent",
           "maxContainer",

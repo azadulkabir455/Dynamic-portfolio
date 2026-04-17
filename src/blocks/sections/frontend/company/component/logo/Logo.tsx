@@ -9,8 +9,8 @@ const Logo = ({ src, alt }: LogoProps) => {
       as="div"
       className={cn(
         "flex shrink-0 items-center justify-center overflow-hidden",
-        "rounded-[10px] p-10",
-        "h-[140px] w-[230px]",
+        "rounded-[10px] p-8 xl:p-10",
+        "h-[130px] xl:h-[140px] w-full xl:w-[230px]",
         "bg-[url('/images/Icons/companyBackground.png')] bg-contain bg-center bg-no-repeat",
       )}
     >

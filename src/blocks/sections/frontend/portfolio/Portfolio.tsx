@@ -59,8 +59,8 @@ const Portfolio = ({ content }: PortfolioProps) => {
             <Text
               variant="h2"
               className={cn(
-                "text-center text-[64px] text-primary",
-                "font-antonio font-bold capitalize leading-[70px] tracking-normal ",
+                "text-center text-[60px] xl:text-[80px] text-primary",
+                "font-antonio font-bold capitalize leading-[70px] xl:leading-[90px] tracking-normal ",
               )}
             >
               {data.portfolioTitle}

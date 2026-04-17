@@ -14,7 +14,7 @@ export type HeroIntroColumnProps = {
 };
 
 const heroIntroBodyTextClass = cn(
-  "font-open-sans font-semibold text-[20px] leading-[40px] tracking-normal",
+  "font-open-sans font-semibold text-base xl:text-[20px] leading-[30px] xl:leading-[40px] tracking-normal",
   "text-ternary-light align-middle text-left",
 );
 
@@ -88,8 +88,8 @@ const HeroIntroColumn = ({
           <Text
             variant="p"
             className={cn(
-              "font-open-sans font-normal text-base leading-[20px]",
-              " text-left align-middle tracking-normal",
+              "font-open-sans font-normal text-sm xl:text-base leading-[20px]",
+              " text-left align-middle tracking-normal whitespace-nowrap",
               "text-ternary-light/50",
             )}
           >
