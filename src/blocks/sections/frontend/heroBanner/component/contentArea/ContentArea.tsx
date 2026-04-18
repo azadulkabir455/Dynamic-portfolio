@@ -20,6 +20,7 @@ const ContentArea = ({
   ctaURL,
   socialLinks,
   ctaLabel,
+  hideScrollDownButton = false,
 }: ContentAreaProps) => {
   const heroHeadlineClass = cn(
     "font-antonio font-bold text-primary",
@@ -37,7 +38,7 @@ const ContentArea = ({
           "relative flex flex-col maxContainer",
         )}
       >
-        <Container as="div" className="pt-10 lg:pt-0 lg:absolute lg:top-[0] lg:left-[20px]">
+        <Container as="div" className="pt-5 lg:pt-0 lg:absolute lg:top-[0] lg:left-[20px]">
           <Text
             variant="h3"
             className={cn(
@@ -112,17 +113,19 @@ const ContentArea = ({
                 )}
                 priority
               />
-              <Container
-                as="div"
-                className={cn(
-                  "absolute bottom-[0] lg:bottom-[15%] left-1/2 z-10 -translate-x-1/2",
-                )}
-              >
-                <ScrollDownButton
-                  scrollTargetId="company"
-                  className="text-ternary"
-                />
-              </Container>
+              {!hideScrollDownButton ? (
+                <Container
+                  as="div"
+                  className={cn(
+                    "absolute bottom-[0] lg:bottom-[15%] left-1/2 z-10 -translate-x-1/2",
+                  )}
+                >
+                  <ScrollDownButton
+                    scrollTargetId="company"
+                    className="text-ternary"
+                  />
+                </Container>
+              ) : null}
               <Container
                 className={cn(
                   "absolute inset-0 z-[2]",

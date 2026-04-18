@@ -23,7 +23,7 @@ const wordSpacingStyle = {
 
 const curvedTextTypography = cn(
   "font-antonio font-bold uppercase tracking-normal text-center",
-  "text-[56px] leading-none lg:text-[28px]",
+  "text-[68px] leading-none lg:text-[28px]",
   "fill-secondary",
 );
 

@@ -1,3 +1,4 @@
+import { Children } from "react";
 import { cn } from "@/utilities/helpers/classMerge";
 import NextLink from "next/link";
 import Icon from "@/blocks/elements/icon/Icon";
@@ -27,8 +28,14 @@ export const Button = ({
   type = "button",
   ...props
 }: ButtonProps) => {
+  const triviallyEmpty =
+    children == null ||
+    children === false ||
+    (typeof children === "string" && children.trim() === "");
+  const showLabelSpan = !triviallyEmpty && Children.count(children) > 0;
+
   const classes = cn(
-    "group inline-flex items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+    "group inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
     sizeClasses[size],
     (disabled || loading) && "pointer-events-none opacity-50",
     className
@@ -39,7 +46,7 @@ export const Button = ({
       {leftIcon ? (
         <Icon name={leftIcon} size={iconSize} className={cn("shrink-0", iconClassName, leftIconClassName)} />
       ) : null}
-      <span>{children}</span>
+      {showLabelSpan ? <span>{children}</span> : null}
       {loading ? (
         <Icon name="LoaderCircle" size={iconSize} className={cn("shrink-0 animate-spin", iconClassName, rightIconClassName)} />
       ) : rightIcon ? (

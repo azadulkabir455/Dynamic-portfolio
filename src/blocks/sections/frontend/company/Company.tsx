@@ -91,7 +91,7 @@ const Company = (props: CompanyProps) => {
       <Container
         as="div"
         className={cn(
-          "mt-[30px] lg:mt-[60px] bg-ternary pt-6 pb-4 lg:py-5",
+          "mt-[30px] lg:mt-[60px] bg-ternary pt-10 pb-6 lg:py-5",
         )}
       >
         <CurvedLoop

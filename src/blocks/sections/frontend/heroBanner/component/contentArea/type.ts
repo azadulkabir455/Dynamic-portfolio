@@ -12,4 +12,6 @@ export type ContentAreaProps = Pick<
   | "socialLinks"
   | "ctaLabel"
   | "ctaURL"
->;
+> & {
+  hideScrollDownButton?: boolean;
+};

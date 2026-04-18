@@ -74,7 +74,7 @@ export function PasswordInput<TFieldValues extends FieldValues = FieldValues>({
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className={cn(
-                  "absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-700",
+                  "absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 cursor-pointer items-center justify-center rounded-md text-slate-500 transition hover:bg-slate-100 hover:text-slate-700",
                   rightIconClassName
                 )}
                 aria-label={showPassword ? "Hide password" : "Show password"}

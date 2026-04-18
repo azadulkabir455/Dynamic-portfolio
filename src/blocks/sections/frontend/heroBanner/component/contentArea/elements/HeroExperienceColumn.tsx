@@ -22,7 +22,6 @@ const HeroExperienceColumn = ({
     ),
     label: social.label,
     href: social.link,
-    ...(social.color ? { color: social.color } : {}),
   }));
 
   return (

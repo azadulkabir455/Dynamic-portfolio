@@ -4,6 +4,7 @@ export interface InputProps<TFieldValues extends FieldValues = FieldValues> {
   control?: Control<TFieldValues>;
   name: FieldPath<TFieldValues>;
   label?: string;
+  labelLeftIcon?: string;
   placeholder?: string;
   type?: string;
   leftIcon?: string;

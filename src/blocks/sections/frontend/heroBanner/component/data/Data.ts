@@ -15,19 +15,16 @@ export const defaultHeroBannerData: HeroBannerData = {
       iconName: "Linkedin",
       link: "https://www.linkedin.com/in/azadulkabir/",
       label: "LinkedIn",
-      color: "blue",
     },
     {
       iconName: "Github",
       link: "https://github.com/azadulkabir455",
       label: "GitHub",
-      color: "indigo",
     },
     {
       iconName: "BookOpen",
       link: "https://dev.to/azadulkabir455",
       label: "DEV",
-      color: "orange",
     },
   ],
 };

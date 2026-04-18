@@ -17,6 +17,7 @@ export function Input<TFieldValues extends FieldValues = FieldValues>({
   control: controlProp,
   name,
   label,
+  labelLeftIcon,
   placeholder,
   type = "text",
   leftIcon,
@@ -42,10 +43,15 @@ export function Input<TFieldValues extends FieldValues = FieldValues>({
               className={cn(
                 "mb-1.5 block text-sm font-medium",
                 fieldState.error ? "text-red-600" : "text-slate-700",
-                labelClassName
+                labelClassName,
               )}
             >
-              {label}
+              <span className="inline-flex items-center gap-1.5">
+                {labelLeftIcon ? (
+                  <Icon name={labelLeftIcon} size={15} className="shrink-0 text-current opacity-80" />
+                ) : null}
+                {label}
+              </span>
             </FormLabel>
           ) : null}
           <FormControl>

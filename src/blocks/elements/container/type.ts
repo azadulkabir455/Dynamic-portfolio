@@ -1,7 +1,16 @@
 import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 
 export type ContainerSize = "sm" | "md" | "lg" | "xl" | "full";
-export type ContainerElement = "div" | "section" | "span";
+export type ContainerElement =
+  | "div"
+  | "section"
+  | "span"
+  | "nav"
+  | "header"
+  | "aside"
+  | "main"
+  | "article"
+  | "footer";
 
 export interface ContainerBg {
   image: string;

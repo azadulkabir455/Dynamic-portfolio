@@ -1,10 +1,7 @@
-import type { GradientKey } from "@/blocks/elements/3d/GlassIcons/type";
-
 export type HeroSocialLink = {
   iconName: string;
   link: string;
   label: string;
-  color?: GradientKey;
 };
 
 export type HeroBannerData = {
@@ -22,4 +19,5 @@ export type HeroBannerData = {
 
 export type HeroBannerProps = {
   content?: Partial<HeroBannerData> | null;
+  variant?: "default" | "dashboardPreview";
 };
