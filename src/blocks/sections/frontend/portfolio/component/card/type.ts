@@ -1,4 +1,4 @@
-export type PortfolioCardSurface = "primary" | "ternary";
+export type PortfolioCardSurface = "primary" | "ternaryLight";
 
 export type PortfolioCardProps = {
   title: string;

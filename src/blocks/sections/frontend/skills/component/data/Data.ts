@@ -23,4 +23,35 @@ export const defaultSkillsData: SkillsData = {
       { imageUrl: "/images/logo/americanbestit.png", label: "American Best IT" },
     ],
   },
+  skillSliderSlides: [
+    {
+      id: "ai-tools",
+      title: "AI Tools",
+      tags: [
+        { label: "React" },
+        { label: "OpenAI" },
+        { label: "TypeScript" },
+        { label: "Next.js" },
+      ],
+    },
+    {
+      id: "frontend",
+      title: "Frontend",
+      tags: [
+        { label: "React" },
+        { label: "Next.js" },
+        { label: "TypeScript" },
+        { label: "Tailwind" },
+      ],
+    },
+    {
+      id: "backend",
+      title: "Backend",
+      tags: [
+        { label: "Node.js" },
+        { label: "PostgreSQL" },
+        { label: "TypeScript" },
+      ],
+    },
+  ],
 };

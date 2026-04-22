@@ -6,8 +6,20 @@ export const Text = ({
   children,
   variant = "p",
   className,
-  ...props }: TextProps) => { 
+  dangerouslySetInnerHTML,
+  ...props
+}: TextProps) => {
   const Component = variant;
+
+  if (dangerouslySetInnerHTML) {
+    return (
+      <Component
+        className={cn(className)}
+        dangerouslySetInnerHTML={dangerouslySetInnerHTML}
+        {...props}
+      />
+    );
+  }
 
   return (
     <Component className={cn(className)} {...props}>

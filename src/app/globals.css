@@ -106,6 +106,9 @@ h6 {
 .ternaryBacgroundColor {
   background-color: var(--ternary);
 }
+.ternaryLightBacgroundColor {
+  background-color: var(--ternaryLight);
+}
 
 .primaryTextColor {
   color: var(--primary);

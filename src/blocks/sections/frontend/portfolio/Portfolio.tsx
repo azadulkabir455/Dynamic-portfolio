@@ -40,7 +40,7 @@ const Portfolio = ({ content }: PortfolioProps) => {
       as="section"
       id="project-two"
       className={cn(
-        "bg-secondary",
+        "ternaryBacgroundColor",
         "py-[60px]",
       )}
     >
@@ -59,7 +59,7 @@ const Portfolio = ({ content }: PortfolioProps) => {
             <Text
               variant="h2"
               className={cn(
-                "text-center text-[40px] lg:text-[60px] xl:text-[80px] text-primary",
+                "text-center text-[40px] lg:text-[60px] xl:text-[80px] text-secondary",
                 "font-antonio font-bold capitalize leading-[48px] lg:leading-[70px] xl:leading-[90px] tracking-normal ",
               )}
             >
@@ -72,15 +72,19 @@ const Portfolio = ({ content }: PortfolioProps) => {
               <Container
                 key={`${card.title}-${card.buttonLink}-${stackIndex}`}
                 className={cn(
-                  "sticky w-full",
+                  "sticky w-full max-w-full",
                   stickyItemTopClasses[stackIndex],
+                  stackIndex === 0 &&
+                    "mx-[10px] w-[calc(100%-20px)] lg:mx-[20px] lg:w-[calc(100%-40px)]",
+                  stackIndex === 1 &&
+                    "mx-[5px] w-[calc(100%-10px)] lg:mx-[10px] lg:w-[calc(100%-20px)]",
                 )}
                 style={{ zIndex: 30 + stackIndex }}
               >
                 <PortfolioCard
                   {...card}
                   className="w-full"
-                  surface={stackIndex % 3 === 1 ? "primary" : "ternary"}
+                  surface={stackIndex % 3 === 1 ? "primary" : "ternaryLight"}
                 />
               </Container>
             ))}

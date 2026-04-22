@@ -14,18 +14,21 @@ import type { RadialSkillsProps, SkillItem, SkillRing } from "../type";
 import Container from "@/blocks/elements/container/Container";
 import Text from "@/blocks/elements/text/Text";
 
-const primaryR = 195;
-const primaryG = 63;
-const primaryB = 64;
-const p = (a: number) => `rgba(${primaryR},${primaryG},${primaryB},${a})`;
+const secondaryR = 229;
+const secondaryG = 206;
+const secondaryB = 177;
+const s = (a: number) => `rgba(${secondaryR},${secondaryG},${secondaryB},${a})`;
 
 const iconPad = 48;
-const iconSize = 55;
 const iconBorderRadius = 15;
 const baseRadius = 200;
+const mobileBaseRadius = 160;
+const desktopIconSize = 55;
+const mobileIconSize = 46;
 const maxIconsPerRing = 20;
 const xlBreakpoint = 1280;
 const lgBreakpoint = 1024;
+const mdBreakpoint = 768;
 
 type RingCfg = {
   duration: number;
@@ -33,14 +36,16 @@ type RingCfg = {
   spacing: number;
 };
 
-const ringConfigs: RingCfg[] = [
-  { duration: 68, direction: 1, spacing: iconSize * 8 },
-  { duration: 50, direction: -1, spacing: iconSize * 5 },
-  { duration: 50, direction: 1, spacing: iconSize * 8 },
-  { duration: 80, direction: -1, spacing: iconSize * 6 },
-  { duration: 50, direction: 1, spacing: iconSize * 8 },
-  { duration: 90, direction: -1, spacing: iconSize * 8 },
-];
+function getRingConfigs(iconSize: number): RingCfg[] {
+  return [
+    { duration: 72, direction: 1, spacing: iconSize * 8 },
+    { duration: 52, direction: -1, spacing: iconSize * 5 },
+    { duration: 52, direction: 1, spacing: iconSize * 8 },
+    { duration: 86, direction: -1, spacing: iconSize * 6 },
+    { duration: 52, direction: 1, spacing: iconSize * 8 },
+    { duration: 98, direction: -1, spacing: iconSize * 8 },
+  ];
+}
 
 function getIconCount(radius: number, minCount: number, spacing: number): number {
   const circumference = 2 * Math.PI * radius;
@@ -55,16 +60,26 @@ function buildDisplaySkills(skills: SkillItem[], count: number): SkillItem[] {
 
 function getRingBg(ringIndex: number, totalRings: number): string {
   const dimFactor = 1 - ringIndex * (0.7 / Math.max(totalRings - 1, 1));
-  const centerAlpha = +(1.0 * dimFactor).toFixed(2);
-  const edgeAlpha = +(0.2 * dimFactor).toFixed(2);
-  return `radial-gradient(circle, ${p(centerAlpha)} 0%, ${p(edgeAlpha)} 100%)`;
+  const centerAlpha = +(0.32 * dimFactor).toFixed(2);
+  const edgeAlpha = +(0.04 * dimFactor).toFixed(2);
+  return `radial-gradient(circle, ${s(centerAlpha)} 0%, ${s(edgeAlpha)} 100%)`;
 }
 
 function getResponsiveContainerHeight(): number {
   if (typeof window === "undefined") return 575;
   if (window.innerWidth >= xlBreakpoint) return 575;
   if (window.innerWidth >= lgBreakpoint) return 500;
-  return 380;
+  return 430;
+}
+
+function getResponsiveIconSize(): number {
+  if (typeof window === "undefined") return desktopIconSize;
+  return window.innerWidth < mdBreakpoint ? mobileIconSize : desktopIconSize;
+}
+
+function getResponsiveBaseRadius(): number {
+  if (typeof window === "undefined") return baseRadius;
+  return window.innerWidth < mdBreakpoint ? mobileBaseRadius : baseRadius;
 }
 
 function RingIcon({
@@ -72,11 +87,13 @@ function RingIcon({
   x,
   y,
   ringAngle,
+  iconSize,
 }: {
   skill: SkillItem;
   x: number;
   y: number;
   ringAngle: MotionValue<number>;
+  iconSize: number;
 }) {
   const iconAngle = useTransform(ringAngle, (v) => -v);
 
@@ -90,8 +107,8 @@ function RingIcon({
         top: y - iconSize / 2,
         borderRadius: iconBorderRadius,
         overflow: "hidden",
-        backgroundColor: "#C33F40",
-        border: "0.5px solid color-mix(in srgb, var(--secondary) 35%, transparent)",
+        backgroundColor: "var(--primary)",
+        border: "1px solid var(--secondary)",
         transformOrigin: "center center",
         rotate: iconAngle,
         zIndex: 2,
@@ -114,12 +131,14 @@ function Ring({
   radius,
   totalRings,
   cfg,
+  iconSize,
 }: {
   ringIndex: number;
   ring: SkillRing;
   radius: number;
   totalRings: number;
   cfg: RingCfg;
+  iconSize: number;
 }) {
   const ringAngle = useMotionValue(0);
 
@@ -159,7 +178,10 @@ function Ring({
             top: -radius,
             borderRadius: "50%",
             background: getRingBg(ringIndex, totalRings),
-            border: ringIndex === 0 ? "none" : `1px solid ${p(0.30)}`,
+            border:
+              ringIndex === 0
+                ? "none"
+                : "1px solid var(--secondary)",
             zIndex: 1,
           }}
         />
@@ -177,6 +199,7 @@ function Ring({
               x={x}
               y={y}
               ringAngle={ringAngle}
+              iconSize={iconSize}
             />
           );
         })}
@@ -203,14 +226,18 @@ export default function RadialSkills({
   }, []);
 
   const totalRings = rings.length;
+  const iconSize = getResponsiveIconSize();
+  const ringConfigs = getRingConfigs(iconSize);
+  const effectiveBaseRadius = getResponsiveBaseRadius();
   const maxRadius = containerH - iconPad;
-  const ringGap = totalRings > 1 ? (maxRadius - baseRadius) / (totalRings - 1) : 0;
+  const ringGap =
+    totalRings > 1 ? (maxRadius - effectiveBaseRadius) / (totalRings - 1) : 0;
   const containerW = maxRadius * 2 + iconPad * 2;
 
   return (
     <Container
       as="div"
-      className={cn("relative mx-auto", className)}
+      className={cn("relative left-1/2 -translate-x-1/2", className)}
       style={{
         width: containerW,
         height: containerH,
@@ -221,9 +248,9 @@ export default function RadialSkills({
       {Array.from({ length: totalRings }, (_, i) => totalRings - 1 - i).map(
         (ringIndex) => {
           const ring = rings[ringIndex];
-          const radius = baseRadius + ringGap * ringIndex;
+          const radius = effectiveBaseRadius + ringGap * ringIndex;
           const cfg = ringConfigs[ringIndex] ?? {
-            duration: 38 + ringIndex * 14,
+            duration: 44 + ringIndex * 16,
             direction: (ringIndex % 2 === 0 ? 1 : -1) as 1 | -1,
             spacing: iconSize * 8,
           };
@@ -236,31 +263,12 @@ export default function RadialSkills({
               radius={radius}
               totalRings={totalRings}
               cfg={cfg}
+              iconSize={iconSize}
             />
           );
         },
       )}
 
-      {centerText && (
-        <Container
-          as="span"
-          className="absolute left-1/2 -translate-x-1/2 text-center pointer-events-none select-none"
-          style={{ bottom: 20, zIndex: totalRings + 1 }}
-        >
-          <Text
-            variant="h3"
-            className={
-              cn(
-                "hidden sm:block",
-                'text-[30px] lg:text-[44px] xl:text-[54px] leading-[36px] lg:leading-[48px] xl:leading-[78px]',
-                'font-antonio font-bold tracking-[0%] capitalize text-secondary'
-              )
-            }
-          >
-            {centerText}
-          </Text>
-        </Container>
-      )}
     </Container>
   );
 }

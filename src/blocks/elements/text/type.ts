@@ -14,8 +14,9 @@ export type TextVariant =
   | "pre";
 
 export interface TextProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   variant?: TextVariant;
   className?: string;
+  dangerouslySetInnerHTML?: { __html: string };
   [key: string]: any;
 }

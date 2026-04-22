@@ -15,14 +15,14 @@ export default function SkillsTitle({
       as="div"
       className={cn(
         "w-full bg-primary",
-        "py-[40px] lg:py-[120px]",
+        "pt-[40px] lg:pt-[60px]",
         className,
       )}
     >
       <Text
         variant="h2"
         className={cn(
-          "font-antonio text-[50px] lg:text-[90px] xl:text-[130px] text-center font-extrabold",
+          "font-antonio text-[50px] lg:text-[70px] xl:text-[100px] text-center font-extrabold",
           "leading-tight tracking-none",
           "bg-clip-text text-transparent",
           "maxContainer",

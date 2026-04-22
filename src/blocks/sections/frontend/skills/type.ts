@@ -1,3 +1,5 @@
+import type { SkillSliderSlide } from "./component/skillSlider/type";
+
 export type SkillItem = {
   imageUrl: string;
   label: string;
@@ -14,6 +16,7 @@ export type SkillsData = {
   skillTitle: string;
   skillRadialTitle: string;
   skillOrbits: SkillOrbits;
+  skillSliderSlides: SkillSliderSlide[];
 };
 
 export type SkillsProps = Partial<SkillsData>;

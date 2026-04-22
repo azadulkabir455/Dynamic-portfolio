@@ -19,31 +19,30 @@ function orbitsToRings(orbits: SkillOrbits): SkillRing[] {
 }
 
 export default function SkillRadial({
-  title,
   centerText = "Technical Skill",
   orbits,
   className,
 }: SkillRadialProps) {
   return (
-    <Container as="div" className={cn("maxContainer", className)}>
-      <Text
-        variant="h3"
-        className={cn(
-          "font-antonio font-bold capitalize text-left",
-          "text-[40px] lg:text-[60px] xl:text-[80px] leading-[48px] lg:leading-[70px] xl:leading-[90px] tracking-normal",
-          "text-ternary-light",
-          "py-[30px] lg:py-[60px] xl:py-[120px]",
-        )} 
-      >
-        {title}
-      </Text>
-      {orbits && (
-        <RadialSkills
-          rings={orbitsToRings(orbits)}
-          centerText={centerText}
-          className="mx-auto"
-        />
+    <Container
+      as="div"
+      className={cn(
+        " pt-[60px] lg:pt-[120px]",
+        "bg-gradient-to-b from-primary via-primary/70 to-transparent"
       )}
+    >
+      <Container as="div"
+        className={cn(
+          "maxContainer",
+          className)}>
+        {orbits && (
+          <RadialSkills
+            rings={orbitsToRings(orbits)}
+            centerText={centerText}
+            className="mx-auto"
+          />
+        )}
+      </Container>
     </Container>
   );
 }
