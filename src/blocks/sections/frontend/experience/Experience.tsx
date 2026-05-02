@@ -1,230 +1,239 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion, useScroll, useTransform } from "motion/react";
+import Image from "next/image";
+import { useState, useRef, useLayoutEffect } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "motion/react";
 import Container from "@/blocks/elements/container/Container";
-import Image from "@/blocks/elements/image/Image";
 import Text from "@/blocks/elements/text/Text";
-import Timeline from "@/blocks/elements/3d/Timeline/Timeline";
-import { experienceData } from "@/blocks/sections/frontend/experience/component/data/Data";
+import BounceCards from "@/blocks/elements/3d/BounceCards/BounceCards";
+import ExperienceCard from "./component/card/ExperienceCard";
+import ExperienceHeader from "./component/header/ExperienceHeader";
+import { defaultExperienceData } from "./component/data/Data";
+import type { ExperienceSectionData } from "./type";
 import { cn } from "@/utilities/helpers/classMerge";
-import type { TimelineItem } from "@/blocks/elements/3d/Timeline/type";
-import {
-  animateScrollTo,
-  clampScrollY,
-  lockPageScroll,
-  unlockPageScroll,
-  scrollDurationMs,
-  scrollToSectionById,
-} from "@/blocks/elements/3d/SectionScrollSnap/functions";
+import { calculateSpineLine, type SpineLine } from "./function";
 
-/** ExperienceItem → TimelineItem */
-const timelineItems: TimelineItem[] = experienceData.items.map((item) => ({
-  id: item.id,
-  period: item.date,
-  title: item.designation,
-  description: item.jobInfo,
-  tag: item.officeName,
-  logoSrc: item.logoSrc,
-  logoAlt: item.logoAlt,
-  imageSrc: item.imageSrc,
-  imageAlt: item.imageAlt,
-  location: item.location,
-  officeName: item.officeName,
-  officeInfo: item.officeInfo,
-  achievements: item.achievements,
-}));
+const BOUNCE_TRANSFORMS = [
+  "rotate(12deg) translate(-145px)",
+  "rotate(0deg)",
+  "rotate(-12deg) translate(145px)",
+];
 
-const { left } = experienceData;
-
-const EASE = "cubic-bezier(0.16,1,0.3,1)";
-const DUR_S = scrollDurationMs / 1000;
-
-const Experience = () => {
+const Experience = ({
+  title,
+  paragraph,
+  timeline,
+}: ExperienceSectionData = defaultExperienceData) => {
   const sectionRef = useRef<HTMLElement>(null);
-  const rightPanelRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
-  const [scrollDistance, setScrollDistance] = useState(0);
-  const busyRef = useRef(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const firstNodeRef = useRef<HTMLDivElement | null>(null);
+  const lastNodeRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    const measure = () => {
-      if (!rightPanelRef.current) return;
-      const panelH = rightPanelRef.current.scrollHeight;
-      const viewH = window.innerHeight;
-      setScrollDistance(Math.max(0, panelH - viewH + 120));
+  const [spineLine, setSpineLine] = useState<SpineLine | null>(null);
+
+  const sectionTitle = title ?? defaultExperienceData.title ?? "";
+  const sectionParagraph = paragraph ?? defaultExperienceData.paragraph ?? "";
+  const timelineItems = timeline ?? defaultExperienceData.timeline ?? [];
+
+  useLayoutEffect(() => {
+    const update = () => {
+      const track = trackRef.current;
+      const first = firstNodeRef.current;
+      const last = lastNodeRef.current;
+      if (!track || !first || !last) { setSpineLine(null); return; }
+      setSpineLine(calculateSpineLine(track, first, last));
     };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
-
-  /* Transition animations for experience ↔ clients */
-  useEffect(() => {
-    if (scrollDistance === 0) return;
-
-    const fixedStyle = (div: HTMLDivElement) => {
-      div.style.position = "fixed";
-      div.style.inset = "0";
-      div.style.height = "100vh";
-      div.style.zIndex = "60";
-    };
-
-    const resetStyle = (div: HTMLDivElement) => {
-      div.style.cssText = "";
-      busyRef.current = false;
-    };
-
-    const handler = (e: WheelEvent) => {
-      if (busyRef.current || !sectionRef.current || !stickyRef.current) return;
-      const scrollY = window.scrollY;
-      const sTop = sectionRef.current.offsetTop;
-      const lastItemY = sTop + scrollDistance;
-      const clients = document.getElementById("clients");
-
-      /* ── DOWN: last experience item → clients ── */
-      if (e.deltaY > 0 && Math.abs(scrollY - lastItemY) < 20) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        busyRef.current = true;
-        const div = stickyRef.current;
-        fixedStyle(div);
-        requestAnimationFrame(() => {
-          div.style.transition = `transform ${DUR_S}s ${EASE}`;
-          div.style.transform = "translateY(-100vh)";
-        });
-        scrollToSectionById("clients");
-        setTimeout(() => resetStyle(div), scrollDurationMs + 150);
-        return;
-      }
-
-      /* ── UP: clients top → last experience item ── */
-      if (e.deltaY < 0 && clients && Math.abs(scrollY - clients.offsetTop) < 20) {
-        e.preventDefault();
-        e.stopImmediatePropagation();
-        busyRef.current = true;
-        const div = stickyRef.current;
-        fixedStyle(div);
-        div.style.transform = "translateY(-100vh)";
-        requestAnimationFrame(() =>
-          requestAnimationFrame(() => {
-            div.style.transition = `transform ${DUR_S}s ${EASE}`;
-            div.style.transform = "translateY(0)";
-          }),
-        );
-        animateScrollTo(clampScrollY(lastItemY), scrollDurationMs, {
-          onStart: lockPageScroll,
-          onComplete: () => {
-            unlockPageScroll();
-            resetStyle(div);
-          },
-        });
-      }
-    };
-
-    window.addEventListener("wheel", handler, { passive: false, capture: true });
-    return () => window.removeEventListener("wheel", handler, { capture: true });
-  }, [scrollDistance]);
+    update();
+    window.addEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    if (trackRef.current) ro.observe(trackRef.current);
+    return () => { window.removeEventListener("resize", update); ro.disconnect(); };
+  }, [timelineItems.length]);
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ["start start", "end end"],
+    offset: ["start -170%", "end 70%"],
   });
 
-  const rightY = useTransform(scrollYProgress, [0, 1], [0, -scrollDistance]);
+  const fillHeightPx = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, spineLine?.height ?? 0],
+  );
+
+  const [markerProgress, setMarkerProgress] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    setMarkerProgress(latest);
+  });
 
   return (
-    <section
+    <Container
+      as="section"
       ref={sectionRef}
       id="experience"
-      className="w-full ternaryBacgroundColor"
-      style={{ height: `calc(100vh + ${scrollDistance}px)` }}
+      className={cn("py-[80px] lg:py-[120px] secondaryBacgroundColor")}
     >
-      <div ref={stickyRef} className="sticky top-0 h-screen w-full overflow-hidden ternaryBacgroundColor">
-        <div className="relative w-full h-full">
+      <Container as="div" className="maxContainer">
+        <ExperienceHeader title={sectionTitle} paragraph={sectionParagraph} />
 
-          <div
-            className={cn(
-              "relative z-10 flex w-full flex-col h-full",
-              "ternaryBacgroundColor",
-            )}
-          >
-            <Container
-              as="div"
-              className="relative w-full h-full ternaryBacgroundColor pt-0"
-            >
+        <Container as="div" ref={trackRef} className="relative mt-20">
+          {/* Vertical spine — fixed at node col center: year(200px) + half node col(40px) = 240px */}
+          {spineLine && (
+            <>
               <Container
                 as="div"
-                className={cn(
-                  "relative w-full h-full ternaryBacgroundColor",
-                  "px-5 pb-[120px] pt-[120px]",
-                )}
-              >
-                <Container
-                  className={cn(
-                    "maxContainer flex flex-col gap-12 px-4 md:px-6",
-                    "lg:flex-row lg:items-start lg:gap-16",
-                    "h-full",
-                  )}
-                >
-                  {/* Left — static panel */}
-                  <div
-                    className={cn(
-                      "flex w-full flex-col",
-                      "lg:max-w-[45%] lg:shrink-0 lg:basis-[45%]",
-                    )}
-                  >
-                    <Text
-                      variant="h2"
-                      className={cn(
-                        "font-antonio capitalize leading-tight text-secondary",
-                        "text-[clamp(3rem,8vw,72px)]",
-                      )}
-                    >
-                      {left.title}
-                    </Text>
+                aria-hidden
+                className="absolute hidden w-[20px] -translate-x-1/2 rounded-full bg-primary/20 lg:block"
+                style={{ left: 240, top: spineLine.top, height: spineLine.height }}
+              />
+              <motion.div
+                aria-hidden
+                className="absolute hidden w-[20px] -translate-x-1/2 rounded-t-full lg:block"
+                style={{
+                  left: 240,
+                  top: spineLine.top,
+                  height: fillHeightPx,
+                  background:
+                    "linear-gradient(to bottom, #C33F40 0%, #C33F40 calc(100% - 80px), rgba(195,63,64,0.4) calc(100% - 40px), rgba(195,63,64,0) 100%)",
+                }}
+              />
+            </>
+          )}
 
+          <Container as="div" className="flex flex-col gap-10 lg:gap-32">
+            {timelineItems.map((item, index) => {
+              const isFirst = index === 0;
+              const isLast = index === timelineItems.length - 1;
+              const threshold =
+                timelineItems.length === 1
+                  ? 0
+                  : index / (timelineItems.length - 1);
+              const markerReached = markerProgress >= threshold;
+
+              return (
+                <Container
+                  as="div"
+                  key={item.id}
+                  className="relative grid grid-cols-1 lg:grid-cols-[200px_80px_1fr] lg:items-center"
+                >
+                  {/* Year label — left col, 200px wide, left-aligned, 15px gap to node via padding */}
+                  <Container
+                    as="div"
+                    className="hidden lg:flex lg:items-center lg:justify-start lg:pl-0 lg:pr-[15px]"
+                  >
                     <Text
                       variant="p"
                       className={cn(
-                        "mt-4 font-open-sans text-base leading-relaxed text-secondary/80",
-                        "sm:text-lg",
+                        "font-libre-franklin font-semibold leading-[100%] tracking-[0%]",
+                        "text-[32px] text-ternary",
                       )}
                     >
-                      {left.paragraph}
+                      {item.year ?? ""}
                     </Text>
+                  </Container>
 
-                    <div className="relative mt-8 w-full overflow-hidden rounded-xl">
-                      <Image
-                        src={left.imageSrc}
-                        alt={left.imageAlt}
-                        width={480}
-                        height={560}
-                        className="h-auto w-full rounded-xl object-cover"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Right — scrollable timeline via transform */}
-                  <motion.div
-                    ref={rightPanelRef}
-                    style={{ y: rightY }}
-                    className="min-w-0 pt-15 pb-[60px] lg:flex-[0_1_55%]"
+                  {/* Center col — node circle + horizontal connector to right */}
+                  <Container
+                    as="div"
+                    className="hidden lg:col-start-2 lg:row-start-1 lg:flex lg:justify-center lg:relative"
                   >
-                    <Timeline
-                      items={timelineItems}
-                      showSpine
-                      scrollTargetRef={sectionRef}
-                      onActiveIndexChange={() => {}}
+                    {/* Horizontal connector: node right edge → card, 80px wide */}
+                    <Container
+                      as="div"
+                      className="absolute top-1/2 left-full h-[20px] w-[80px] -translate-y-1/2 z-0 transition-colors duration-500"
+                      style={
+                        markerReached
+                          ? {
+                              background:
+                                "linear-gradient(to right, rgba(195,63,64,0.3) 0%, #C33F40 100%)",
+                            }
+                          : { background: "rgba(195,63,64,0.3)" }
+                      }
                     />
-                  </motion.div>
+
+                    {/* Node circle */}
+                    <Container
+                      as="div"
+                      ref={(el) => {
+                        const divEl = el as HTMLDivElement | null;
+                        if (isFirst) firstNodeRef.current = divEl;
+                        if (isLast) lastNodeRef.current = divEl;
+                      }}
+                      className={cn(
+                        "relative z-10 flex h-[80px] w-[80px] items-center justify-center rounded-full border-[3px] transition-all duration-500",
+                        markerReached
+                          ? "border-transparent text-white shadow-[0_0_0_6px_rgba(195,63,64,0.12)]"
+                          : "border-primary/30 bg-secondary text-primary",
+                      )}
+                      style={markerReached ? { background: "#c96363" } : undefined}
+                    >
+                      <svg width="31.5" height="35" viewBox="0 0 32 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M31.2107 4.36975L18.3272 33.2623C17.2947 35.5793 14.206 35.5793 13.1717 33.2623L0.288224 4.36975C-0.879027 1.7535 1.71272 -0.962499 4.14172 0.33425L14.4737 5.85025C15.277 6.279 16.2237 6.279 17.0252 5.85025L27.3572 0.334248C29.7862 -0.960754 32.3797 1.75175 31.2107 4.36975Z"
+                          fill="currentColor"
+                        />
+                      </svg>
+                    </Container>
+                  </Container>
+
+                  {/* Right col — card + arrow between + bounce cards */}
+                  <Container
+                    as="div"
+                    className="lg:col-start-3 lg:row-start-1 relative flex items-center pl-[80px]"
+                  >
+                    {/* Experience card */}
+                    <div className="flex-shrink-0">
+                      <ExperienceCard item={item} />
+                    </div>
+
+                    {/* Arrow SVG — above the card by 15px, between card and BounceCards horizontally */}
+                    <div
+                      className="absolute z-10 pointer-events-none transition-opacity duration-500"
+                      style={{
+                        left: 350,
+                        top: -95,
+                        width: 140,
+                        height: 127,
+                        opacity: markerReached ? 1 : 0,
+                      }}
+                    >
+                        <Image
+                          src="/images/Icons/ExperienceCardArrow.svg"
+                          width={140}
+                          height={127}
+                          alt=""
+                          aria-hidden
+                        />
+                    </div>
+
+                    {/* BounceCards — company photos, offset to overlap arrow */}
+                    {item.images && item.images.length > 0 && (
+                      <div className="ml-40 mt-15 flex-shrink-0">
+                        <BounceCards
+                          images={item.images}
+                          containerWidth={280}
+                          containerHeight={200}
+                          animationDelay={0.3}
+                          animationStagger={0.08}
+                          easeType="elastic.out(1, 0.5)"
+                          transformStyles={BOUNCE_TRANSFORMS}
+                          enableHover
+                          cardWidth={180}
+                          cardHeight={160}
+                          cardBorderWidth={5}
+                          cardBorderColor="white"
+                          cardBorderRadius={20}
+                        />
+                      </div>
+                    )}
+                  </Container>
                 </Container>
-              </Container>
-            </Container>
-          </div>
-        </div>
-      </div>
-    </section>
+              );
+            })}
+          </Container>
+        </Container>
+      </Container>
+    </Container>
   );
 };
 

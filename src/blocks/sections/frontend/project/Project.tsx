@@ -1,10 +1,13 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Container from "@/blocks/elements/container/Container";
 import AnimatedButton from "@/blocks/elements/3d/AnimatedButton/AnimatedButton";
 import ProjectCard from "./component/card/ProjectCard";
-import Text from "@/blocks/elements/text/Text";
 import type { ProjectSectionData } from "./type";
 import { cn } from "@/utilities/helpers/classMerge";
 import { defaultProjectData } from "./component/data/Data";
+import { useProjectTitleAnimation } from "@/hooks/projectTitle";
 
 function chunkPairs<T>(arr: T[]): T[][] {
   const rows: T[][] = [];
@@ -25,46 +28,43 @@ const Project = ({
   const list = projectList ?? defaultProjectData.projectList ?? [];
   const allText = viewAllText ?? defaultProjectData.viewAllText;
   const allUrl = viewAllUrl ?? defaultProjectData.viewAllUrl;
+
+  const { sectionRef, fontSize, lineHeight, color } = useProjectTitleAnimation();
+
   return (
     <Container
       as="section"
-      className={cn(
-        "relative bg-secondary",
-      )}
+      ref={sectionRef}
+      className="relative bg-secondary"
       id="projects"
     >
+      {/* Sticky animated title — stays centered while cards scroll over it */}
       <Container
         as="div"
-        className={cn("maxContainer sticky top-[120px] z-1")}
+        className="sticky top-30 z-20 flex pb-[120px] items-center justify-center"
       >
-        <Text
-          variant="h2"
+        <motion.h2
+          style={{ fontSize, lineHeight, color }}
           className={cn(
-            "font-antonio font-bold",
-            "text-[70px] lg:text-[114px] leading-[80px] lg:leading-[120px] tracking-normal",
-            "text-center capitalize",
-            "bg-gradient-to-b from-primary to-ternary bg-clip-text text-transparent",
-            "[text-box-trim:trim-both] [text-box-edge:cap_alphabetic]",
-            "pb-[60px] lg:pb-[120px]",
+            "font-antonio font-bold capitalize tracking-[0%]",
+            "text-center w-full max-w-[900px] px-6",
             titleClassName,
           )}
           dangerouslySetInnerHTML={{ __html: heading }}
         />
       </Container>
+
+      {/* Cards — z-10 scrolls over the sticky title */}
       <Container
         as="div"
         className={cn(
-          "rounded-t-[24px] pb-[60px] lg:pb-[120px] pt-[120px] lg:pt-[240px]",
-          "bg-gradient-to-t from-ternary-light to-ternary",
+          "relative",
+          "rounded-t-[24px] pb-[60px] lg:pb-[120px] pt-[80px] lg:pt-[160px]",
+          "bg-ternary-light",
         )}
       >
-        <Container
-          as="div"
-          className={cn("maxContainer relative z-5")}
-        >
-          <Container 
-          as="div" 
-          className={cn("flex flex-col gap-10 lg:gap-40")}>
+        <Container as="div" className={cn("maxContainer relative z-30")}>
+          <Container as="div" className={cn("flex flex-col gap-10 lg:gap-40")}>
             {chunkPairs(list).map((pair, rowIdx) => (
               <Container
                 as="div"
@@ -90,10 +90,10 @@ const Project = ({
             as="div"
             className={cn("mt-[120px] flex justify-center")}
           >
-            <AnimatedButton 
-            text={allText ?? ""} 
-            link={allUrl ?? "#"} 
-            className="flex justify-center"
+            <AnimatedButton
+              text={allText ?? ""}
+              link={allUrl ?? "#"}
+              className="flex justify-center"
             />
           </Container>
         </Container>
