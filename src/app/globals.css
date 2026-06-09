@@ -109,6 +109,9 @@ h6 {
 .ternaryLightBacgroundColor {
   background-color: var(--ternaryLight);
 }
+.quaternaryBacgroundColor {
+  background-color: var(--quaternary);
+}
 
 .primaryTextColor {
   color: var(--primary);
@@ -142,3 +145,5 @@ h6 {
 #skills {
   overflow-anchor: none;
 }
+
+/* ─── Certificates Slider ─────────────────────────────────────────── */

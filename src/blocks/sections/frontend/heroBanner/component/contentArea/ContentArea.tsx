@@ -24,56 +24,42 @@ const ContentArea = ({
 }: ContentAreaProps) => {
   const heroHeadlineClass = cn(
     "font-antonio font-bold text-primary",
-    "text-[48px] lg:text-[88px] xl:text-[98px] leading-[56px] lg:leading-[90px] xl:leading-[100px]",
+    "text-[44px] md:text-[48px] lg:text-[98px] leading-[52px] md:leading-[56px] lg:leading-[100px]",
     "tracking-normal text-center uppercase",
+    "[text-shadow:0px_4px_0px_0px_#9E1B1C]",
   );
 
   return (
-    <Container
-      className="py-[60px]"
-    >
-      <Container
-        as="div"
-        className={cn(
-          "relative flex flex-col maxContainer",
-        )}
-      >
-        <Container as="div" className="pt-5 lg:pt-0 lg:absolute lg:top-[0] lg:left-[20px]">
+    <Container className="py-[60px]">
+      <Container as="div" className={cn("relative flex flex-col maxContainer")}>
+        <Container
+          as="div"
+          className="pt-5 md:pt-0 md:absolute md:top-[0] md:left-[20px]"
+        >
           <Text
             variant="h3"
             className={cn(
               "font-antonio font-semibold text-primary",
-              "text-[20px] leading-[28px] lg:text-[24px] lg:leading-[32px]",
+              "text-base md:text-[20px] leading-[28px] lg:text-[24px] lg:leading-[32px]",
               "tracking-normal text-center",
             )}
           >
             With {experience} Professional Experience
           </Text>
         </Container>
-        <Container
-          as="div"
-          className={cn(
-            "relative pt-[15px] lg:pt-[40px]",
-          )}
-        >
-          <Text
-            variant="h2"
-            className={cn(
-              heroHeadlineClass, 
-              "relative")}
-          >
+        <Container as="div" className={cn("relative pt-[15px] md:pt-[40px]")}>
+          <Text variant="h2" className={cn(heroHeadlineClass, "relative")}>
             <span>Senior</span>
             <Image
               src="/images/Icons/talkWithButtonIndecator.svg"
               alt=""
-              width={91}
-              height={55}
+              width={100}
+              height={62}
               unoptimized
               className={cn(
-                "inline-block shrink-0 object-contain align-middle",
-                "h-[90px] lg:h-[105px] w-auto",
-                "rotate-[-10deg]",
-                "absolute bottom-[10%]",
+                "shrink-0 object-contain",
+                "w-[80px] h-[52px] lg:w-[100px] lg:h-[62px]",
+                "absolute top-[-20px] lg:top-[10px] right-[10%] md:right-[30%]",
               )}
               aria-hidden
             />
@@ -86,20 +72,35 @@ const ContentArea = ({
         <Container
           className={cn(
             "min-h-0 py-3 lg:py-0",
-            "grid items-stretch gap-5 grid-cols-1  lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)_minmax(0,1.15fr)]",
+            "grid items-stretch gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,2fr)_minmax(0,1.15fr)]",
           )}
         >
+          <Container as="div" className="order-1 md:order-2 lg:contents">
+            <HeroIntroColumn
+              name={name}
+              introText={introText}
+              ctaURL={ctaURL}
+              ctaLabel={ctaLabel}
+            />
+          </Container>
 
-          <HeroIntroColumn
-            name={name}
-            introText={introText}
-            ctaURL={ctaURL}
-            ctaLabel={ctaLabel}
-          />
           <Container
             as="div"
-            className="order-2 flex min-w-0 flex-col items-center self-stretch"
+            className={cn(
+              "flex md:order-1 md:col-span-2 lg:col-span-1 lg:order-2",
+              "relative min-w-0 flex-col items-center self-stretch",
+            )}
           >
+            <Container
+              as="span"
+              aria-hidden
+              className="block absolute top-[60px] right-1/2 h-[2px] w-[80vw] bg-primary"
+            />
+            <Container
+              as="span"
+              aria-hidden
+              className="block absolute top-[125px] left-1/2 h-[2px] w-[80vw] bg-primary"
+            />
             <Container className="relative w-full max-w-[560px]">
               <Image
                 src={imageSrc}
@@ -107,7 +108,7 @@ const ContentArea = ({
                 width={520}
                 height={650}
                 className={cn(
-                  "relative lg:top-[-50px] z-[1] mx-auto block min-h-0 min-w-0",
+                  "relative top-[-40px] lg:top-[-50px] z-[1] mx-auto block min-h-0 min-w-0",
                   "h-[320px] lg:h-[520px] w-auto max-w-full",
                   "object-contain object-bottom",
                 )}
@@ -141,14 +142,12 @@ const ContentArea = ({
                 )}
                 aria-hidden
               />
-
             </Container>
           </Container>
 
-          <HeroExperienceColumn
-            aboutMe={aboutMe}
-            socialLinks={socialLinks} />
-
+          <Container as="div" className="order-2 md:order-3 lg:contents">
+            <HeroExperienceColumn aboutMe={aboutMe} socialLinks={socialLinks} />
+          </Container>
         </Container>
       </Container>
     </Container>

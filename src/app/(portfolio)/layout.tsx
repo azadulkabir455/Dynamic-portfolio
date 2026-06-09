@@ -18,14 +18,14 @@ export default function PortfolioLayout({
   return (
     <PageLoadLoaderProvider>
       <ParallaxRoot>
-        <TargetCursor spinDuration={2} hideDefaultCursor parallaxOn hoverDuration={0.2} />
+        {/* <TargetCursor spinDuration={2} hideDefaultCursor parallaxOn hoverDuration={0.2} />
         <ClickSpark
           sparkColor="#fff"
           sparkSize={10}
           sparkRadius={25}
           sparkCount={8}
           duration={400}
-        >
+        > */}
           <Container
             as="div"
             className={cn(
@@ -70,7 +70,7 @@ export default function PortfolioLayout({
             {children}
           </Container>
           <PageLoadLoader />
-        </ClickSpark>
+        {/* </ClickSpark> */}
       </ParallaxRoot>
     </PageLoadLoaderProvider>
   );

@@ -9,8 +9,8 @@ const Logo = ({ src, alt }: LogoProps) => {
       as="div"
       className={cn(
         "flex shrink-0 items-center justify-center overflow-hidden",
-        "rounded-[10px] p-8 xl:p-10",
-        "h-[140px] w-full xl:w-[230px]",
+        "rounded-[10px] p-0 md:p-5 xl:p-10",
+        " h-[100px] md:h-[120px] lg:h-[140px] w-full xl:w-[230px]",
         "bg-[url('/images/Icons/companyBackground.png')] bg-cover lg:bg-contain bg-center bg-no-repeat",
       )}
     >
@@ -19,7 +19,7 @@ const Logo = ({ src, alt }: LogoProps) => {
         alt={alt}
         width={200}
         height={200}
-        className={cn("h-auto max-h-full w-auto max-w-full object-contain")}
+        className={cn("h-[60px] md:h-[90px] lg:h-[100px] max-h-full w-[70%] md:w-full max-w-full object-contain brightness-0 invert")}
       />
     </Container>
   );

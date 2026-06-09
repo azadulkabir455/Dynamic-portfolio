@@ -28,10 +28,10 @@ const HeroIntroColumn = ({
     <Container
       as="div"
       className={cn(
-        "order-1 flex flex-col items-start gap-2 lg:gap-0",
+        "order-1 flex flex-col items-center lg:items-start justify-center gap-2 lg:gap-0",
       )}
     >
-      <Container as="div" className="flex flex-col items-start">
+      <Container as="div" className="flex flex-col items-center lg:items-start">
         <Text
           variant="p"
           className={cn(
@@ -75,12 +75,12 @@ const HeroIntroColumn = ({
             src="/images/Icons/talkButtonIndicator.svg"
             alt=""
             width={100}
-            height={250}
+            height={550}
             unoptimized
             className={cn(
               "relative",
               "bottom-[-10px]",
-              "h-auto w-[64px]",
+              "h-auto w-[70px]",
 
             )}
             aria-hidden

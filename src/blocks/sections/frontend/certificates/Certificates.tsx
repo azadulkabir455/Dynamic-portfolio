@@ -1,105 +1,124 @@
 "use client";
 
-import { motion, type Variants } from "motion/react";
+import { useState, useRef, useEffect, useMemo } from "react";
+import Image from "next/image";
 import Container from "@/blocks/elements/container/Container";
-import Text from "@/blocks/elements/text/Text";
 import LogoLoop from "@/blocks/elements/3d/LogoLoop/LogoLoop";
-import { cn } from "@/utilities/helpers/classMerge";
-import { clientsData } from "./component/data/Data";
-import type { ClientsProps } from "./type";
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: {
-      delay: i * 0.12,
-      duration: 0.6,
-      ease: [0.22, 1, 0.36, 1],
-    },
-  }),
-};
+import CertArch from "./component/arch/CertArch";
+import Modal from "./component/modal/Modal";
+import { certificates, type Certificate } from "./component/data/Data";
+import type { LogoLoopItem } from "@/blocks/elements/3d/LogoLoop/type";
 
-const Clients = ({
-  title = clientsData.title,
-  paragraph = clientsData.paragraph,
-}: ClientsProps = {}) => {
+const CARD_W = 350;
+const CARD_H = 250;
+const LIFT = 110;
+
+const Certificates = () => {
+  const [selected, setSelected] = useState<Certificate | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    let rafId: number;
+
+    const update = () => {
+      const containerRect = section.getBoundingClientRect();
+      const centerX = containerRect.left + containerRect.width / 2;
+      const cards = section.querySelectorAll<HTMLElement>("[data-cert-card]");
+
+      cards.forEach((card) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenterX = rect.left + rect.width / 2;
+        const distance = Math.abs(centerX - cardCenterX);
+        // cosine bell curve: 0 at edges → 1 at center
+        const range = CARD_W + 60; // one card + gap
+        const t = Math.max(0, 1 - distance / range);
+        const curve = t * t * (3 - 2 * t); // smoothstep for natural arc
+        const lift = LIFT * curve;
+        card.style.transform = `translateY(-${lift.toFixed(1)}px)`;
+        card.style.opacity = String((0.45 + 0.55 * curve).toFixed(3));
+      });
+
+      rafId = requestAnimationFrame(update);
+    };
+
+    rafId = requestAnimationFrame(update);
+    return () => cancelAnimationFrame(rafId);
+  }, []);
+
+  const loopItems = useMemo<LogoLoopItem[]>(
+    () =>
+      certificates.map((cert) => ({
+        node: (
+          <div
+            style={{
+              width: CARD_W,
+              height: CARD_H + LIFT,
+              display: "flex",
+              alignItems: "flex-end",
+            }}
+          >
+            <div
+              data-cert-card
+              className="relative cursor-pointer overflow-hidden rounded-lg shadow-2xl"
+              style={{
+                width: CARD_W,
+                height: CARD_H,
+              }}
+              onClick={() => setSelected(cert)}
+            >
+              <Image
+                src={cert.src}
+                alt={cert.alt}
+                fill
+                sizes={`${CARD_W}px`}
+                className="object-cover"
+                unoptimized
+              />
+            </div>
+          </div>
+        ),
+        title: cert.title,
+      })),
+    [setSelected],
+  );
+
   return (
-    <Container
-      as="section"
-      id="clients"
-      className={cn(
-        "ternaryBacgroundColor relative flex h-screen w-full items-center",
-        "px-5",
-      )}
-    >
+    <>
       <Container
-        className={cn(
-          "maxContainer flex w-full flex-col gap-12 px-4 md:px-6",
-          "lg:flex-row lg:items-center lg:gap-16",
-        )}
+        as="section"
+        ref={sectionRef}
+        id="certificates"
+        className="ternaryLightBacgroundColor relative w-full pt-[120px]"
       >
-        {/* Left — title + paragraph */}
-        <div className="flex w-full shrink-0 flex-col lg:max-w-[40%] lg:basis-[40%]">
-          <motion.div
-            custom={0}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <Text
-              variant="h2"
-              className={cn(
-                "font-antonio capitalize leading-tight text-secondary",
-                "text-[100px]",
-              )}
-            >
-              {title}
-            </Text>
-          </motion.div>
-
-          <motion.div
-            custom={1}
-            variants={fadeUp}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <Text
-              variant="p"
-              className="mt-4 font-open-sans text-xl leading-relaxed text-secondary/75"
-            >
-              {paragraph}
-            </Text>
-          </motion.div>
-        </div>
-
-        {/* Right — logo loop */}
-        <motion.div
-          custom={2}
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          className="min-w-0 flex-1"
-        >
+        <CertArch />
+        <Container className="maxContainer" style={{ paddingTop: 40, paddingBottom: 60 }}>
           <LogoLoop
-            logos={clientsData.logos}
-            speed={40}
+            logos={loopItems}
+            speed={80}
             direction="left"
             width="100%"
-            logoHeight={80}
-            gap={48}
+            logoHeight={CARD_H + LIFT}
+            gap={60}
             pauseOnHover
-            fadeOut
-            ariaLabel="Clients and companies"
-            className="w-full min-w-0"
+            ariaLabel="Certificates"
           />
-        </motion.div>
+        </Container>
       </Container>
-    </Container>
+
+      {selected && (
+        <Modal
+          src={selected.src}
+          alt={selected.alt}
+          title={selected.title}
+          originalWidth={selected.originalWidth}
+          originalHeight={selected.originalHeight}
+          onClose={() => setSelected(null)}
+        />
+      )}
+    </>
   );
 };
 
-export default Clients;
+export default Certificates;

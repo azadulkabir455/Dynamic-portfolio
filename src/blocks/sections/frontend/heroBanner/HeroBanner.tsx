@@ -54,7 +54,7 @@ const HeroBanner = ({ content, variant = "default" }: HeroBannerProps) => {
         as="div"
         className="relative flex min-h-0 flex-1 flex-col justify-start"
       >
-        <Container
+        {/* <Container
           as="div"
           className={cn("absolute inset-0 z-5 overflow-hidden", isDashboardPreview && "pointer-events-none")}
         >
@@ -69,7 +69,7 @@ const HeroBanner = ({ content, variant = "default" }: HeroBannerProps) => {
             disableRotation={false}
             pixelRatio={1}
           />
-        </Container>
+        </Container> */}
 
         <ContentArea
           name={name}

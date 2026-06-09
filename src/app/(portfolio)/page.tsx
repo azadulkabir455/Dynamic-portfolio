@@ -6,6 +6,7 @@ import Project from "@/blocks/sections/frontend/project/Project";
 import Experience from "@/blocks/sections/frontend/experience/Experience";
 import Intro from "@/blocks/sections/frontend/intro/Intro";
 import Blog from "@/blocks/sections/frontend/blog/Blog";
+import Certificates from "@/blocks/sections/frontend/certificates/Certificates";
 
 export default function Page() {
   return (
@@ -18,8 +19,8 @@ export default function Page() {
       <Experience />
       <Intro />
       <Blog />
-      {/* <Clients />
-      <Footer /> */}
+      <Certificates />
+      {/* <Footer /> */}
     </>
   );
 }

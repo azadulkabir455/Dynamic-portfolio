@@ -36,7 +36,7 @@ const Company = (props: CompanyProps) => {
       as="section"
       id="company"
       className={cn(
-        "pt-0 lg:pt-[30px] xl:pt-[60px]",
+        "pt-0 md:pt-[60px]",
       )}
     >
       <Container
@@ -47,51 +47,73 @@ const Company = (props: CompanyProps) => {
       >
         <Container
           as="div"
-          className={cn("flex flex-col gap-x-[15px] gap-y-3 lg:gap-y-[30px] xl:gap-y-[50px]")}
+          className={cn("flex flex-col gap-x-[15px] gap-y-3 md:gap-y-[30px] xl:gap-y-[50px]")}
         >
+          {/* Mobile: title + all logos */}
+          <Text
+            variant="h2"
+            className={cn(
+              "md:hidden text-center pb-5",
+              "font-antonio font-bold capitalize text-primary",
+              "text-[40px] leading-[48px] tracking-normal",
+            )}
+          >
+            {renderTitleWithBreaks(title)}
+          </Text>
+          <Container
+            className="md:hidden grid grid-cols-2 gap-[15px]"
+          >
+            {logos.map((logo, index) =>
+              renderLogo(logo, index, "company-logo-mobile"),
+            )}
+          </Container>
+
+          {/* Tablet / Desktop */}
           <Container
             as="div"
             className={cn(
-              "grid grid-cols-1 lg:grid-cols-5 w-full min-w-0 items-end gap-[15px]",
+              "relative hidden md:grid md:grid-cols-4 lg:grid-cols-5 gap-[15px] items-start",
             )}
           >
+            <Container
+              as="span"
+              className="hidden md:block absolute top-[35px] left-[165px] lg:left-[220px] right-[calc(50%-7.5px)] lg:right-[calc(40%-9px)] h-[2px] bg-primary z-0"
+              aria-hidden
+            />
             <Text
               variant="h2"
               className={cn(
-                "text-center lg:text-left pb-5 lg:pb-0",
-                "lg:col-span-3 min-w-0 flex-1 font-antonio font-bold capitalize text-primary",
-                "text-[40px] lg:text-[60px] xl:text-[80px] leading-[48px] lg:leading-[70px] xl:leading-[90px] tracking-normal",
+                "md:col-span-2 lg:col-span-3",
+                "md:text-left md:pb-0",
+                "relative z-10 md:pr-4",
+                "font-antonio font-bold capitalize text-primary",
+                "md:text-[48px] lg:text-[64px] md:leading-[56px] lg:leading-[70px] tracking-normal",
               )}
             >
               {renderTitleWithBreaks(title)}
             </Text>
-            <Container
-              as="div"
-              className="lg:col-span-2 grid grid-cols-2 shrink-0 flex-row flex-wrap gap-[15px]"
-            >
-              {firstRowLogos.map((logo, index) =>
-                renderLogo(logo, index, "company-logo-top"),
-              )}
-            </Container>
+            {firstRowLogos.map((logo, index) =>
+              renderLogo(logo, index, "company-logo-top"),
+            )}
           </Container>
 
           {restLogos.length > 0 ? (
-              <Container
-                className={cn(
-                  "grid grid-cols-2 lg:grid-cols-5 justify-items-start gap-x-[15px] gap-y-[15px] lg:gap-y-[30px] xl:gap-y-[50px]",
-                )}
-              >
-                {restLogos.map((logo, index) =>
-                  renderLogo(logo, index, "company-logo-grid"),
-                )}
-              </Container>
+            <Container
+              className={cn(
+                "hidden md:grid md:grid-cols-4 lg:grid-cols-5 gap-[15px] md:gap-y-[30px] xl:gap-y-[50px]",
+              )}
+            >
+              {restLogos.map((logo, index) =>
+                renderLogo(logo, index, "company-logo-grid"),
+              )}
+            </Container>
           ) : null}
         </Container>
       </Container>
       <Container
         as="div"
         className={cn(
-          "mt-[30px] lg:mt-[60px] ternaryLightBacgroundColor pt-10 pb-6 lg:py-5",
+          "mt-[30px] md:mt-[60px] ternaryLightBacgroundColor pt-10 pb-6 md:py-5",
         )}
       >
         <CurvedLoop

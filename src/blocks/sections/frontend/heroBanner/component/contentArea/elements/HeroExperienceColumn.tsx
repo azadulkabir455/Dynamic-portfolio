@@ -25,7 +25,7 @@ const HeroExperienceColumn = ({
   }));
 
   return (
-    <Container className="order-3 flex flex-col justify-center">
+    <Container className="order-3 flex flex-col justify-end mt-5 md:mt-[30px] lg:mt-0 lg:mb-20">
       <Text
         variant="p"
         className={cn(
@@ -37,7 +37,7 @@ const HeroExperienceColumn = ({
       >
         {aboutMe}
       </Text>
-      <Container className="mt-3 lg:mt-6 flex flex-col items-center gap-3 z-10 lg:items-start">
+      <Container className="mt-3 md:mt-6 flex flex-col items-center gap-3 z-10 lg:items-start">
         <Text
           variant="h2"
           className={cn(
